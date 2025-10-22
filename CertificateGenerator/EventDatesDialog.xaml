@@ -1,0 +1,143 @@
+﻿<Window x:Class="CertificateGenerator.EventDatesDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dátumy podujatí" 
+        MinHeight="650" 
+        Width="850"
+        FontSize="14"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{StaticResource BackgroundColor}">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="📅" 
+                           FontSize="38"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="Priraďte dátumy k témam podujatí" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryColor}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Quick Actions -->
+        <Border Grid.Row="1" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                    <Label Content="⚡ Rýchle nastavenie"
+                           Style="{StaticResource ModernLabel}"
+                           FontSize="15"
+                           FontWeight="Bold"
+                           Margin="0,0,0,10"/>
+                    <Label Content="Nastaviť všetkým rovnaký dátum:" 
+                           Style="{StaticResource ModernLabel}"/>
+                    <DatePicker x:Name="DtpCommonDate" 
+                                Style="{StaticResource ModernDatePicker}"
+                                SelectedDateFormat="Short"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" 
+                        Content="✓ Aplikovať na všetky" 
+                        Style="{StaticResource SuccessButton}"
+                        Width="170" 
+                        Height="44"
+                        FontSize="14"
+                        VerticalAlignment="Bottom"
+                        Click="ApplyCommonDate_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid with Topics and Dates -->
+        <Border Grid.Row="2" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0"
+                       Content="📋 Témy a ich dátumy"
+                       Style="{StaticResource ModernLabel}"
+                       FontSize="15"
+                       FontWeight="Bold"
+                       Margin="0,0,0,15"/>
+
+                <Border Grid.Row="1"
+                        BorderThickness="1"
+                        BorderBrush="{StaticResource BorderColor}"
+                        CornerRadius="6"
+                        Background="{StaticResource SurfaceColor}">
+                    <DataGrid x:Name="DgEventTopics"
+                              Style="{StaticResource ModernDataGrid}"
+                              BorderThickness="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Poradie" 
+                                            Binding="{Binding Index}" 
+                                            Width="80"
+                                            IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Téma podujatia" 
+                                            Binding="{Binding Topic}" 
+                                            Width="*"
+                                            IsReadOnly="True"/>
+                            <DataGridTemplateColumn Header="Dátum podujatia" Width="220">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DatePicker SelectedDate="{Binding EventDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Style="{StaticResource ModernDatePicker}"
+                                                SelectedDateFormat="Short"
+                                                Margin="4"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center">
+            <Button Content="✓ Pokračovať" 
+                    Style="{StaticResource SuccessButton}"
+                    Width="150" 
+                    Height="48"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Margin="0,0,15,0"
+                    IsDefault="True"
+                    Click="Continue_Click"/>
+            <Button Content="✖️ Zrušiť" 
+                    Style="{StaticResource SecondaryButton}"
+                    Width="120" 
+                    Height="48"
+                    FontSize="15"
+                    IsCancel="True"
+                    Click="Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

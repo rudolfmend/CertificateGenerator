@@ -1,0 +1,226 @@
+﻿<Window x:Class="CertificateGenerator.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="O aplikácii" 
+        Height="700" 
+        Width="600"
+        FontSize="14"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{StaticResource BackgroundColor}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="{StaticResource InputBackground}"
+                BorderBrush="{StaticResource BorderColor}"
+                BorderThickness="0,0,0,1"
+                Padding="30">
+            <StackPanel HorizontalAlignment="Center">
+                <!-- App Icon -->
+                <TextBlock Text="📜" 
+                           FontSize="80"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,15"/>
+
+                <TextBlock Text="CertificateGenerator" 
+                           FontSize="28" 
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryColor}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,5"/>
+
+                <TextBlock Text="WPF Aplikácia - Verzia 1.0" 
+                           FontSize="14"
+                           Foreground="{StaticResource TextSecondaryColor}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="30,20">
+            <StackPanel>
+
+                <!-- Description -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="O aplikácii" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="22">
+                            Profesionálny nástroj na generovanie PDF certifikátov o absolvovaní odborných seminárov a školení. Aplikácia umožňuje jednoduché vytváranie jednotlivých certifikátov aj hromadné generovanie pre skupiny účastníkov.
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Features -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="✨ Kľúčové funkcie" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+
+                        <StackPanel>
+                            <TextBlock Text="• Generovanie jednotlivých PDF certifikátov" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Hromadné vytváranie certifikátov pre viacerých účastníkov" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Import zoznamu účastníkov z CSV súborov" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Podpora viacerých formátov papiera (A3, A4, A5)" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Správa údajov účastníkov a tém podujatí" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Podpora diakritiky a slovenského jazyka" 
+                                       Foreground="{StaticResource TextSecondaryColor}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Personal Data Protection -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="🔒 Ochrana osobných údajov" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="22"
+                                   Margin="0,0,0,15">
+                            CertificateGenerator rešpektuje vaše súkromie. Táto aplikácia nezhromažďuje, neuchováva ani neprenáša žiadne osobné údaje mimo vášho zariadenia.
+                        </TextBlock>
+
+                        <Button Content="Zásady ochrany údajov" 
+                                Width="200" 
+                                HorizontalAlignment="Left"
+                                Click="LearnMorePrivacy_Click"   
+                                Style="{StaticResource ModernButton}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Developer Info -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="👨‍💻 Vývojár" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="22">
+                            <Run Text="Vyvinul "/><Run Text="Rudolf Mendzezof" FontWeight="SemiBold"/>
+                            <LineBreak/>
+                            <Run Text="Profesionálne riešenie pre generovanie certifikátov"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- System Info -->
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="💻 Systémové informácie" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                                       Text="Verzia OS:" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,15,8"/>
+                            <TextBlock x:Name="TxtOSVersion" 
+                                       Grid.Row="0" Grid.Column="1" 
+                                       Text="Windows" 
+                                       Foreground="{StaticResource TextPrimaryColor}"
+                                       FontWeight="Medium"
+                                       Margin="0,0,0,8"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" 
+                                       Text=".NET Runtime:" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,15,8"/>
+                            <TextBlock x:Name="TxtDotNetVersion" 
+                                       Grid.Row="1" Grid.Column="1" 
+                                       Text=".NET Framework" 
+                                       Foreground="{StaticResource TextPrimaryColor}"
+                                       FontWeight="Medium"
+                                       Margin="0,0,0,8"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" 
+                                       Text="Architektúra:" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,15,0"/>
+                            <TextBlock x:Name="TxtArchitecture" 
+                                       Grid.Row="2" Grid.Column="1" 
+                                       Text="x64" 
+                                       Foreground="{StaticResource TextPrimaryColor}"
+                                       FontWeight="Medium"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" 
+                Background="{StaticResource InputBackground}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{StaticResource BorderColor}"
+                Padding="30,15">
+            <Grid>
+                <TextBlock Text="© 2025 Rudolf Mendzezof. Všetky práva vyhradené." 
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondaryColor}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"/>
+
+                <Button Content="Zavrieť" 
+                        Width="140" 
+                        HorizontalAlignment="Right"
+                        Click="CloseButton_Click"
+                        Style="{StaticResource SecondaryButton}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

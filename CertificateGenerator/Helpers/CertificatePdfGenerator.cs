@@ -1,0 +1,313 @@
+﻿using CertificateGenerator.Data;
+using iText.IO.Font.Constants;
+using iText.IO.Image;
+using iText.Kernel.Colors;
+using iText.Kernel.Font;
+using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas;
+using iText.Kernel.Pdf.Canvas.Draw;
+using iText.Layout;
+using iText.Layout.Borders;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using System;
+using System.IO;
+
+namespace CertificateGenerator.Helpers
+{
+    /// <summary>
+    /// Helper pre generovanie PDF certifikátov podľa šablón
+    /// </summary>
+    public class CertificatePdfGenerator
+    {
+        public static void GeneratePdf(
+            string filePath,
+            CertificateTemplateModel template,
+            string organizerName,
+            string eventTopic,
+            DateTime? eventDate,
+            string participantName,
+            DateTime? birthDate,
+            string registrationNumber,
+            string notes,
+            PageSize pageSize)
+        {
+            using (PdfWriter writer = new PdfWriter(filePath))
+            using (PdfDocument pdfDocument = new PdfDocument(writer))
+            using (Document document = new Document(pdfDocument, pageSize))
+            {
+                // Nastavenie okrajov
+                document.SetMargins(
+                    template.MarginTop,
+                    template.MarginRight,
+                    template.MarginBottom,
+                    template.MarginLeft
+                );
+
+                // Načítanie fontov
+                PdfFont titleFont = GetFont(template.TitleFontFamily);
+                PdfFont headerFont = GetFont(template.HeaderFontFamily);
+                PdfFont textFont = GetFont(template.TextFontFamily);
+
+                // Farby
+                Color titleColor = ParseColor(template.TitleColor);
+                Color textColor = ParseColor(template.TextColor);
+                Color accentColor = ParseColor(template.AccentColor);
+
+                // Rámček okolo celého dokumentu
+                if (template.ShowBorder)
+                {
+                    AddPageBorder(pdfDocument, pageSize, template);
+                }
+
+                // Logo na začiatku
+                if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
+                    template.LogoPosition == "TOP" &&
+                    File.Exists(template.LogoPath))
+                {
+                    AddLogo(document, template, HorizontalAlignment.CENTER);
+                }
+
+                // Vlastný text v záhlaví
+                if (!string.IsNullOrWhiteSpace(template.CustomHeaderText))
+                {
+                    document.Add(new Paragraph(template.CustomHeaderText)
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize)
+                        .SetFontColor(textColor)
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .SetMarginBottom(15));
+                }
+
+                // Titulok certifikátu
+                if (template.ShowTitle && !string.IsNullOrWhiteSpace(template.CertificateTitle))
+                {
+                    TextAlignment alignment = template.TitleAlignment == "LEFT" ? TextAlignment.LEFT :
+                                             template.TitleAlignment == "RIGHT" ? TextAlignment.RIGHT :
+                                             TextAlignment.CENTER;
+
+                    Paragraph title = new Paragraph(template.CertificateTitle)
+                        .SetFont(titleFont)
+                        .SetFontSize(template.TitleFontSize)
+                        .SetFontColor(titleColor)
+                        .SetTextAlignment(alignment)
+                        .SetMarginBottom(20);
+
+                    document.Add(title);
+                }
+
+                // Oddeľovacia čiara
+                if (template.ShowSeparatorLine)
+                {
+                    AddSeparator(document, template, accentColor);
+                }
+
+                // Organizátor
+                if (template.ShowOrganizer && !string.IsNullOrWhiteSpace(organizerName))
+                {
+                    document.Add(new Paragraph($"{template.LabelOrganizer} {organizerName}")
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize + 1)
+                        .SetFontColor(textColor)
+                        .SetMarginBottom(15));
+                }
+
+                // Téma podujatia
+                if (template.ShowEventTopic && !string.IsNullOrWhiteSpace(eventTopic))
+                {
+                    document.Add(new Paragraph($"{template.LabelEventTopic} {eventTopic}")
+                        .SetFont(headerFont)
+                        .SetFontSize(template.HeaderFontSize)
+                        .SetFontColor(accentColor)
+                        .SetMarginBottom(10));
+                }
+
+                // Meno účastníka
+                document.Add(new Paragraph($"{template.LabelParticipant} {participantName}")
+                    .SetFont(headerFont)
+                    .SetFontSize(template.HeaderFontSize + 2)
+                    .SetFontColor(titleColor)
+                    .SetMarginBottom(15));
+
+                // Dátum podujatia
+                if (template.ShowEventDate && eventDate.HasValue)
+                {
+                    document.Add(new Paragraph($"{template.LabelEventDate} {eventDate.Value:dd.MM.yyyy}")
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize)
+                        .SetFontColor(textColor)
+                        .SetMarginBottom(8));
+                }
+
+                // Dátum narodenia
+                if (template.ShowBirthDate && birthDate.HasValue)
+                {
+                    document.Add(new Paragraph($"{template.LabelBirthDate} {birthDate.Value:dd.MM.yyyy}")
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize)
+                        .SetFontColor(textColor)
+                        .SetMarginBottom(8));
+                }
+
+                // Registračné číslo
+                if (template.ShowRegistrationNumber && !string.IsNullOrWhiteSpace(registrationNumber))
+                {
+                    document.Add(new Paragraph($"{template.LabelRegistrationNumber} {registrationNumber}")
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize)
+                        .SetFontColor(textColor)
+                        .SetMarginBottom(8));
+                }
+
+                // Poznámky
+                if (template.ShowNotes && !string.IsNullOrWhiteSpace(notes))
+                {
+                    document.Add(new Paragraph(template.LabelNotes)
+                        .SetFont(headerFont)
+                        .SetFontSize(template.TextFontSize + 1)
+                        .SetFontColor(textColor)
+                        .SetMarginTop(15)
+                        .SetMarginBottom(5));
+
+                    document.Add(new Paragraph(notes)
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize)
+                        .SetFontColor(textColor)
+                        .SetMarginBottom(20));
+                }
+
+                // Vlastný text v pätičke
+                if (!string.IsNullOrWhiteSpace(template.CustomFooterText))
+                {
+                    document.Add(new Paragraph(template.CustomFooterText)
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize - 1)
+                        .SetFontColor(textColor)
+                        .SetTextAlignment(TextAlignment.CENTER)
+                        .SetMarginTop(20));
+                }
+
+                // Logo na konci
+                if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
+                    template.LogoPosition == "BOTTOM" &&
+                    File.Exists(template.LogoPath))
+                {
+                    AddLogo(document, template, HorizontalAlignment.CENTER);
+                }
+
+                // Časová pečiatka
+                Paragraph footer = new Paragraph($"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}")
+                    .SetFont(textFont)
+                    .SetFontSize(template.TextFontSize - 1)
+                    .SetFontColor(ParseColor("#888888"))
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetMarginTop(30);
+
+                document.Add(footer);
+            }
+        }
+
+        private static void AddPageBorder(PdfDocument pdfDocument, PageSize pageSize, CertificateTemplateModel template)
+        {
+            PdfPage page = pdfDocument.GetFirstPage();
+            PdfCanvas canvas = new PdfCanvas(page);
+
+            Color borderColor = ParseColor(template.BorderColor);
+            canvas.SetStrokeColor(borderColor);
+            canvas.SetLineWidth(template.BorderWidth);
+
+            float margin = 15;
+            canvas.Rectangle(
+                margin,
+                margin,
+                pageSize.GetWidth() - (2 * margin),
+                pageSize.GetHeight() - (2 * margin)
+            );
+            canvas.Stroke();
+        }
+
+        private static void AddLogo(Document document, CertificateTemplateModel template, HorizontalAlignment alignment)
+        {
+            try
+            {
+                ImageData imageData = ImageDataFactory.Create(template.LogoPath);
+                Image logo = new Image(imageData);
+
+                logo.SetWidth(template.LogoWidth);
+                logo.SetHeight(template.LogoHeight);
+                logo.SetHorizontalAlignment(alignment);
+                logo.SetMarginBottom(15);
+
+                document.Add(logo);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Chyba pri načítaní loga: {ex.Message}");
+            }
+        }
+
+        private static void AddSeparator(Document document, CertificateTemplateModel template, Color color)
+        {
+            if (template.SeparatorStyle == "UNDERLINE")
+            {
+                document.Add(new Paragraph("_____________________________________")
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontColor(color)
+                    .SetMarginBottom(20));
+            }
+            else if (template.SeparatorStyle == "LINE")
+            {
+                LineSeparator separator = new LineSeparator(new SolidLine(1f));
+                separator.SetMarginBottom(20);
+                document.Add(separator);
+            }
+        }
+
+        private static PdfFont GetFont(string fontFamily)
+        {
+            try
+            {
+                if (fontFamily == null || fontFamily.Contains("Helvetica-Bold"))
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+                else if (fontFamily.Contains("Helvetica-Oblique") || fontFamily.Contains("Italic"))
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_OBLIQUE);
+                else if (fontFamily.Contains("Times"))
+                    return PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN);
+                else if (fontFamily.Contains("Courier"))
+                    return PdfFontFactory.CreateFont(StandardFonts.COURIER);
+                else
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+            }
+            catch
+            {
+                return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+            }
+        }
+
+        private static Color ParseColor(string hexColor)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(hexColor))
+                    return ColorConstants.BLACK;
+
+                hexColor = hexColor.TrimStart('#');
+
+                if (hexColor.Length != 6)
+                    return ColorConstants.BLACK;
+
+                int r = Convert.ToInt32(hexColor.Substring(0, 2), 16);
+                int g = Convert.ToInt32(hexColor.Substring(2, 2), 16);
+                int b = Convert.ToInt32(hexColor.Substring(4, 2), 16);
+
+                return new DeviceRgb(r, g, b);
+            }
+            catch
+            {
+                return ColorConstants.BLACK;
+            }
+        }
+    }
+}
+

@@ -1,0 +1,425 @@
+﻿<Window x:Class="CertificateGenerator.PrivacyPolicyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Zásady ochrany osobných údajov" 
+        Height="750" 
+        Width="700"
+        FontSize="14"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{StaticResource BackgroundColor}">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="🔒 Zásady ochrany osobných údajov" 
+                       FontSize="28" 
+                       FontWeight="Bold"
+                       Foreground="{StaticResource TextPrimaryColor}"
+                       Margin="0,0,0,5"/>
+            <TextBlock Text="CertificateGenerator" 
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimaryColor}"
+                       Margin="0,0,0,10"/>
+            <TextBlock Text="Účinnosť od: Január 2025" 
+                       FontSize="13"
+                       Foreground="{StaticResource TextSecondaryColor}"/>
+        </StackPanel>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+
+                <!-- Introduction -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Úvod" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24">
+                            CertificateGenerator je aplikácia navrhnutá na vytváranie profesionálnych PDF certifikátov o absolvovaní odborných seminárov a školení. Aplikácia poskytuje nástroje na jednotlivé aj hromadné generovanie certifikátov s podporou správy údajov účastníkov.
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Data Collection -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Zhromažďovanie údajov" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,15">
+                            <Run FontWeight="SemiBold">CertificateGenerator nezhromažďuje, neuchováva ani nezdieľa žiadne osobné údaje svojich používateľov.</Run>
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,10">
+                            Aplikácia:
+                        </TextBlock>
+
+                        <StackPanel Margin="20,0,0,0">
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6">
+                                • Nezaznamenáva žiadne používateľské údaje
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6">
+                                • Nesleduje aktivitu používateľa
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6">
+                                • Nezhromažďuje informácie o zariadení
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6">
+                                • Nekomunikuje so žiadnymi vzdialenými servermi
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6">
+                                • Neuchováva údaje mimo lokálneho zariadenia používateľa
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}">
+                                • Nepoužíva cookies ani podobné sledovacie technológie
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Data Storage -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Ukladanie údajov" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,15">
+                            CertificateGenerator ukladá údaje len lokálne na vašom zariadení:
+                        </TextBlock>
+
+                        <!-- PDF Storage -->
+                        <TextBlock Text="📁 Ukladanie PDF certifikátov" 
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                                       Text="Typ súborov:" 
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="20,0,15,8"
+                                       VerticalAlignment="Top"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,8">
+                                .pdf (certifikáty), .csv (zoznamy účastníkov)
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" 
+                                       Text="Účel:" 
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="20,0,15,8"
+                                       VerticalAlignment="Top"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" 
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,8">
+                                Ukladanie vygenerovaných certifikátov a importovaných zoznamov účastníkov
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" 
+                                       Text="Prístup:" 
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="20,0,15,0"
+                                       VerticalAlignment="Top"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" 
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryColor}">
+                                Prístupné len aplikácii CertificateGenerator a používateľskému účtu
+                            </TextBlock>
+                        </Grid>
+
+                        <!-- User Data Location -->
+                        <TextBlock Text="📤 Umiestnenie údajov používateľa" 
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,10"/>
+
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                                       Text="Umiestnenie:" 
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="20,0,15,8"
+                                       VerticalAlignment="Top"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,8">
+                                Používateľom určené umiestnenia (typicky priečinok Dokumenty)
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" 
+                                       Text="Účel:" 
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="20,0,15,8"
+                                       VerticalAlignment="Top"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" 
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,8">
+                                Zálohovanie a zdieľanie údajov iniciované používateľom
+                            </TextBlock>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" 
+                                       Text="Kontrola:" 
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="20,0,15,0"
+                                       VerticalAlignment="Top"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" 
+                                       TextWrapping="Wrap"
+                                       Foreground="{StaticResource TextSecondaryColor}">
+                                Používateľ má plnú kontrolu nad umiestnením a časovaním ukladania
+                            </TextBlock>
+                        </Grid>
+
+                        <Border Background="{StaticResource InputBackground}"
+                                BorderBrush="{StaticResource BorderColor}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="15"
+                                Margin="0,5,0,0">
+                            <TextBlock TextWrapping="Wrap" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       LineHeight="22"
+                                       FontStyle="Italic">
+                                <Run FontWeight="SemiBold">Dôležité upozornenie:</Run>
+                                <Run> Všetky údaje sú uložené výhradne lokálne na vašom zariadení. Žiadne údaje nie sú prenášané na externé servery ani zdieľané s tretími stranami. Používatelia majú plnú kontrolu nad svojimi údajmi a môžu ich kedykoľvek odstrániť prostredníctvom rozhrania aplikácie alebo priamym odstránením súborov.</Run>
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- GDPR Compliance -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15">
+                            <Run Text="🇪🇺 Súlad s GDPR (Európska únia)"/>
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,10">
+                            Keďže aplikácia nezhromažďuje, nespracúva ani neprenáša žiadne osobné údaje v zmysle Všeobecného nariadenia o ochrane údajov (GDPR) Európskej únie, aplikácia nepodlieha povinnostiam stanoveným v tomto nariadení.
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   FontStyle="Italic">
+                            Odkaz na GDPR: Nariadenie (EÚ) 2016/679
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Personal Identifiers -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Osobné identifikátory a citlivé údaje" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,10">
+                            CertificateGenerator nezhromažďuje, nepristupuje ani nespracúva žiadne z nasledujúcich typov osobných identifikátorov alebo citlivých údajov:
+                        </TextBlock>
+
+                        <StackPanel Margin="20,0,0,0">
+                            <TextBlock Text="• Mená, adresy, telefónne čísla alebo e-mailové adresy (mimo certifikátov)" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Čísla sociálneho poistenia, národné identifikačné čísla alebo štátne identifikátory" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Finančné informácie, čísla kreditných kariet alebo bankové údaje" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Biometrické údaje, zdravotné informácie alebo lekárske záznamy" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Údaje o polohe, GPS súradnice alebo geolokačné informácie" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Identifikátory zariadenia, IP adresy alebo špecifikácie hardvéru" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• História prehliadania, vzory používania alebo behaviorálne údaje" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Akékoľvek iné osobne identifikovateľné informácie podľa príslušných zákonov" 
+                                       Foreground="{StaticResource TextSecondaryColor}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Changes to Privacy Policy -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Zmeny v zásadách ochrany osobných údajov" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,10">
+                            Ak dôjde v budúcnosti k zmenám vo funkcionalite aplikácie, ktoré by mohli ovplyvniť spracovanie osobných údajov, tieto zásady budú aktualizované a používatelia budú informovaní o zmenách prostredníctvom:
+                        </TextBlock>
+
+                        <StackPanel Margin="20,0,0,0">
+                            <TextBlock Text="• Oznámení o aktualizáciách aplikácie" 
+                                       Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,6"/>
+                            <TextBlock Text="• Aktualizácií tejto stránky so zásadami ochrany údajov" 
+                                       Foreground="{StaticResource TextSecondaryColor}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Contact Information -->
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Kontakt" 
+                                   FontSize="18" 
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"/>
+
+                        <TextBlock TextWrapping="Wrap" 
+                                   Foreground="{StaticResource TextSecondaryColor}"
+                                   LineHeight="24"
+                                   Margin="0,0,0,15">
+                            Ak máte akékoľvek otázky týkajúce sa týchto zásad ochrany osobných údajov alebo postupov ochrany údajov, môžete nás kontaktovať na:
+                        </TextBlock>
+
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Foreground="{StaticResource TextSecondaryColor}"
+                                       Margin="0,0,0,5">
+                                <Run FontWeight="SemiBold">E-mail:</Run>
+                                <Run> rudolf.mend@gmail.com</Run>
+                            </TextBlock>
+                            <TextBlock Foreground="{StaticResource TextSecondaryColor}">
+                                <Run FontWeight="SemiBold">Predmet:</Run>
+                                <Run> CertificateGenerator - Otázka k zásadám ochrany údajov</Run>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" 
+                Margin="0,20,0,0"
+                Padding="0,15,0,0"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{StaticResource BorderColor}">
+            <Grid>
+                <StackPanel Orientation="Vertical" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left">
+                    <TextBlock Text="© 2025 Rudolf Mendzezof. Všetky práva vyhradené." 
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondaryColor}"
+                               Margin="0,0,0,3"/>
+                    <TextBlock Text="Posledná aktualizácia: Január 2025" 
+                               FontSize="11"
+                               Foreground="{StaticResource TextSecondaryColor}"
+                               FontStyle="Italic"/>
+                </StackPanel>
+
+                <Button Content="Zavrieť" 
+                        Width="140" 
+                        HorizontalAlignment="Right"
+                        Click="CloseButton_Click"
+                        Style="{StaticResource SecondaryButton}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

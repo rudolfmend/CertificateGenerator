@@ -1,0 +1,132 @@
+﻿<Window x:Class="CertificateGenerator.SelectOrganizerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Výber organizátora" 
+        Height="550" 
+        Width="700"
+        FontSize="14"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{StaticResource BackgroundColor}">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="🏢" 
+                           FontSize="38"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="Výber uloženého organizátora" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryColor}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Search Box -->
+        <Border Grid.Row="1" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,15">
+            <StackPanel>
+                <Label Content="🔍 Vyhľadávanie:" 
+                       Style="{StaticResource ModernLabel}"
+                       FontWeight="Bold"
+                       Margin="0,0,0,8"/>
+                <TextBox x:Name="TxtSearch" 
+                         Style="{StaticResource ModernTextBox}"
+                         TextChanged="TxtSearch_TextChanged"
+                         ToolTip="Zadajte názov organizátora"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Organizers List -->
+        <Border Grid.Row="2" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0"
+                       Content="Zoznam organizátorov"
+                       Style="{StaticResource ModernLabel}"
+                       FontSize="15"
+                       FontWeight="Bold"
+                       Margin="0,0,0,15"/>
+
+                <Border Grid.Row="1"
+                        BorderThickness="1"
+                        BorderBrush="{StaticResource BorderColor}"
+                        CornerRadius="6"
+                        Background="{StaticResource SurfaceColor}">
+                    <DataGrid x:Name="DgOrganizers"
+                              Style="{StaticResource ModernDataGrid}"
+                              BorderThickness="0"
+                              MouseDoubleClick="DgOrganizers_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Názov organizátora" 
+                                                Binding="{Binding Name}" 
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Popis" 
+                                                Binding="{Binding Description}" 
+                                                Width="2*"/>
+                            <DataGridTextColumn Header="Použité" 
+                                                Binding="{Binding UsageCount}" 
+                                                Width="90"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="🗑️ Odstrániť" 
+                    Style="{StaticResource DangerButton}"
+                    Width="130"
+                    Height="44"
+                    FontSize="14"
+                    Click="Delete_Click"/>
+
+            <StackPanel Grid.Column="2"
+                        Orientation="Horizontal">
+                <Button Content="✓ Vybrať" 
+                        Style="{StaticResource SuccessButton}"
+                        Width="140"
+                        Height="44"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Margin="0,0,15,0"
+                        IsDefault="True"
+                        Click="Select_Click"/>
+                <Button Content="✖️ Zrušiť" 
+                        Style="{StaticResource SecondaryButton}"
+                        Width="120"
+                        Height="44"
+                        FontSize="14"
+                        IsCancel="True"
+                        Click="Cancel_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
