@@ -128,6 +128,20 @@ namespace CertificateGenerator
                 TxtCustomHeader.Text = template.CustomHeaderText ?? "";
                 TxtCustomFooter.Text = template.CustomFooterText ?? "";
 
+                // Logo
+                TxtLogoPath.Text = template.LogoPath ?? "";
+                TxtLogoWidth.Text = template.LogoWidth.ToString();
+                TxtLogoHeight.Text = template.LogoHeight.ToString();
+
+                if (template.LogoPosition == "BOTTOM")
+                    CmbLogoPosition.SelectedIndex = 1;
+                else if (template.LogoPosition == "NONE")
+                    CmbLogoPosition.SelectedIndex = 2;
+                else
+                    CmbLogoPosition.SelectedIndex = 0;
+
+                LoadLogoPreview(template.LogoPath);
+
                 _currentTemplate = template;
             }
             finally
@@ -189,7 +203,13 @@ namespace CertificateGenerator
 
                 // Vlastný text
                 CustomHeaderText = TxtCustomHeader.Text,
-                CustomFooterText = TxtCustomFooter.Text
+                CustomFooterText = TxtCustomFooter.Text,
+
+                // Logo
+                LogoPath = TxtLogoPath.Text,
+                LogoPosition = ((ComboBoxItem)CmbLogoPosition.SelectedItem)?.Tag?.ToString() ?? "TOP",
+                LogoWidth = int.TryParse(TxtLogoWidth.Text, out int logoWidth) ? logoWidth : 100,
+                LogoHeight = int.TryParse(TxtLogoHeight.Text, out int logoHeight) ? logoHeight : 100
             };
 
             return template;
@@ -224,6 +244,30 @@ namespace CertificateGenerator
                 else
                 {
                     PreviewBorder.BorderThickness = new Thickness(0);
+                }
+
+                // Logo na začiatku (TOP)
+                if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
+                    template.LogoPosition == "TOP" &&
+                    File.Exists(template.LogoPath))
+                {
+                    try
+                    {
+                        var logoImage = new System.Windows.Controls.Image
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(template.LogoPath, UriKind.Absolute)),
+                            Width = template.LogoWidth / 2.0,
+                            Height = template.LogoHeight / 2.0,
+                            Stretch = Stretch.Uniform,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            Margin = new Thickness(0, 0, 0, 10)
+                        };
+                        PreviewContent.Children.Add(logoImage);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Chyba pri zobrazení loga v náhľade: {ex.Message}");
+                    }
                 }
 
                 // Vlastný text v záhlaví
@@ -364,10 +408,35 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(footerBlock);
                 }
 
+                // Logo na konci (BOTTOM)
+                if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
+                    template.LogoPosition == "BOTTOM" &&
+                    File.Exists(template.LogoPath))
+                {
+                    try
+                    {
+                        var logoImage = new System.Windows.Controls.Image
+                        {
+                            Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(template.LogoPath, UriKind.Absolute)),
+                            Width = template.LogoWidth / 2.0,
+                            Height = template.LogoHeight / 2.0,
+                            Stretch = Stretch.Uniform,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            Margin = new Thickness(0, 15, 0, 10)
+                        };
+                        PreviewContent.Children.Add(logoImage);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Chyba pri zobrazení loga v náhľade: {ex.Message}");
+                    }
+                }
+
                 // Časová pečiatka
                 var timestamp = new TextBlock
                 {
-                    Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",
+                    //Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",  - toto nebolo potrebné
+                    Text = $"\nPočet kreditov za seminár: {NumberOfCredits}",
                     FontSize = template.TextFontSize - 1,
                     Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888888")),
                     TextAlignment = TextAlignment.Center,
@@ -609,6 +678,83 @@ namespace CertificateGenerator
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void SelectLogo_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var openDialog = new OpenFileDialog
+                {
+                    Filter = "Obrázkové súbory (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|Všetky súbory (*.*)|*.*",
+                    Title = "Vyberte logo/obrázok",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)
+                };
+
+                if (openDialog.ShowDialog() == true)
+                {
+                    TxtLogoPath.Text = openDialog.FileName;
+                    LoadLogoPreview(openDialog.FileName);
+                    UpdatePreview();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri výbere loga:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RemoveLogo_Click(object sender, RoutedEventArgs e)
+        {
+            TxtLogoPath.Text = "";
+            LogoPreviewBorder.Visibility = Visibility.Collapsed;
+            ImgLogoPreview.Source = null;
+            CmbLogoPosition.SelectedIndex = 2; // NONE
+            UpdatePreview();
+        }
+
+        private void LoadLogoPreview(string logoPath)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(logoPath) && File.Exists(logoPath))
+                {
+                    var bitmap = new System.Windows.Media.Imaging.BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(logoPath, UriKind.Absolute);
+                    bitmap.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+
+                    ImgLogoPreview.Source = bitmap;
+                    LogoPreviewBorder.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    LogoPreviewBorder.Visibility = Visibility.Collapsed;
+                    ImgLogoPreview.Source = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogoPreviewBorder.Visibility = Visibility.Collapsed;
+                ImgLogoPreview.Source = null;
+                System.Diagnostics.Debug.WriteLine($"Chyba pri načítaní náhľadu loga: {ex.Message}");
+            }
+        }
+
+        private void LogoSettingsChanged(object sender, RoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void LogoSettingsChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void LogoSettingsChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdatePreview();
+        }
     }
 }
-

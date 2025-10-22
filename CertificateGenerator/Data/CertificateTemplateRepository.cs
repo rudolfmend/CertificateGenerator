@@ -57,6 +57,8 @@ namespace CertificateGenerator.Data
                     ShowNotes INTEGER,
                     CustomHeaderText TEXT,
                     CustomFooterText TEXT,
+                    MainContentText TEXT,
+                    ShowMainContent INTEGER DEFAULT 1,
                     ShowBorder INTEGER,
                     BorderColor TEXT,
                     BorderWidth INTEGER,
@@ -78,6 +80,8 @@ namespace CertificateGenerator.Data
             }
         }
 
+        //ALTER TABLE CertificateTemplates ADD COLUMN MainContentText TEXT DEFAULT 'Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou.';
+        //ALTER TABLE CertificateTemplates ADD COLUMN ShowMainContent INTEGER DEFAULT 1;
         public int Add(CertificateTemplateModel template)
         {
             using (var connection = new SQLiteConnection(_connectionString))
@@ -94,6 +98,11 @@ namespace CertificateGenerator.Data
                     }
                 }
 
+                //UPDATE CertificateTemplates
+                //SET MainContentText = 'Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou.',
+                //    ShowMainContent = 1
+                //WHERE MainContentText IS NULL OR MainContentText = '';
+
                 string sql = @"INSERT INTO CertificateTemplates 
                     (Name, IsDefault, TitleColor, TextColor, AccentColor, BackgroundColor,
                      TitleFontFamily, TitleFontSize, HeaderFontFamily, HeaderFontSize,
@@ -102,7 +111,7 @@ namespace CertificateGenerator.Data
                      LogoPath, LogoPosition, LogoWidth, LogoHeight,
                      CertificateTitle, ShowTitle, ShowOrganizer, ShowEventTopic, ShowEventDate,
                      ShowBirthDate, ShowRegistrationNumber, ShowNotes,
-                     CustomHeaderText, CustomFooterText, ShowBorder, BorderColor, BorderWidth,
+                     CustomHeaderText, CustomFooterText, MainContentText, ShowMainContent, ShowBorder, BorderColor, BorderWidth,
                      LabelOrganizer, LabelEventTopic, LabelParticipant, LabelEventDate,
                      LabelBirthDate, LabelRegistrationNumber, LabelNotes, CreatedAt)
                     VALUES 
@@ -113,7 +122,7 @@ namespace CertificateGenerator.Data
                      @LogoPath, @LogoPosition, @LogoWidth, @LogoHeight,
                      @CertificateTitle, @ShowTitle, @ShowOrganizer, @ShowEventTopic, @ShowEventDate,
                      @ShowBirthDate, @ShowRegistrationNumber, @ShowNotes,
-                     @CustomHeaderText, @CustomFooterText, @ShowBorder, @BorderColor, @BorderWidth,
+                     @CustomHeaderText, @CustomFooterText, @MainContentText, @ShowMainContent, @ShowBorder, @BorderColor, @BorderWidth,
                      @LabelOrganizer, @LabelEventTopic, @LabelParticipant, @LabelEventDate,
                      @LabelBirthDate, @LabelRegistrationNumber, @LabelNotes, @CreatedAt);
                     SELECT last_insert_rowid();";
@@ -158,6 +167,7 @@ namespace CertificateGenerator.Data
                     ShowEventDate = @ShowEventDate, ShowBirthDate = @ShowBirthDate,
                     ShowRegistrationNumber = @ShowRegistrationNumber, ShowNotes = @ShowNotes,
                     CustomHeaderText = @CustomHeaderText, CustomFooterText = @CustomFooterText,
+                    MainContentText = @MainContentText, ShowMainContent = @ShowMainContent,
                     ShowBorder = @ShowBorder, BorderColor = @BorderColor, BorderWidth = @BorderWidth,
                     LabelOrganizer = @LabelOrganizer, LabelEventTopic = @LabelEventTopic,
                     LabelParticipant = @LabelParticipant, LabelEventDate = @LabelEventDate,
@@ -313,6 +323,8 @@ namespace CertificateGenerator.Data
             command.Parameters.AddWithValue("@ShowNotes", template.ShowNotes ? 1 : 0);
             command.Parameters.AddWithValue("@CustomHeaderText", template.CustomHeaderText ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("@CustomFooterText", template.CustomFooterText ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@MainContentText", template.MainContentText ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@ShowMainContent", template.ShowMainContent ? 1 : 0);
             command.Parameters.AddWithValue("@ShowBorder", template.ShowBorder ? 1 : 0);
             command.Parameters.AddWithValue("@BorderColor", template.BorderColor ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("@BorderWidth", template.BorderWidth);
@@ -364,6 +376,8 @@ namespace CertificateGenerator.Data
                 ShowNotes = Convert.ToInt32(reader["ShowNotes"]) == 1,
                 CustomHeaderText = reader["CustomHeaderText"] != DBNull.Value ? reader["CustomHeaderText"].ToString() : null,
                 CustomFooterText = reader["CustomFooterText"] != DBNull.Value ? reader["CustomFooterText"].ToString() : null,
+                MainContentText = reader["MainContentText"] != DBNull.Value ? reader["MainContentText"].ToString() : "Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou.",
+                ShowMainContent = reader["ShowMainContent"] != DBNull.Value ? Convert.ToInt32(reader["ShowMainContent"]) == 1 : true,
                 ShowBorder = Convert.ToInt32(reader["ShowBorder"]) == 1,
                 BorderColor = reader["BorderColor"]?.ToString(),
                 BorderWidth = Convert.ToInt32(reader["BorderWidth"]),

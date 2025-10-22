@@ -60,6 +60,10 @@ namespace CertificateGenerator.Data
         public string CustomHeaderText { get; set; }
         public string CustomFooterText { get; set; }
 
+        // Hlavný obsah certifikátu
+        public string MainContentText { get; set; } = "Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou.";
+        public bool ShowMainContent { get; set; } = true;
+
         // Štýl rámčeka
         public bool ShowBorder { get; set; } = false;
         public string BorderColor { get; set; } = "#000000";

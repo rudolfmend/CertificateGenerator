@@ -1,7 +1,9 @@
 ﻿using CertificateGenerator.Data;
 using CertificateGenerator.Helpers;
 using iText.Kernel.Geom;
+using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,12 +31,6 @@ namespace CertificateGenerator
             InitializeRepositories();
         }
 
-        //private void InitializeDefaults()
-        //{
-        //    // Set default paper format
-        //    CmbPaperFormat.SelectedIndex = 2; // A5 as default
-        //}
-
         private void InitializeRepositories()
         {
             try
@@ -44,7 +40,7 @@ namespace CertificateGenerator
                 _organizerRepo = new OrganizerRepository(dbManager);
                 _topicRepo = new EventTopicRepository(dbManager);
                 _certificateRepo = new CertificateRepository(dbManager);
-                _templateRepo = new CertificateTemplateRepository(dbManager);            
+                _templateRepo = new CertificateTemplateRepository(dbManager);
             }
             catch (Exception ex)
             {
@@ -52,17 +48,6 @@ namespace CertificateGenerator
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        // ========== MAIN ACTION ==========
-
-        //private void OpenBulkGeneration_Click(object sender, RoutedEventArgs e)
-        //{
-        //    var bulkWindow = new BulkGenerationWindow(
-        //        TxtEventOrganizer.Text,
-        //        CmbPaperFormat.SelectedIndex
-        //    );
-        //    bulkWindow.ShowDialog();
-        //}
 
         private void OpenBulkGeneration_Click(object sender, RoutedEventArgs e)
         {
@@ -328,7 +313,7 @@ namespace CertificateGenerator
 
         private string SanitizeFileName(string fileName)
         {
-            foreach (char c in IOPath.GetInvalidFileNameChars())
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
             {
                 fileName = fileName.Replace(c, '_');
             }
@@ -414,7 +399,7 @@ namespace CertificateGenerator
             templateEditor.Owner = this;
             templateEditor.ShowDialog();
         }
-    
+
 
         // ========== MANAGEMENT WINDOWS ==========
 
@@ -464,6 +449,21 @@ namespace CertificateGenerator
         {
             MessageBox.Show("Okno histórie certifikátov bude implementované v ďalšej verzii.",
                 "Pripravované", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void OpenTemplateEditor_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var templateEditor = new TemplateEditorWindow();
+                templateEditor.Owner = this;
+                templateEditor.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri otváraní editora šablón:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
