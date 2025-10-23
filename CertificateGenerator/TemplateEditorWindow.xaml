@@ -78,6 +78,87 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Texty polí (Labels) -->
+                <Border Style="{StaticResource Card}" 
+        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="🏷️ Texty polí (Labels)" 
+               Style="{StaticResource ModernLabel}"
+               FontSize="15"
+               FontWeight="Bold"
+               Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,5,0">
+                                <Label Content="Organizátor:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelOrganizer" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Organizátor:"
+                         Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,0,0,0">
+                                <Label Content="Téma podujatia:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelEventTopic" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Téma podujatia:"
+                         Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,5,0">
+                                <Label Content="Účastník:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelParticipant" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Účastník:"
+                         Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
+                                <Label Content="Dátum podujatia:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelEventDate" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Dátum podujatia:"
+                         Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,5,0">
+                                <Label Content="Dátum narodenia:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelBirthDate" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Dátum narodenia:"
+                         Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="5,0,0,0">
+                                <Label Content="Reg. číslo:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelRegistrationNumber" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Registračné číslo v komore:"
+                         Margin="0,0,0,10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,0,5,0">
+                                <Label Content="Poznámky:" Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtLabelNotes" 
+                         Style="{StaticResource ModernTextBox}"
+                         Text="Poznámky:"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+
                 <!-- Výber šablóny -->
                 <Border Style="{StaticResource Card}" 
                         Margin="0,0,0,15">

@@ -19,12 +19,13 @@ namespace CertificateGenerator
 
         public TemplateEditorWindow()
         {
-            _isLoading = true; 
+            _isLoading = true;
+            _currentTemplate = null;
             InitializeComponent();
             InitializeRepositories();
             LoadTemplates();
             LoadNewTemplate();
-            _isLoading = false; 
+            _isLoading = false;
         }
 
         private void InitializeRepositories()
@@ -130,10 +131,19 @@ namespace CertificateGenerator
                 TxtCustomHeader.Text = template.CustomHeaderText ?? "";
                 TxtCustomFooter.Text = template.CustomFooterText ?? "";
 
-                // Hlavný obsah certifikátu
+                // Hlavný obsah
                 TxtMainContent.Text = template.MainContentText ?? "Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou.";
                 ChkShowMainContent.IsChecked = template.ShowMainContent;
-                TxtNumberOfCredits.Text = "0"; // alebo z template pridať pole
+                TxtNumberOfCredits.Text = "0";
+
+                // Labels
+                TxtLabelOrganizer.Text = template.LabelOrganizer ?? "Organizátor:";
+                TxtLabelEventTopic.Text = template.LabelEventTopic ?? "Téma podujatia:";
+                TxtLabelParticipant.Text = template.LabelParticipant ?? "Účastník:";
+                TxtLabelEventDate.Text = template.LabelEventDate ?? "Dátum podujatia:";
+                TxtLabelBirthDate.Text = template.LabelBirthDate ?? "Dátum narodenia:";
+                TxtLabelRegistrationNumber.Text = template.LabelRegistrationNumber ?? "Registračné číslo v komore:";
+                TxtLabelNotes.Text = template.LabelNotes ?? "Poznámky:";
 
                 // Logo
                 TxtLogoPath.Text = template.LogoPath ?? "";
@@ -160,74 +170,83 @@ namespace CertificateGenerator
 
         private CertificateTemplateModel GetTemplateFromUI()
         {
-            // Pridaj túto kontrolu
+            // Kontrola UI elementov
             if (TxtTemplateName == null || CmbTitleAlignment == null ||
                 CmbSeparatorStyle == null || CmbLogoPosition == null)
             {
-                return _currentTemplate ?? DefaultTemplates.Classic;
+                return DefaultTemplates.Classic;
             }
 
             var template = new CertificateTemplateModel
             {
-                Id = _currentTemplate?.Id ?? 0,
-                Name = TxtTemplateName.Text,
-                IsDefault = ChkIsDefault.IsChecked == true,
+                Id = (_currentTemplate != null) ? _currentTemplate.Id : 0,
+                Name = TxtTemplateName?.Text ?? "Nová šablóna",
+                IsDefault = ChkIsDefault?.IsChecked == true,
 
                 // Farby
-                TitleColor = TxtTitleColor.Text,
-                TextColor = TxtTextColor.Text,
-                AccentColor = TxtAccentColor.Text,
-                BackgroundColor = TxtBackgroundColor.Text,
+                TitleColor = TxtTitleColor?.Text ?? "#000000",
+                TextColor = TxtTextColor?.Text ?? "#000000",
+                AccentColor = TxtAccentColor?.Text ?? "#2563EB",
+                BackgroundColor = TxtBackgroundColor?.Text ?? "#FFFFFF",
 
                 // Písma
                 TitleFontFamily = "Helvetica-Bold",
-                TitleFontSize = int.TryParse(TxtTitleFontSize.Text, out int titleSize) ? titleSize : 20,
+                TitleFontSize = int.TryParse(TxtTitleFontSize?.Text, out int titleSize) ? titleSize : 20,
                 HeaderFontFamily = "Helvetica-Bold",
-                HeaderFontSize = int.TryParse(TxtHeaderFontSize.Text, out int headerSize) ? headerSize : 12,
+                HeaderFontSize = int.TryParse(TxtHeaderFontSize?.Text, out int headerSize) ? headerSize : 12,
                 TextFontFamily = "Helvetica",
-                TextFontSize = int.TryParse(TxtTextFontSize.Text, out int textSize) ? textSize : 10,
+                TextFontSize = int.TryParse(TxtTextFontSize?.Text, out int textSize) ? textSize : 10,
 
                 // Okraje
-                MarginTop = int.TryParse(TxtMarginTop.Text, out int marginTop) ? marginTop : 30,
-                MarginRight = int.TryParse(TxtMarginRight.Text, out int marginRight) ? marginRight : 30,
-                MarginBottom = int.TryParse(TxtMarginBottom.Text, out int marginBottom) ? marginBottom : 30,
-                MarginLeft = int.TryParse(TxtMarginLeft.Text, out int marginLeft) ? marginLeft : 30,
+                MarginTop = int.TryParse(TxtMarginTop?.Text, out int marginTop) ? marginTop : 30,
+                MarginRight = int.TryParse(TxtMarginRight?.Text, out int marginRight) ? marginRight : 30,
+                MarginBottom = int.TryParse(TxtMarginBottom?.Text, out int marginBottom) ? marginBottom : 30,
+                MarginLeft = int.TryParse(TxtMarginLeft?.Text, out int marginLeft) ? marginLeft : 30,
 
                 // Titulok
-                ShowTitle = ChkShowTitle.IsChecked == true,
-                CertificateTitle = TxtCertificateTitle.Text,
-                TitleAlignment = ((ComboBoxItem)CmbTitleAlignment.SelectedItem)?.Tag?.ToString() ?? "CENTER",
+                ShowTitle = ChkShowTitle?.IsChecked == true,
+                CertificateTitle = TxtCertificateTitle?.Text ?? "CERTIFIKÁT O ABSOLVOVANÍ",
+                TitleAlignment = ((ComboBoxItem)CmbTitleAlignment?.SelectedItem)?.Tag?.ToString() ?? "CENTER",
 
                 // Oddeľovač
-                ShowSeparatorLine = ChkShowSeparator.IsChecked == true,
-                SeparatorStyle = ((ComboBoxItem)CmbSeparatorStyle.SelectedItem)?.Tag?.ToString() ?? "UNDERLINE",
+                ShowSeparatorLine = ChkShowSeparator?.IsChecked == true,
+                SeparatorStyle = ((ComboBoxItem)CmbSeparatorStyle?.SelectedItem)?.Tag?.ToString() ?? "UNDERLINE",
 
                 // Rámček
-                ShowBorder = ChkShowBorder.IsChecked == true,
-                BorderColor = TxtBorderColor.Text,
-                BorderWidth = int.TryParse(TxtBorderWidth.Text, out int borderWidth) ? borderWidth : 2,
+                ShowBorder = ChkShowBorder?.IsChecked == true,
+                BorderColor = TxtBorderColor?.Text ?? "#000000",
+                BorderWidth = int.TryParse(TxtBorderWidth?.Text, out int borderWidth) ? borderWidth : 2,
 
                 // Viditeľnosť
-                ShowOrganizer = ChkShowOrganizer.IsChecked == true,
-                ShowEventTopic = ChkShowEventTopic.IsChecked == true,
-                ShowEventDate = ChkShowEventDate.IsChecked == true,
-                ShowBirthDate = ChkShowBirthDate.IsChecked == true,
-                ShowRegistrationNumber = ChkShowRegistrationNumber.IsChecked == true,
-                ShowNotes = ChkShowNotes.IsChecked == true,
+                ShowOrganizer = ChkShowOrganizer?.IsChecked == true,
+                ShowEventTopic = ChkShowEventTopic?.IsChecked == true,
+                ShowEventDate = ChkShowEventDate?.IsChecked == true,
+                ShowBirthDate = ChkShowBirthDate?.IsChecked == true,
+                ShowRegistrationNumber = ChkShowRegistrationNumber?.IsChecked == true,
+                ShowNotes = ChkShowNotes?.IsChecked == true,
 
                 // Vlastný text
-                CustomHeaderText = TxtCustomHeader.Text,
-                CustomFooterText = TxtCustomFooter.Text,
+                CustomHeaderText = TxtCustomHeader?.Text,
+                CustomFooterText = TxtCustomFooter?.Text,
 
-                // Hlavný obsah certifikátu
-                MainContentText = TxtMainContent.Text,
-                ShowMainContent = ChkShowMainContent.IsChecked == true,
+                // Hlavný obsah
+                MainContentText = TxtMainContent?.Text,
+                ShowMainContent = ChkShowMainContent?.IsChecked == true,
+
+                // Labels
+                LabelOrganizer = TxtLabelOrganizer?.Text ?? "Organizátor:",
+                LabelEventTopic = TxtLabelEventTopic?.Text ?? "Téma podujatia:",
+                LabelParticipant = TxtLabelParticipant?.Text ?? "Účastník:",
+                LabelEventDate = TxtLabelEventDate?.Text ?? "Dátum podujatia:",
+                LabelBirthDate = TxtLabelBirthDate?.Text ?? "Dátum narodenia:",
+                LabelRegistrationNumber = TxtLabelRegistrationNumber?.Text ?? "Registračné číslo v komore:",
+                LabelNotes = TxtLabelNotes?.Text ?? "Poznámky:",
 
                 // Logo
-                LogoPath = TxtLogoPath.Text,
-                LogoPosition = ((ComboBoxItem)CmbLogoPosition.SelectedItem)?.Tag?.ToString() ?? "TOP",
-                LogoWidth = int.TryParse(TxtLogoWidth.Text, out int logoWidth) ? logoWidth : 100,
-                LogoHeight = int.TryParse(TxtLogoHeight.Text, out int logoHeight) ? logoHeight : 100
+                LogoPath = TxtLogoPath?.Text,
+                LogoPosition = ((ComboBoxItem)CmbLogoPosition?.SelectedItem)?.Tag?.ToString() ?? "TOP",
+                LogoWidth = int.TryParse(TxtLogoWidth?.Text, out int logoWidth) ? logoWidth : 100,
+                LogoHeight = int.TryParse(TxtLogoHeight?.Text, out int logoHeight) ? logoHeight : 100
             };
 
             return template;
@@ -235,7 +254,7 @@ namespace CertificateGenerator
 
         private void UpdatePreview()
         {
-            if (_isLoading) return;
+            if (_isLoading || TxtTemplateName == null) return;
 
             try
             {
@@ -351,19 +370,19 @@ namespace CertificateGenerator
                 // Organizátor
                 if (template.ShowOrganizer)
                 {
-                    AddPreviewField("Organizátor: Slovenská komora medicínsko-technických pracovníkov",
+                    AddPreviewField($"{template.LabelOrganizer} Slovenská komora medicínsko-technických pracovníkov",
                         template.TextFontSize + 1, template.TextColor, false);
                 }
 
                 // Téma podujatia
                 if (template.ShowEventTopic)
                 {
-                    AddPreviewField("Téma podujatia: Moderné trendy v zdravotníctve",
+                    AddPreviewField($"{template.LabelEventTopic} Moderné trendy v zdravotníctve",
                         template.HeaderFontSize, template.AccentColor, true);
                 }
 
                 // Účastník
-                AddPreviewField("Účastník: Ing. Ján Novák",
+                AddPreviewField($"{template.LabelParticipant} Ing. Ján Novák",
                     template.HeaderFontSize + 2, template.TitleColor, true);
 
                 // Hlavný obsah
@@ -381,8 +400,29 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(mainContent);
                 }
 
+                // Dátum podujatia
+                if (template.ShowEventDate)
+                {
+                    AddPreviewField($"{template.LabelEventDate} 15.03.2025",
+                        template.TextFontSize, template.TextColor, false);
+                }
+
+                // Dátum narodenia
+                if (template.ShowBirthDate)
+                {
+                    AddPreviewField($"{template.LabelBirthDate} 01.01.1990",
+                        template.TextFontSize, template.TextColor, false);
+                }
+
+                // Registračné číslo
+                if (template.ShowRegistrationNumber)
+                {
+                    AddPreviewField($"{template.LabelRegistrationNumber} 12345",
+                        template.TextFontSize, template.TextColor, false);
+                }
+
                 // Kredity
-                if (!string.IsNullOrWhiteSpace(TxtNumberOfCredits.Text) && TxtNumberOfCredits.Text != "0")
+                if (!string.IsNullOrWhiteSpace(TxtNumberOfCredits?.Text) && TxtNumberOfCredits.Text != "0")
                 {
                     var credits = new TextBlock
                     {
@@ -395,33 +435,12 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(credits);
                 }
 
-                // Dátum podujatia
-                if (template.ShowEventDate)
-                {
-                    AddPreviewField("Dátum podujatia: 15.03.2025",
-                        template.TextFontSize, template.TextColor, false);
-                }
-
-                // Dátum narodenia
-                if (template.ShowBirthDate)
-                {
-                    AddPreviewField("Dátum narodenia: 01.01.1990",
-                        template.TextFontSize, template.TextColor, false);
-                }
-
-                // Registračné číslo
-                if (template.ShowRegistrationNumber)
-                {
-                    AddPreviewField("Registračné číslo v komore: 12345",
-                        template.TextFontSize, template.TextColor, false);
-                }
-
                 // Poznámky
                 if (template.ShowNotes)
                 {
                     var notesLabel = new TextBlock
                     {
-                        Text = "Poznámky:",
+                        Text = template.LabelNotes,
                         FontSize = template.TextFontSize + 1,
                         FontWeight = FontWeights.Bold,
                         Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(template.TextColor)),
@@ -482,8 +501,7 @@ namespace CertificateGenerator
                 // Časová pečiatka
                 var timestamp = new TextBlock
                 {
-                    //Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",  -  časová pečiatka nepatrí do certifikátu
-                    Text = $"\nPočet kreditov za seminár: {NumberOfCredits}",
+                    Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",
                     FontSize = template.TextFontSize - 1,
                     Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888888")),
                     TextAlignment = TextAlignment.Center,
@@ -522,16 +540,6 @@ namespace CertificateGenerator
             }
         }
 
-        private void MainContentChanged(object sender, RoutedEventArgs e)
-        {
-            UpdatePreview();
-        }
-
-        private void MainContentChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdatePreview();
-        }
-
         private void ColorChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePreview();
@@ -548,6 +556,11 @@ namespace CertificateGenerator
         }
 
         private void BorderSettingsChanged(object sender, RoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void BorderSettingsChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePreview();
         }
@@ -583,6 +596,16 @@ namespace CertificateGenerator
         }
 
         private void CustomTextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void MainContentChanged(object sender, RoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void MainContentChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePreview();
         }
