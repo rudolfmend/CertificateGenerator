@@ -1,8 +1,8 @@
-﻿<Window x:Class="CertificateGenerator.TemplateEditorWindow"
+﻿<Window x:Name="TemplateEditorWindow1" x:Class="CertificateGenerator.TemplateEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Editor šablón certifikátov" 
-        Height="850" 
+        Height="1850" 
         Width="1400"
         FontSize="14"
         WindowStartupLocation="CenterScreen"
@@ -39,6 +39,42 @@
                                    FontSize="12"
                                    Foreground="{StaticResource TextSecondaryColor}"
                                    HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Hlavný obsah certifikátu -->
+                <Border Style="{StaticResource Card}" 
+        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="📄 Hlavný obsah certifikátu" 
+               Style="{StaticResource ModernLabel}"
+               FontSize="15"
+               FontWeight="Bold"
+               Margin="0,0,0,10"/>
+
+                        <CheckBox x:Name="ChkShowMainContent" 
+                  Content="Zobraziť hlavný text"
+                  IsChecked="True"
+                  Margin="0,0,0,10"
+                  Checked="MainContentChanged"
+                  Unchecked="MainContentChanged"/>
+
+                        <Label Content="Text hlavného obsahu:" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtMainContent" 
+                 Style="{StaticResource ModernTextBox}"
+                 Height="80"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto"
+                 Text="Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou."
+                 TextChanged="MainContentChanged"
+                 Margin="0,0,0,10"/>
+
+                        <Label Content="Počet kreditov za seminár:" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtNumberOfCredits" 
+                 Style="{StaticResource ModernTextBox}"
+                 Text="0"
+                 TextChanged="MainContentChanged"/>
                     </StackPanel>
                 </Border>
 

@@ -69,6 +69,18 @@ namespace CertificateGenerator.Helpers
                     AddLogo(document, template, HorizontalAlignment.CENTER);
                 }
 
+                // Hlavný obsah certifikátu
+                if (template.ShowMainContent && !string.IsNullOrWhiteSpace(template.MainContentText))
+                {
+                    document.Add(new Paragraph(template.MainContentText)
+                        .SetFont(textFont)
+                        .SetFontSize(template.TextFontSize)
+                        .SetFontColor(textColor)
+                        .SetTextAlignment(TextAlignment.JUSTIFIED)
+                        .SetMarginTop(15)
+                        .SetMarginBottom(15));
+                }
+
                 // Vlastný text v záhlaví
                 if (!string.IsNullOrWhiteSpace(template.CustomHeaderText))
                 {

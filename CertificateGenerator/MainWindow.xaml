@@ -12,16 +12,16 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Top Menu Bar -->
         <Border Grid.Row="0"
-        Background="{StaticResource SurfaceColor}"
-        BorderBrush="{StaticResource BorderColor}"
-        BorderThickness="0,0,0,1"
-        Padding="20,10">
+                Background="{StaticResource SurfaceColor}"
+                BorderBrush="{StaticResource BorderColor}"
+                BorderThickness="0,0,0,1"
+                Padding="20,10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -55,7 +55,7 @@
                 </StackPanel>
 
                 <!-- Pravá strana: menu -->
-                <Menu Grid.Column="1"
+                <Menu Grid.Column="2"
               Background="Transparent"
               Foreground="{StaticResource TextPrimaryColor}"
               HorizontalAlignment="Right"
@@ -74,7 +74,7 @@
         <!-- Main Content -->
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto"
-                      Padding="40,30">
+                      Padding="15,25">
             <StackPanel >
 
                 <!-- Main Action - Certificate Generation -->

@@ -19,10 +19,12 @@ namespace CertificateGenerator
 
         public TemplateEditorWindow()
         {
+            _isLoading = true; 
             InitializeComponent();
             InitializeRepositories();
             LoadTemplates();
             LoadNewTemplate();
+            _isLoading = false; 
         }
 
         private void InitializeRepositories()
@@ -128,6 +130,11 @@ namespace CertificateGenerator
                 TxtCustomHeader.Text = template.CustomHeaderText ?? "";
                 TxtCustomFooter.Text = template.CustomFooterText ?? "";
 
+                // Hlavný obsah certifikátu
+                TxtMainContent.Text = template.MainContentText ?? "Potvrdzujeme, že uvedený účastník sa zúčastnil na odbornom seminári organizovanom našou inštitúciou.";
+                ChkShowMainContent.IsChecked = template.ShowMainContent;
+                TxtNumberOfCredits.Text = "0"; // alebo z template pridať pole
+
                 // Logo
                 TxtLogoPath.Text = template.LogoPath ?? "";
                 TxtLogoWidth.Text = template.LogoWidth.ToString();
@@ -153,6 +160,13 @@ namespace CertificateGenerator
 
         private CertificateTemplateModel GetTemplateFromUI()
         {
+            // Pridaj túto kontrolu
+            if (TxtTemplateName == null || CmbTitleAlignment == null ||
+                CmbSeparatorStyle == null || CmbLogoPosition == null)
+            {
+                return _currentTemplate ?? DefaultTemplates.Classic;
+            }
+
             var template = new CertificateTemplateModel
             {
                 Id = _currentTemplate?.Id ?? 0,
@@ -204,6 +218,10 @@ namespace CertificateGenerator
                 // Vlastný text
                 CustomHeaderText = TxtCustomHeader.Text,
                 CustomFooterText = TxtCustomFooter.Text,
+
+                // Hlavný obsah certifikátu
+                MainContentText = TxtMainContent.Text,
+                ShowMainContent = ChkShowMainContent.IsChecked == true,
 
                 // Logo
                 LogoPath = TxtLogoPath.Text,
@@ -348,6 +366,35 @@ namespace CertificateGenerator
                 AddPreviewField("Účastník: Ing. Ján Novák",
                     template.HeaderFontSize + 2, template.TitleColor, true);
 
+                // Hlavný obsah
+                if (template.ShowMainContent && !string.IsNullOrWhiteSpace(template.MainContentText))
+                {
+                    var mainContent = new TextBlock
+                    {
+                        Text = template.MainContentText,
+                        FontSize = template.TextFontSize,
+                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(template.TextColor)),
+                        TextWrapping = TextWrapping.Wrap,
+                        TextAlignment = TextAlignment.Justify,
+                        Margin = new Thickness(0, 15, 0, 15)
+                    };
+                    PreviewContent.Children.Add(mainContent);
+                }
+
+                // Kredity
+                if (!string.IsNullOrWhiteSpace(TxtNumberOfCredits.Text) && TxtNumberOfCredits.Text != "0")
+                {
+                    var credits = new TextBlock
+                    {
+                        Text = $"Počet kreditov: {TxtNumberOfCredits.Text}",
+                        FontSize = template.TextFontSize,
+                        FontWeight = FontWeights.Bold,
+                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(template.AccentColor)),
+                        Margin = new Thickness(0, 10, 0, 10)
+                    };
+                    PreviewContent.Children.Add(credits);
+                }
+
                 // Dátum podujatia
                 if (template.ShowEventDate)
                 {
@@ -435,7 +482,7 @@ namespace CertificateGenerator
                 // Časová pečiatka
                 var timestamp = new TextBlock
                 {
-                    //Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",  - toto nebolo potrebné
+                    //Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",  -  časová pečiatka nepatrí do certifikátu
                     Text = $"\nPočet kreditov za seminár: {NumberOfCredits}",
                     FontSize = template.TextFontSize - 1,
                     Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888888")),
@@ -473,6 +520,16 @@ namespace CertificateGenerator
             {
                 LoadTemplateToUI(template);
             }
+        }
+
+        private void MainContentChanged(object sender, RoutedEventArgs e)
+        {
+            UpdatePreview();
+        }
+
+        private void MainContentChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdatePreview();
         }
 
         private void ColorChanged(object sender, TextChangedEventArgs e)
