@@ -1,0 +1,208 @@
+﻿<Window x:Class="CertificateGenerator.QuickGenerationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Rýchle vytvorenie certifikátu" 
+        Height="750" 
+        Width="600"
+        FontSize="14"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="{StaticResource BackgroundColor}">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20" Padding="0,0,0,10"
+                MaxHeight="160">
+            <StackPanel>
+                <TextBlock Text="⚡" 
+                           FontSize="42"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,0"/>
+                <TextBlock Text="Rýchle vytvorenie certifikátu" 
+                           FontSize="20"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryColor}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="Vyplňte údaje a vygenerujte PDF certifikát" 
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondaryColor}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      Margin="0,0,0,20">
+            <StackPanel>
+
+                <!-- Event Info -->
+                <Border Style="{StaticResource Card}" 
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="📋 Údaje o podujatí"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,15"/>
+
+                        <!-- Organizer -->
+                        <Label Content="Organizátor:" Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtOrganizer" 
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Margin="0,0,5,0"/>
+                            <Button Grid.Column="1"
+                                    Content="📋"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Width="88"   Height="44"
+                                    ToolTip="Vybrať uložené"
+                                    Click="SelectOrganizer_Click"/>
+                        </Grid>
+
+                        <!-- Event Topic -->
+                        <Label Content="Téma podujatia:" Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtEventTopic" 
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Margin="0,0,5,0"/>
+                            <Button Grid.Column="1"
+                                    Content="📋"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Width="88"   Height="44"
+                                    ToolTip="Vybrať uložené"
+                                    Click="SelectEventTopic_Click"/>
+                        </Grid>
+
+                        <!-- Event Date -->
+                        <Label Content="Dátum podujatia:" Style="{StaticResource ModernLabel}"/>
+                        <DatePicker x:Name="DtpEventDate" 
+                                    Style="{StaticResource ModernDatePicker}"
+                                    SelectedDateFormat="Short"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Participant Info -->
+                <Border Style="{StaticResource Card}" 
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="👤 Údaje účastníka"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,15"/>
+
+                        <!-- Participant Name -->
+                        <Label Content="Meno a priezvisko *:" Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtParticipantName" 
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Background="{StaticResource InputBackground}"
+                                     Margin="0,0,5,0"/>
+                            <Button Grid.Column="1"
+                                    Content="📋"
+                                    Style="{StaticResource SecondaryButton}"
+                                    Width="88"  Height="44"
+                                    ToolTip="Vybrať uložené"
+                                    Click="SelectParticipant_Click"/>
+                        </Grid>
+
+                        <!-- Birth Date -->
+                        <Label Content="Dátum narodenia:" Style="{StaticResource ModernLabel}"/>
+                        <DatePicker x:Name="DtpBirthDate" 
+                                    Style="{StaticResource ModernDatePicker}"
+                                    SelectedDateFormat="Short"
+                                    Margin="0,0,0,15"/>
+
+                        <!-- Registration Number -->
+                        <Label Content="Registračné číslo v komore:" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtRegistrationNumber" 
+                                 Style="{StaticResource ModernTextBox}"
+                                 Margin="0,0,0,15"/>
+
+                        <!-- Notes -->
+                        <Label Content="Poznámky:" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtNotes" 
+                                 Style="{StaticResource ModernTextBox}"
+                                 Height="80" 
+                                 TextWrapping="Wrap" 
+                                 AcceptsReturn="True" 
+                                 VerticalScrollBarVisibility="Auto"
+                                 Padding="12,10"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Paper Format -->
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Label Content="📄 Formát papiera"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+                        <ComboBox x:Name="CmbPaperFormat"
+                                  Style="{StaticResource ModernComboBox}"
+                                  SelectedIndex="2">
+                            <ComboBoxItem Content="A3 (297 × 420 mm)"/>
+                            <ComboBoxItem Content="A4 (210 × 297 mm)"/>
+                            <ComboBoxItem Content="A5 (148 × 210 mm)"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center">
+            <Button Content="📄 Vytvoriť PDF" 
+                    Style="{StaticResource SuccessButton}"
+                    Padding="20,14"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Margin="0,0,15,0"
+                    Click="GeneratePdf_Click"/>
+            <Button Content="🗑️ Vyčistiť" 
+                    Style="{StaticResource SecondaryButton}"
+                    Padding="20,14"
+                    FontSize="15"
+                    Margin="0,0,15,0"
+                    Click="ClearForm_Click"/>
+            <Button Content="Hromadné vytváranie" 
+                    Style="{StaticResource SecondaryButton}"
+                    FontSize="15"
+                    Margin="0,0,15,0"
+                    Click="OpenBulkGenerationWindow" />
+            <Button Content="Editor certifikátov" 
+                    Style="{StaticResource SecondaryButton}"
+                    FontSize="15"
+                    Click="OpenTemplateEditor_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

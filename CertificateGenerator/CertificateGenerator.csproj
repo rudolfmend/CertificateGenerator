@@ -163,6 +163,9 @@
     <Compile Include="Data\CertificateTemplateModel.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
+    <Compile Include="QuickGenerationWindow.xaml.cs">
+      <DependentUpon>QuickGenerationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Selecteventtopicwindow.xaml.cs">
       <DependentUpon>Selecteventtopicwindow.xaml</DependentUpon>
     </Compile>
@@ -222,6 +225,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PrivacyPolicyWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="QuickGenerationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -270,181 +270,26 @@
 
                     <!-- Quick Certificate Form Card -->
                     <Border Style="{StaticResource Card}" 
-                            Margin="10,10,0,0">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                                      MaxHeight="48">
-                            <StackPanel>
-                                <TextBlock Text="⚡" 
-                                           FontSize="32"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,0,0,8"/>
-                                <TextBlock Text="Rýchle vytvorenie" 
-                                           FontSize="15"
-                                           FontWeight="Bold"
-                                           Foreground="{StaticResource TextPrimaryColor}"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,0,0,6"/>
-                                <TextBlock Text="Vytvorte jeden certifikát" 
-                                           FontSize="11"
-                                           Foreground="{StaticResource TextSecondaryColor}"
-                                           TextWrapping="Wrap"
-                                           TextAlignment="Center"
-                                           Margin="0,0,0,12"/>
-
-                                <!-- Compact Form -->
-                                <StackPanel Margin="0,5,0,0">
-                                    <!-- Organizer -->
-                                    <Label Content="Organizátor:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <TextBox x:Name="TxtEventOrganizer" 
-                                             Style="{StaticResource ModernTextBox}"
-                                             Height="28"
-                                             FontSize="11"
-                                             Padding="8,4"
-                                             Margin="0,0,0,6">
-                                        <TextBox.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="💾 Uložiť" Click="SaveOrganizer_Click"/>
-                                                <Separator/>
-                                                <MenuItem Header="📋 Vybrať" Click="BtnEventOrganizer_Click"/>
-                                            </ContextMenu>
-                                        </TextBox.ContextMenu>
-                                    </TextBox>
-
-                                    <!-- Event Topic -->
-                                    <Label Content="Téma:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <TextBox x:Name="TxtEventTopic" 
-                                             Style="{StaticResource ModernTextBox}"
-                                             Height="28"
-                                             FontSize="11"
-                                             Padding="8,4"
-                                             Margin="0,0,0,6">
-                                        <TextBox.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="💾 Uložiť" Click="SaveEventTopic_Click"/>
-                                                <Separator/>
-                                                <MenuItem Header="📋 Vybrať" Click="BtnEventTheme_Click"/>
-                                            </ContextMenu>
-                                        </TextBox.ContextMenu>
-                                    </TextBox>
-
-                                    <!-- Event Date -->
-                                    <Label Content="Dátum podujatia:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <DatePicker x:Name="DtpEventDate" 
-                                                Style="{StaticResource ModernDatePicker}"
-                                                Height="28"
-                                                FontSize="11"
-                                                SelectedDateFormat="Short"
-                                                Margin="0,0,0,6"/>
-
-                                    <!-- Participant Name -->
-                                    <Label Content="👤 Účastník:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           FontWeight="Bold"
-                                           Foreground="{StaticResource PrimaryColor}"
-                                           Margin="0,3,0,2"/>
-                                    <TextBox x:Name="TxtParticipantName" 
-                                             Style="{StaticResource ModernTextBox}"
-                                             Height="28"
-                                             FontSize="11"
-                                             Padding="8,4"
-                                             Background="{StaticResource InputBackground}"
-                                             Margin="0,0,0,6">
-                                        <TextBox.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="💾 Uložiť" Click="SaveParticipant_Click"/>
-                                                <Separator/>
-                                                <MenuItem Header="📋 Vybrať" Click="BtnParticipants_Click"/>
-                                            </ContextMenu>
-                                        </TextBox.ContextMenu>
-                                    </TextBox>
-
-                                    <!-- Birth Date -->
-                                    <Label Content="Dátum narodenia:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <DatePicker x:Name="DtpBirthDate" 
-                                                Style="{StaticResource ModernDatePicker}"
-                                                Height="28"
-                                                FontSize="11"
-                                                SelectedDateFormat="Short"
-                                                Margin="0,0,0,6"/>
-
-                                    <!-- Registration Number -->
-                                    <Label Content="Reg. číslo:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <TextBox x:Name="TxtRegistrationNumber" 
-                                             Style="{StaticResource ModernTextBox}"
-                                             Height="28"
-                                             FontSize="11"
-                                             Padding="8,4"
-                                             Margin="0,0,0,6"/>
-
-                                    <!-- Notes -->
-                                    <Label Content="Poznámky:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <TextBox x:Name="TxtNotes" 
-                                             Style="{StaticResource ModernTextBox}"
-                                             Height="50"
-                                             FontSize="11"
-                                             TextWrapping="Wrap" 
-                                             AcceptsReturn="True"
-                                             VerticalScrollBarVisibility="Auto"
-                                             Padding="8,4"
-                                             Margin="0,0,0,6"/>
-
-                                    <!-- Paper Format -->
-                                    <Label Content="Formát:" 
-                                           Style="{StaticResource ModernLabel}"
-                                           FontSize="11"
-                                           Margin="0,0,0,2"/>
-                                    <ComboBox x:Name="CmbPaperFormat"
-                                              Style="{StaticResource ModernComboBox}"
-                                              Height="28"
-                                              FontSize="11"
-                                              SelectedIndex="2"
-                                              Margin="0,0,0,10">
-                                        <ComboBoxItem Content="A3"/>
-                                        <ComboBoxItem Content="A4"/>
-                                        <ComboBoxItem Content="A5"/>
-                                    </ComboBox>
-
-                                    <!-- Action Buttons -->
-                                    <StackPanel Orientation="Horizontal" 
-                                                HorizontalAlignment="Center"
-                                                Margin="0,5,0,0">
-                                        <Button Content="🗑️" 
-                                                ToolTip="Vyčistiť"
-                                                Style="{StaticResource SecondaryButton}"
-                                                Width="60"
-                                                Height="28"
-                                                FontSize="14"
-                                                Margin="0,0,6,0" 
-                                                Click="ClearForm_Click"/>
-                                        <Button Content="📄 PDF" 
-                                                ToolTip="Generuj PDF"
-                                                Style="{StaticResource SuccessButton}"
-                                                Width="100"
-                                                FontSize="11"
-                                                Click="GeneratePdf_Click"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </ScrollViewer>
+                            Margin="10,10,0,0"
+                            MouseLeftButtonDown="QuickGeneratePdf_Click">
+                    <StackPanel>
+                        <TextBlock Text="⚡" 
+                                    FontSize="32"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,8"/>
+                        <TextBlock Text="Rýchle vytvorenie" 
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource TextPrimaryColor}"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,0,0,6"/>
+                            <TextBlock Text="Vytvorte jeden certifikát" 
+                                    FontSize="11"
+                                    Foreground="{StaticResource TextSecondaryColor}"
+                                    TextWrapping="Wrap"
+                                    TextAlignment="Center"
+                                    Margin="0,0,0,12"/>
+                        </StackPanel>
                     </Border>
 
                 </UniformGrid>
