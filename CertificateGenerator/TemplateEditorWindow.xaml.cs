@@ -1,13 +1,14 @@
-﻿using System;
+﻿using CertificateGenerator.Data;
+using CertificateGenerator.Helpers;
+using iText.Kernel.Geom;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
-using Microsoft.Win32;
-using CertificateGenerator.Data;
-using CertificateGenerator.Helpers;
-using iText.Kernel.Geom;
 
 namespace CertificateGenerator
 {
@@ -398,6 +399,7 @@ namespace CertificateGenerator
         }
 
         // Event handlers
+
         private void CmbTemplates_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CmbTemplates.SelectedItem is CertificateTemplateModel template)

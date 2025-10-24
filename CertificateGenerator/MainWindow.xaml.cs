@@ -1,9 +1,12 @@
 ﻿using CertificateGenerator.Data;
 using CertificateGenerator.Helpers;
 using iText.Kernel.Geom;
+using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using IOPath = System.IO.Path;
 
 namespace CertificateGenerator
 {
@@ -391,7 +394,7 @@ namespace CertificateGenerator
             _currentTopicId = 0;
         }
 
-
+        #region MainWindow Clicking on buttons and borders
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
@@ -407,13 +410,40 @@ namespace CertificateGenerator
             privacyWindow.ShowDialog();
         }
 
-        private void ManageData_Click(object sender, RoutedEventArgs e)
+
+
+        private void OpenTemplateEditorBorder_Click(object sender, MouseButtonEventArgs e)
         {
-            // Otvoríme editor šablón
-            var templateEditor = new TemplateEditorWindow();
-            templateEditor.Owner = this;
-            templateEditor.ShowDialog();
+            OpenTemplateEditor_Click(sender, e);
         }
+
+        //private void OpenTemplateEditor_Click(object sender, MouseButtonEventArgs e)
+        private void OpenTemplateEditor_Click(object sender, RoutedEventArgs e)
+        {
+            // Vytvoríme inštanciu nového okna
+            TemplateEditorWindow editorWindow = new TemplateEditorWindow();
+
+            // Skryjeme aktuálne okno (MainWindow)
+            this.Hide();
+
+            // Nastavíme správanie pri zatvorení editoru:
+            // keď sa zavrie TemplateEditorWindow, ukáže sa späť MainWindow
+            editorWindow.Closed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            // Otvoríme nové okno
+            editorWindow.Show();
+        }
+
+        //private void ManageData_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Otvoríme editor šablón
+        //    var templateEditor = new TemplateEditorWindow();
+        //    templateEditor.Owner = this;
+        //    templateEditor.ShowDialog();
+        //}
     
 
         // ========== MANAGEMENT WINDOWS ==========
@@ -465,5 +495,7 @@ namespace CertificateGenerator
             MessageBox.Show("Okno histórie certifikátov bude implementované v ďalšej verzii.",
                 "Pripravované", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        #endregion
     }
 }

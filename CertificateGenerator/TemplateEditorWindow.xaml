@@ -72,21 +72,21 @@
                             <Button Content="💾 Uložiť" 
                                     Style="{StaticResource SuccessButton}"
                                     Width="110"
-                                    Height="36"
+                                    
                                     FontSize="13"
                                     Margin="0,0,8,0"
                                     Click="SaveTemplate_Click"/>
                             <Button Content="➕ Nová" 
                                     Style="{StaticResource ModernButton}"
                                     Width="90"
-                                    Height="36"
+                                    
                                     FontSize="13"
                                     Margin="0,0,8,0"
                                     Click="NewTemplate_Click"/>
                             <Button Content="🗑️ Odstrániť" 
                                     Style="{StaticResource DangerButton}"
                                     Width="110"
-                                    Height="36"
+                                    
                                     FontSize="13"
                                     Click="DeleteTemplate_Click"/>
                         </WrapPanel>
@@ -545,14 +545,14 @@
                         <Button Content="🔄 Obnoviť náhľad" 
                                 Style="{StaticResource ModernButton}"
                                 Width="160"
-                                Height="36"
+                                
                                 FontSize="13"
                                 Margin="0,0,10,0"
                                 Click="RefreshPreview_Click"/>
                         <Button Content="📄 Testovať PDF" 
                                 Style="{StaticResource SuccessButton}"
                                 Width="140"
-                                Height="36"
+                                
                                 FontSize="13"
                                 Click="TestPdf_Click"/>
                     </StackPanel>
