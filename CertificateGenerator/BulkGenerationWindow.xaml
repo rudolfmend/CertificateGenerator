@@ -6,6 +6,7 @@
         Width="1100"
         FontSize="14"
         WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         ResizeMode="CanResize"
         Background="{StaticResource BackgroundColor}">
 
@@ -133,32 +134,32 @@
         </Border>
 
         <!-- Participants List Section -->
-        <Border Grid.Row="2" 
+            <Border Grid.Row="2" 
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="49*"/>
-                    <ColumnDefinition Width="284*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49*"/>
+                        <ColumnDefinition Width="284*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                <Label Grid.Row="0"
+                    <Label Grid.Row="0"
                        Content="👥 Zoznam účastníkov"
                        Style="{StaticResource ModernLabel}"
                        FontSize="16"
                        FontWeight="Bold"
                        Margin="0,0,0,15" Grid.ColumnSpan="2"/>
 
-                <!-- Toolbar -->
-                <WrapPanel 
+                    <!-- Toolbar -->
+                    <WrapPanel 
                            Orientation="Horizontal" 
                            Margin="0,46,0,180" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                    <Button Content="➕ Pridať" 
+                        <Button Content="➕ Pridať" 
                             Style="{StaticResource SuccessButton}"
                             Width="110" 
                             
@@ -173,7 +174,7 @@
                             FontSize="13"
                             Padding="15,8"
                             Margin="0,0,8,8"
-                            Click=" "/>
+                            Click="SelectFromDB_Click"/>
                         <Button Content="✏️ Upraviť" 
                             Style="{StaticResource ModernButton}"
                             Width="110" 
@@ -182,7 +183,7 @@
                             Padding="15,8"
                             Margin="0,0,8,8"
                             Click="EditParticipant_Click"/>
-                    <Button Content="🗑️ Odstrániť" 
+                        <Button Content="🗑️ Odstrániť" 
                             Style="{StaticResource DangerButton}"
                             Width="110" 
                             
@@ -190,7 +191,7 @@
                             Padding="15,8"
                             Margin="0,0,8,8"
                             Click="RemoveParticipant_Click"/>
-                    <Button Content="📄 Import CSV" 
+                        <Button Content="📄 Import CSV" 
                             Style="{StaticResource ModernButton}"
                             Width="130" 
                             
@@ -198,7 +199,7 @@
                             Padding="15,8"
                             Margin="0,0,8,8"
                             Click="ImportCsv_Click"/>
-                    <Button Content="🗑️ Vyčistiť všetko" 
+                        <Button Content="🗑️ Vyčistiť všetko" 
                             Style="{StaticResource SecondaryButton}"
                             Width="140" 
                             
@@ -206,39 +207,51 @@
                             Padding="15,8"
                             Margin="0,0,8,8"
                             Click="ClearList_Click"/>
-                </WrapPanel>
+                    </WrapPanel>
+                    <WrapPanel
+                           Orientation="Horizontal" 
+                           Margin="0,86,0,210" Grid.ColumnSpan="2" Grid.RowSpan="2" > 
 
-                <!-- DataGrid -->
-                <Border Grid.Row="1"
+                        <Button Content="📋 Vybrať uložené témy" 
+                            Style="{StaticResource SuccessButton}"
+                            FontSize="13"
+                            Padding="10,8"
+                            Margin="0,0,0,10"
+                            Click="SelectTopicsFromDB_Click"/>
+
+                    </WrapPanel>
+                    
+                    <!-- DataGrid -->
+                    <Border Grid.Row="1"
                         BorderThickness="1"
                         BorderBrush="{StaticResource BorderColor}"
                         CornerRadius="6"
                         Background="{StaticResource SurfaceColor}" Grid.ColumnSpan="2" Margin="0,57,0,165">
-                    <DataGrid x:Name="DgParticipants"
+                        <DataGrid x:Name="DgParticipants"
                               Style="{StaticResource ModernDataGrid}"
                               BorderThickness="0">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Meno a priezvisko" 
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Meno a priezvisko" 
                                                 Binding="{Binding Name}" 
                                                 MinWidth="380"
                                                 Width="*"/>
-                            <DataGridTextColumn Header="Dátum narodenia" 
+                                <DataGridTextColumn Header="Dátum narodenia" 
                                                 Binding="{Binding BirthDate, StringFormat=dd.MM.yyyy}" 
                                                 MinWidth="140"
                                                 Width="*"/>
-                            <DataGridTextColumn Header="Reg. číslo v komore" 
+                                <DataGridTextColumn Header="Reg. číslo v komore" 
                                                 Binding="{Binding RegistrationNumber}" 
                                                 MinWidth="160"
                                                 Width="*"/>
-                            <DataGridTextColumn Header="Poznámky" 
+                                <DataGridTextColumn Header="Poznámky" 
                                                 Binding="{Binding Notes}" MinWidth="220"
                                                 Width="*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Border>
-            </Grid>
-        </Border>
-
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </Border>
+        
         <!-- Statistics -->
         <Border Grid.Row="3" 
                 Background="{StaticResource InputBackground}"

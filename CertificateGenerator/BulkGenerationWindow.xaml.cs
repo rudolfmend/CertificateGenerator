@@ -268,6 +268,42 @@ namespace CertificateGenerator
                 "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        private void SelectTopicsFromDB_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var topicRepo = new EventTopicRepository(App.DatabaseManager);
+                var allTopics = topicRepo.GetAll();
+
+                if (allTopics.Count == 0)
+                {
+                    MessageBox.Show("Nemáte žiadne uložené témy v databáze.",
+                        "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var selectDialog = new SelectMultipleTopicsWindow(allTopics);
+                if (selectDialog.ShowDialog() == true)
+                {
+                    var selectedTopics = string.Join("\n", selectDialog.SelectedTopics.Select(t => t.Topic));
+
+                    // Pridaj k existujúcemu textu alebo nahraď
+                    if (string.IsNullOrWhiteSpace(TxtBulkTopics.Text))
+                        TxtBulkTopics.Text = selectedTopics;
+                    else
+                        TxtBulkTopics.Text += "\n" + selectedTopics;
+
+                    MessageBox.Show($"Pridaných {selectDialog.SelectedTopics.Count} tém.",
+                        "Úspech", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri načítaní tém:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void GenerateBulkPdf_Click(object sender, RoutedEventArgs e)
         {
             if (Participants.Count == 0)
@@ -532,6 +568,52 @@ namespace CertificateGenerator
                 return PageSize.A4;
             else
                 return PageSize.A5;
+        }
+
+        private void SelectFromDB_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var participantRepo = new ParticipantRepository(App.DatabaseManager);
+                var allParticipants = participantRepo.GetAll();
+
+                if (allParticipants.Count == 0)
+                {
+                    MessageBox.Show("Nemáte žiadnych uložených účastníkov v databáze.",
+                        "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Vytvor dialógové okno pre výber
+                var selectDialog = new SelectMultipleParticipantsWindow(allParticipants);
+                if (selectDialog.ShowDialog() == true)
+                {
+                    // Pridaj vybraných účastníkov do zoznamu
+                    foreach (var participant in selectDialog.SelectedParticipants)
+                    {
+                        // Skontroluj duplikáty
+                        if (!Participants.Any(p => p.Name == participant.Name &&
+                                                  p.BirthDate == participant.BirthDate))
+                        {
+                            Participants.Add(new Participant
+                            {
+                                Name = participant.Name,
+                                BirthDate = participant.BirthDate,
+                                RegistrationNumber = participant.RegistrationNumber,
+                                Notes = participant.Notes
+                            });
+                        }
+                    }
+
+                    MessageBox.Show($"Pridaných {selectDialog.SelectedParticipants.Count} účastníkov.",
+                        "Úspech", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri načítaní účastníkov:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

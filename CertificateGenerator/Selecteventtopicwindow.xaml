@@ -22,10 +22,6 @@
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
             <StackPanel>
-                <TextBlock Text="📋" 
-                           FontSize="38"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,8"/>
                 <TextBlock Text="Výber uloženej témy podujatia" 
                            FontSize="18"
                            FontWeight="Bold"
@@ -105,6 +101,14 @@
                     Style="{StaticResource DangerButton}"
                     FontSize="14"
                     Click="Delete_Click"/>
+            
+            <Button Grid.Column="1"
+                    Content="Pridať novú tému" 
+                    Style="{StaticResource ModernButton}"
+                    FontSize="14"
+                    MaxWidth="170"
+                        Margin="15,0,15,0"
+                    Click="AddNewTopic_Click"/>
 
             <StackPanel Grid.Column="2"
                         Orientation="Horizontal">

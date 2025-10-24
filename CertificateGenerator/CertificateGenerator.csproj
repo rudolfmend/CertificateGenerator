@@ -166,8 +166,14 @@
     <Compile Include="QuickGenerationWindow.xaml.cs">
       <DependentUpon>QuickGenerationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Selecteventtopicwindow.xaml.cs">
-      <DependentUpon>Selecteventtopicwindow.xaml</DependentUpon>
+    <Compile Include="SelectEventTopicWindow.xaml.cs">
+      <DependentUpon>SelectEventTopicWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelectMultipleParticipantsWindow.xaml.cs">
+      <DependentUpon>SelectMultipleParticipantsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SelectMultipleTopicsWindow.xaml.cs">
+      <DependentUpon>SelectMultipleTopicsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Selectorganizerwindow.xaml.cs">
       <DependentUpon>Selectorganizerwindow.xaml</DependentUpon>
@@ -232,7 +238,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Selecteventtopicwindow.xaml">
+    <Page Include="SelectEventTopicWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelectMultipleParticipantsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SelectMultipleTopicsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

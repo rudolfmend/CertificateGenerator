@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Input;
 using CertificateGenerator.Data;
@@ -29,13 +31,14 @@ namespace CertificateGenerator
 
                 if (_allEventTopics.Count == 0)
                 {
-                    MessageBox.Show("Nemáte žiadne uložené témy podujatí.\n\n" +
-                                  "Pridajte tému pomocou kontextového menu pri poli 'Téma podujatia' v hlavnom okne.",
+                    Debug.WriteLine("Nemáte žiadne uložené témy podujatí");
+                    MessageBox.Show("Nemáte žiadne uložené témy podujatí",
                         "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Error load topics: \n{ex.Message}");
                 MessageBox.Show($"Chyba pri načítaní tém:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -78,6 +81,17 @@ namespace CertificateGenerator
                 MessageBox.Show("Prosím vyberte tému zo zoznamu.",
                     "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void AddNewTopic_Click()
+        {
+            try { _repository.IncrementUsage(new Guid()); }
+            catch (
+
+
+            ) { }
+
+            } 
         }
 
         private void Delete_Click(object sender, RoutedEventArgs e)
@@ -129,3 +143,4 @@ namespace CertificateGenerator
         }
     }
 }
+
