@@ -27,10 +27,6 @@
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
             <StackPanel>
-                <TextBlock Text="📦" 
-                           FontSize="42"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,8"/>
                 <TextBlock Text="Hromadné generovanie PDF certifikátov" 
                            FontSize="20"
                            FontWeight="Bold"
@@ -170,7 +166,15 @@
                             Padding="15,8"
                             Margin="0,0,8,8"
                             Click="AddParticipant_Click"/>
-                    <Button Content="✏️ Upraviť" 
+                        <Button Content="Vybrať uložené" 
+                            Style="{StaticResource SuccessButton}"
+                            Width="110" 
+                            x:Name="SelectFromDBButton"
+                            FontSize="13"
+                            Padding="15,8"
+                            Margin="0,0,8,8"
+                            Click=" "/>
+                        <Button Content="✏️ Upraviť" 
                             Style="{StaticResource ModernButton}"
                             Width="110" 
                             

@@ -45,11 +45,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                    <Label Content="⚡ Rýchle nastavenie"
-                           Style="{StaticResource ModernLabel}"
-                           FontSize="15"
-                           FontWeight="Bold"
-                           Margin="0,0,0,10"/>
+
                     <Label Content="Nastaviť všetkým rovnaký dátum:" 
                            Style="{StaticResource ModernLabel}"/>
                     <DatePicker x:Name="DtpCommonDate" 
@@ -60,9 +56,9 @@
                 <Button Grid.Column="1" 
                         Content="✓ Aplikovať na všetky" 
                         Style="{StaticResource SuccessButton}"
-                        Width="170" 
-                        Height="44"
+                        Padding="17,10" 
                         FontSize="14"
+                        x:Name="SameDateForEveryCertificatesButton"
                         VerticalAlignment="Bottom"
                         Click="ApplyCommonDate_Click"/>
             </Grid>

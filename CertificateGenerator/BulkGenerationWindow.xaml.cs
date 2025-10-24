@@ -17,8 +17,11 @@ namespace CertificateGenerator
     public partial class BulkGenerationWindow : Window
     {
         public ObservableCollection<Participant> Participants { get; set; }
-
         private CertificateTemplateRepository _templateRepo;
+        private ParticipantRepository _participantRepo;
+        private OrganizerRepository _organizerRepo;
+        private EventTopicRepository _topicRepo;
+        private CertificateRepository _certificateRepo;
 
         public BulkGenerationWindow()
         {
@@ -26,6 +29,7 @@ namespace CertificateGenerator
             Participants = new ObservableCollection<Participant>();
             DgParticipants.ItemsSource = Participants;
             Participants.CollectionChanged += (s, e) => UpdateStatistics();
+            InitializeRepositories();
         }
 
         public BulkGenerationWindow(string organizer, int paperFormatIndex)
@@ -33,10 +37,18 @@ namespace CertificateGenerator
         {
             TxtBulkOrganizer.Text = organizer;
             CmbBulkPaperFormat.SelectedIndex = paperFormatIndex;
-
             TxtBulkOrganizer.IsReadOnly = false;
             TxtBulkOrganizer.IsEnabled = true;
-            _templateRepo = new CertificateTemplateRepository(App.DatabaseManager);
+        }
+
+        private void InitializeRepositories()
+        {
+            var dbManager = App.DatabaseManager;
+            _templateRepo = new CertificateTemplateRepository(dbManager);
+            _participantRepo = new ParticipantRepository(dbManager);
+            _organizerRepo = new OrganizerRepository(dbManager);
+            _topicRepo = new EventTopicRepository(dbManager);
+            _certificateRepo = new CertificateRepository(dbManager);
         }
 
         private void UpdateStatistics()
@@ -69,22 +81,16 @@ namespace CertificateGenerator
 
             var text = TxtBulkTopics.Text;
             var topics = new List<string>();
-
-            // Split by newlines first
             var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var line in lines)
             {
-                // Split each line by comma or semicolon
                 var parts = line.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-
                 foreach (var part in parts)
                 {
                     var trimmed = part.Trim();
                     if (!string.IsNullOrWhiteSpace(trimmed))
-                    {
                         topics.Add(trimmed);
-                    }
                 }
             }
 
@@ -98,15 +104,22 @@ namespace CertificateGenerator
             {
                 Participants.Add(dialog.Participant);
 
-                Debug.WriteLine($"Pridaný účastník: {dialog.Participant.Name}\n" +
-                               $"Celkový počet: {Participants.Count}\n" +
-                               $"DgParticipants.Items.Count: {DgParticipants.Items.Count}",
-                               "DEBUG - Add Participant");
-
-                MessageBox.Show($"Pridaný účastník: {dialog.Participant.Name}\n" +
-                               $"Celkový počet: {Participants.Count}\n" +
-                               $"DgParticipants.Items.Count: {DgParticipants.Items.Count}",
-                               "DEBUG - Add Participant");
+                // Ulož do databázy
+                try
+                {
+                    var participantModel = new ParticipantModel
+                    {
+                        Name = dialog.Participant.Name,
+                        BirthDate = dialog.Participant.BirthDate,
+                        RegistrationNumber = dialog.Participant.RegistrationNumber,
+                        Notes = dialog.Participant.Notes
+                    };
+                    _participantRepo.Add(participantModel);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Chyba pri ukladaní účastníka: {ex.Message}");
+                }
             }
         }
 
@@ -194,7 +207,6 @@ namespace CertificateGenerator
 
                 while ((line = reader.ReadLine()) != null)
                 {
-                    // Skip header line
                     if (isFirstLine)
                     {
                         isFirstLine = false;
@@ -217,29 +229,38 @@ namespace CertificateGenerator
                         Name = parts[0].Trim()
                     };
 
-                    // Birth date (column 2)
                     if (parts.Length > 1 && !string.IsNullOrWhiteSpace(parts[1]))
                     {
                         if (DateTime.TryParse(parts[1].Trim(), out DateTime birthDate))
-                        {
                             participant.BirthDate = birthDate;
-                        }
                     }
 
-                    // Registration number (column 3)
                     if (parts.Length > 2)
-                    {
                         participant.RegistrationNumber = parts[2].Trim();
-                    }
 
-                    // Notes (column 4)
                     if (parts.Length > 3)
-                    {
                         participant.Notes = parts[3].Trim();
-                    }
 
                     Participants.Add(participant);
-                    imported++;
+
+                    // Ulož do databázy
+                    try
+                    {
+                        var participantModel = new ParticipantModel
+                        {
+                            Name = participant.Name,
+                            BirthDate = participant.BirthDate,
+                            RegistrationNumber = participant.RegistrationNumber,
+                            Notes = participant.Notes
+                        };
+                        _participantRepo.Add(participantModel);
+                        imported++;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Chyba pri ukladaní účastníka: {ex.Message}");
+                        skipped++;
+                    }
                 }
             }
 
@@ -249,31 +270,12 @@ namespace CertificateGenerator
 
         private void GenerateBulkPdf_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine($"GenerateBulkPdf_Click STARTED!\n\n" +
-                            $"Participants.Count = {Participants.Count}\n" +
-                            $"DgParticipants.Items.Count = {DgParticipants.Items.Count}\n" +
-                            $"Participants object: {Participants.GetHashCode()}\n" +
-                            $"DgParticipants.ItemsSource: {DgParticipants.ItemsSource?.GetHashCode()}",
-                            "DEBUG 1");
-
-            MessageBox.Show($"GenerateBulkPdf_Click STARTED!\n\n" +
-                            $"Participants.Count = {Participants.Count}\n" +
-                            $"DgParticipants.Items.Count = {DgParticipants.Items.Count}\n" +
-                            $"Participants object: {Participants.GetHashCode()}\n" +
-                            $"DgParticipants.ItemsSource: {DgParticipants.ItemsSource?.GetHashCode()}",
-                            "DEBUG 1");
-
-            // Validation
             if (Participants.Count == 0)
             {
-                Debug.WriteLine("Prosím pridajte aspoň jedného účastníka.");
-
                 MessageBox.Show("Prosím pridajte aspoň jedného účastníka.",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
-            MessageBox.Show($"Participants: {Participants.Count}", "DEBUG 2");
 
             if (string.IsNullOrWhiteSpace(TxtBulkOrganizer.Text))
             {
@@ -282,12 +284,7 @@ namespace CertificateGenerator
                 return;
             }
 
-            MessageBox.Show("Organizer OK", "DEBUG 3");
-
             var topics = ParseTopics();
-
-            MessageBox.Show($"Topics parsed: {topics.Count}", "DEBUG 4");
-
             if (topics.Count == 0)
             {
                 MessageBox.Show("Prosím zadajte aspoň jednu tému podujatia.",
@@ -295,40 +292,22 @@ namespace CertificateGenerator
                 return;
             }
 
-            MessageBox.Show("About to show EventDatesDialog", "DEBUG 5");
-
-            // Show dialog to assign dates to topics
             var eventTopics = topics.Select(t => new EventTopic { Topic = t }).ToList();
             var datesDialog = new EventDatesDialog(eventTopics);
 
-            MessageBox.Show("EventDatesDialog created, about to show", "DEBUG 6");
-
             if (datesDialog.ShowDialog() != true)
-            {
-                MessageBox.Show("Dialog was CANCELLED", "DEBUG 7");
                 return;
-            }
 
-            MessageBox.Show("Dialog OK, getting topics", "DEBUG 8");
-
-            // Get updated topics with dates
             eventTopics = datesDialog.EventTopics;
 
-            MessageBox.Show("About to show FolderBrowserDialog", "DEBUG 9");
-
-            // Folder selection using WPF FolderBrowserDialog alternative
             var folderDialog = new System.Windows.Forms.FolderBrowserDialog
             {
                 Description = "Vyberte priečinok pre uloženie certifikátov",
                 ShowNewFolderButton = true
             };
 
-            MessageBox.Show("FolderBrowserDialog created, about to show", "DEBUG 10");
-
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                MessageBox.Show($"Folder selected: {folderDialog.SelectedPath}", "DEBUG 11");
-
                 try
                 {
                     GenerateAllPdfs(folderDialog.SelectedPath, eventTopics);
@@ -339,10 +318,6 @@ namespace CertificateGenerator
                         "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            else
-            {
-                MessageBox.Show("Folder selection was CANCELLED", "DEBUG 12");
-            }
         }
 
         private void GenerateAllPdfs(string folderPath, List<EventTopic> topics)
@@ -351,8 +326,95 @@ namespace CertificateGenerator
             int errorCount = 0;
             var errors = new List<string>();
 
+            // Ulož organizátora do DB
+            int organizerId = 0;
+            string organizerName = TxtBulkOrganizer.Text.Trim();
+
+            try
+            {
+                var existingOrganizers = _organizerRepo.Search(organizerName);
+                var exactMatch = existingOrganizers.FirstOrDefault(o =>
+                    o.Name.Equals(organizerName, StringComparison.OrdinalIgnoreCase));
+
+                if (exactMatch != null)
+                {
+                    organizerId = exactMatch.Id;
+                    _organizerRepo.IncrementUsage(organizerId);
+                }
+                else
+                {
+                    var organizer = new OrganizerModel { Name = organizerName };
+                    organizerId = _organizerRepo.Add(organizer);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Chyba pri ukladaní organizátora: {ex.Message}");
+            }
+
+            // Ulož témy do DB a získaj ich ID
+            var topicIds = new Dictionary<string, int>();
+            foreach (var topic in topics)
+            {
+                try
+                {
+                    var existingTopics = _topicRepo.Search(topic.Topic);
+                    var exactMatch = existingTopics.FirstOrDefault(t =>
+                        t.Topic.Equals(topic.Topic, StringComparison.OrdinalIgnoreCase));
+
+                    if (exactMatch != null)
+                    {
+                        topicIds[topic.Topic] = exactMatch.Id;
+                        _topicRepo.IncrementUsage(exactMatch.Id);
+                    }
+                    else
+                    {
+                        var topicModel = new EventTopicModel { Topic = topic.Topic };
+                        int topicId = _topicRepo.Add(topicModel);
+                        topicIds[topic.Topic] = topicId;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Chyba pri ukladaní témy: {ex.Message}");
+                    topicIds[topic.Topic] = 0;
+                }
+            }
+
+            // Generuj PDF pre každého účastníka a každú tému
             foreach (var participant in Participants)
             {
+                // Získaj alebo vytvor účastníka v DB
+                int participantId = 0;
+                try
+                {
+                    var existingParticipants = _participantRepo.Search(participant.Name);
+                    var exactMatch = existingParticipants.FirstOrDefault(p =>
+                        p.Name.Equals(participant.Name, StringComparison.OrdinalIgnoreCase) &&
+                        p.BirthDate == participant.BirthDate);
+
+                    if (exactMatch != null)
+                    {
+                        participantId = exactMatch.Id;
+                        _participantRepo.IncrementUsage(participantId);
+                    }
+                    else
+                    {
+                        var participantModel = new ParticipantModel
+                        {
+                            Name = participant.Name,
+                            BirthDate = participant.BirthDate,
+                            RegistrationNumber = participant.RegistrationNumber,
+                            Notes = participant.Notes
+                        };
+                        participantId = _participantRepo.Add(participantModel);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Chyba pri ukladaní účastníka: {ex.Message}");
+                }
+
                 foreach (var topic in topics)
                 {
                     try
@@ -360,40 +422,45 @@ namespace CertificateGenerator
                         string fileName = $"Certificate_{SanitizeFileName(participant.Name)}_{SanitizeFileName(topic.Topic)}.pdf";
                         string fullPath = IOPath.Combine(folderPath, fileName);
 
-                        System.Diagnostics.Debug.WriteLine($"===== Generating PDF =====");
-                        System.Diagnostics.Debug.WriteLine($"File: {fullPath}");
-                        System.Diagnostics.Debug.WriteLine($"Participant: {participant.Name}");
-                        System.Diagnostics.Debug.WriteLine($"Topic: {topic.Topic}");
-
                         CreatePdfDocument(fullPath, participant, topic);
                         successCount++;
 
-                        System.Diagnostics.Debug.WriteLine($"SUCCESS!");
+                        // Ulož certifikát do histórie
+                        try
+                        {
+                            var certificate = new CertificateModel
+                            {
+                                OrganizerId = organizerId,
+                                OrganizerName = organizerName,
+                                ParticipantId = participantId,
+                                ParticipantName = participant.Name,
+                                ParticipantBirthDate = participant.BirthDate,
+                                ParticipantRegistrationNumber = participant.RegistrationNumber,
+                                EventTopicId = topicIds.ContainsKey(topic.Topic) ? topicIds[topic.Topic] : 0,
+                                EventTopicName = topic.Topic,
+                                EventDate = topic.EventDate,
+                                Notes = participant.Notes,
+                                PaperFormat = GetSelectedPaperFormat(),
+                                FilePath = fullPath
+                            };
+                            _certificateRepo.Add(certificate);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Chyba pri ukladaní certifikátu do histórie: {ex.Message}");
+                        }
                     }
                     catch (Exception ex)
                     {
                         errorCount++;
-
-                        // Získajte celú chybovú hlášku
-                        string fullError = ex.ToString(); // Toto dá celý stack trace
-                        System.Diagnostics.Debug.WriteLine($"ERROR: {fullError}");
-
                         string errorMsg = ex.Message;
                         if (ex.InnerException != null)
-                        {
-                            errorMsg += $"\n\nInner Exception: {ex.InnerException.Message}";
-                            if (ex.InnerException.InnerException != null)
-                            {
-                                errorMsg += $"\n\nInner Inner Exception: {ex.InnerException.InnerException.Message}";
-                            }
-                        }
-
+                            errorMsg += $"\n\nInner: {ex.InnerException.Message}";
                         errors.Add($"{participant.Name} - {topic.Topic}:\n{errorMsg}");
                     }
                 }
             }
 
-            // Show results
             var message = $"Generovanie dokončené!\n\n" +
                          $"Úspešne vytvorené: {successCount}\n" +
                          $"Chyby: {errorCount}";
@@ -402,13 +469,9 @@ namespace CertificateGenerator
             {
                 message += $"\n\n=== CHYBOVÉ SPRÁVY ===\n";
                 foreach (var error in errors.Take(3))
-                {
                     message += $"\n{error}\n";
-                }
                 if (errors.Count > 3)
-                {
                     message += $"\n... a ďalších {errors.Count - 3} chýb";
-                }
             }
 
             MessageBox.Show(message, "Výsledok generovania",
@@ -416,77 +479,50 @@ namespace CertificateGenerator
                 errorCount == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
 
             if (successCount > 0)
-            {
                 System.Diagnostics.Process.Start("explorer.exe", folderPath);
-            }
+        }
+
+        private string GetSelectedPaperFormat()
+        {
+            var selectedItem = CmbBulkPaperFormat.SelectedItem as ComboBoxItem;
+            string format = selectedItem?.Content.ToString() ?? "A5";
+
+            if (format.StartsWith("A3")) return "A3";
+            if (format.StartsWith("A4")) return "A4";
+            return "A5";
         }
 
         private string SanitizeFileName(string fileName)
         {
             foreach (char c in IOPath.GetInvalidFileNameChars())
-            {
                 fileName = fileName.Replace(c, '_');
-            }
             return fileName.Replace(" ", "_");
         }
 
         private void CreatePdfDocument(string filePath, Participant participant, EventTopic topic)
         {
-            System.Diagnostics.Debug.WriteLine("==> CreatePdfDocument START");
+            PageSize pageSize = GetSelectedPageSize();
+            var template = _templateRepo.GetDefault();
 
-            PageSize pageSize = null;
-
-            try
-            {
-                pageSize = GetSelectedPageSize();
-                System.Diagnostics.Debug.WriteLine($"PageSize: {pageSize.GetWidth()} x {pageSize.GetHeight()}");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ERROR in GetSelectedPageSize: {ex.Message}");
-                throw new Exception($"Chyba pri určovaní veľkosti papiera: {ex.Message}", ex);
-            }
-
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"Creating PDF for: {filePath}");
-
-                // Načítame predvolenú šablónu
-                var template = _templateRepo.GetDefault();
-
-                // Použijeme helper na generovanie PDF
-                CertificateGenerator.Helpers.CertificatePdfGenerator.GeneratePdf(
-                    filePath,
-                    template,
-                    TxtBulkOrganizer.Text,
-                    topic.Topic,
-                    topic.EventDate,
-                    participant.Name,
-                    participant.BirthDate,
-                    participant.RegistrationNumber,
-                    participant.Notes,
-                    pageSize
-                );
-
-                System.Diagnostics.Debug.WriteLine("==> CreatePdfDocument SUCCESS");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"==> CreatePdfDocument ERROR: {ex.ToString()}");
-                throw;
-            }
+            CertificateGenerator.Helpers.CertificatePdfGenerator.GeneratePdf(
+                filePath,
+                template,
+                TxtBulkOrganizer.Text,
+                topic.Topic,
+                topic.EventDate,
+                participant.Name,
+                participant.BirthDate,
+                participant.RegistrationNumber,
+                participant.Notes,
+                pageSize
+            );
         }
-
 
         private PageSize GetSelectedPageSize()
         {
             var selectedItem = CmbBulkPaperFormat.SelectedItem as ComboBoxItem;
-
             if (selectedItem == null)
-            {
-                MessageBox.Show("Nie je vybratý formát papiera, použije sa A5.", "Upozornenie");
                 return PageSize.A5;
-            }
 
             string format = selectedItem.Content.ToString();
 
@@ -504,7 +540,6 @@ namespace CertificateGenerator
         }
     }
 
-    // Participant model class
     public class Participant
     {
         public string Name { get; set; }
