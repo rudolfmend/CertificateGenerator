@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Data.SQLite;
 using System.IO;
 
@@ -37,6 +38,7 @@ namespace CertificateGenerator.Data
             using (var connection = new SQLiteConnection(_connectionString))
             {
                 connection.Open();
+                Debug.WriteLine("tabuľka sa vytvorila");
 
                 // Vytvorenie tabuľky Participants
                 string createParticipantsTable = @"
@@ -95,8 +97,61 @@ namespace CertificateGenerator.Data
                         CreatedAt TEXT NOT NULL
                     )";
 
+                string createCertificateTemplatesTable = @"
+                    CREATE TABLE IF NOT EXISTS CertificateTemplates (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Name TEXT NOT NULL,
+                        IsDefault INTEGER DEFAULT 0,
+                        TitleColor TEXT,
+                        TextColor TEXT,
+                        AccentColor TEXT,
+                        BackgroundColor TEXT,
+                        TitleFontFamily TEXT,
+                        TitleFontSize INTEGER,
+                        HeaderFontFamily TEXT,
+                        HeaderFontSize INTEGER,
+                        TextFontFamily TEXT,
+                        TextFontSize INTEGER,
+                        MarginTop INTEGER,
+                        MarginRight INTEGER,
+                        MarginBottom INTEGER,
+                        MarginLeft INTEGER,
+                        TitleAlignment TEXT,
+                        ShowSeparatorLine INTEGER,
+                        SeparatorStyle TEXT,
+                        LogoPath TEXT,
+                        LogoPosition TEXT,
+                        LogoWidth INTEGER,
+                        LogoHeight INTEGER,
+                        CertificateTitle TEXT,
+                        ShowTitle INTEGER,
+                        ShowOrganizer INTEGER,
+                        ShowEventTopic INTEGER,
+                        ShowEventDate INTEGER,
+                        ShowBirthDate INTEGER,
+                        ShowRegistrationNumber INTEGER,
+                        ShowNotes INTEGER,
+                        CustomHeaderText TEXT,
+                        CustomFooterText TEXT,
+                        MainContentText TEXT,
+                        ShowMainContent INTEGER DEFAULT 1,
+                        ShowBorder INTEGER,
+                        BorderColor TEXT,
+                        BorderWidth INTEGER,
+                        LabelOrganizer TEXT,
+                        LabelEventTopic TEXT,
+                        LabelParticipant TEXT,
+                        LabelEventDate TEXT,
+                        LabelBirthDate TEXT,
+                        LabelRegistrationNumber TEXT,
+                        LabelNotes TEXT,
+                        CreatedAt TEXT NOT NULL,
+                        UpdatedAt TEXT
+                    )";
+
                 using (var command = new SQLiteCommand(connection))
                 {
+                    Debug.WriteLine("Command create tables.(SQLiteCommand)");
                     command.CommandText = createParticipantsTable;
                     command.ExecuteNonQuery();
 
@@ -108,6 +163,9 @@ namespace CertificateGenerator.Data
 
                     command.CommandText = createCertificatesTable;
                     command.ExecuteNonQuery();
+
+                    command.CommandText = createCertificateTemplatesTable;
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -117,6 +175,7 @@ namespace CertificateGenerator.Data
         /// </summary>
         public string GetConnectionString()
         {
+            Debug.WriteLine("connectio string");
             return _connectionString;
         }
 
