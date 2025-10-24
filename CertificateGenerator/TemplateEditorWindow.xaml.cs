@@ -20,10 +20,15 @@ namespace CertificateGenerator
 
         public TemplateEditorWindow()
         {
+            _isLoading = true;
+            _currentTemplate = null;
+
             InitializeComponent();
             InitializeRepositories();
             LoadTemplates();
             LoadNewTemplate();
+
+            _isLoading = false;
         }
 
         private void InitializeRepositories()
