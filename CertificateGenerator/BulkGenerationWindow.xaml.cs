@@ -579,6 +579,7 @@ namespace CertificateGenerator
 
                 if (allParticipants.Count == 0)
                 {
+                    Debug.WriteLine("Nemáte žiadnych uložených účastníkov v databáze.");
                     MessageBox.Show("Nemáte žiadnych uložených účastníkov v databáze.",
                         "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
@@ -604,13 +605,13 @@ namespace CertificateGenerator
                             });
                         }
                     }
-
-                    MessageBox.Show($"Pridaných {selectDialog.SelectedParticipants.Count} účastníkov.",
-                        "Úspech", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Debug.WriteLine($"Pridaných {selectDialog.SelectedParticipants.Count} účastníkov.");
                 }
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Chyba pri načítaní účastníkov:\n{ex.Message} \n + " +
+                    ex.ToString());
                 MessageBox.Show($"Chyba pri načítaní účastníkov:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }

@@ -355,6 +355,23 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(notesText);
                 }
 
+
+                // Ďalší riadok s textom Next line of text
+
+                if (!string.IsNullOrWhiteSpace(template.CustomFooterText))
+                {
+                    var nextLineBlock = new TextBlock
+                    {
+                        Text = template.CustomText,
+                        FontSize = template.TextFontSize - 1,
+                        Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(template.TextColor)),
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap,
+                        Margin = new Thickness(0, 15, 0, 0)
+                    };
+                    PreviewContent.Children.Add(footerBlock);
+                }
+
                 // Vlastný text v pätičke
                 if (!string.IsNullOrWhiteSpace(template.CustomFooterText))
                 {
@@ -369,17 +386,6 @@ namespace CertificateGenerator
                     };
                     PreviewContent.Children.Add(footerBlock);
                 }
-
-                // Časová pečiatka
-                var timestamp = new TextBlock
-                {
-                    Text = $"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}",
-                    FontSize = template.TextFontSize - 1,
-                    Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#888888")),
-                    TextAlignment = TextAlignment.Center,
-                    Margin = new Thickness(0, 20, 0, 0)
-                };
-                PreviewContent.Children.Add(timestamp);
             }
             catch (Exception ex)
             {

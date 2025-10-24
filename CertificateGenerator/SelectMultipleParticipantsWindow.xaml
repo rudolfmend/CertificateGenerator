@@ -5,7 +5,7 @@
         Height="650" 
         Width="800"
         FontSize="14"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         Background="{StaticResource BackgroundColor}">
 
     <Grid Margin="30">

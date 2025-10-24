@@ -44,6 +44,35 @@ namespace CertificateGenerator
             }
         }
 
+        
+
+        private void AddNewTopic_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveNewTopicWindow();
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var newTopic = new EventTopicModel
+                    {
+                        Topic = dialog.TopicName,
+                        Description = dialog.Description
+                    };
+
+                    int id = _repository.Add(newTopic);
+                    LoadEventTopics(); // Refresh list
+
+                    MessageBox.Show("Téma bola úspešne pridaná.",
+                        "Úspech", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Chyba pri pridávaní témy:\n{ex.Message}",
+                        "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
         private void TxtSearch_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             string searchTerm = TxtSearch.Text?.Trim();
@@ -85,15 +114,23 @@ namespace CertificateGenerator
 
         private void AddNewTopic_Click()
         {
-            try { _repository.IncrementUsage(new Guid()); }
-            catch (
-
-
-            ) { }
-
-            } 
+            try
+            {
+                var selectWindow = new SelectEventTopicWindow(App.DatabaseManager);
+                if (selectWindow.ShowDialog() == true)
+                {
+                    var selected = selectWindow.SelectedEventTopic;
+                    //TxtEventTopic.Text = selected.Topic;
+                    //_currentTopicId = selected.Id;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri otváraní okna:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
+        
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (DgEventTopics.SelectedItem is EventTopicModel selected)

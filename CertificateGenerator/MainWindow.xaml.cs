@@ -134,6 +134,25 @@ namespace CertificateGenerator
             editorWindow.Show();
         }
 
+        private void BtnEventTheme_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selectWindow = new SelectEventTopicWindow(App.DatabaseManager);
+                if (selectWindow.ShowDialog() == true)
+                {
+                    var selected = selectWindow.SelectedEventTopic;
+                    
+                    _currentTopicId = selected.Id;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri otváraní okna:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         //private void ManageData_Click(object sender, RoutedEventArgs e)
         //{
         //    // Otvoríme editor šablón

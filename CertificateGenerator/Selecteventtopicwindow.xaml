@@ -95,6 +95,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+            
 
             <Button Grid.Column="0"
                     Content="🗑️ Odstrániť" 
