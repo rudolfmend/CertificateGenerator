@@ -163,26 +163,23 @@
     <Compile Include="Data\CertificateTemplateModel.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
+    <Compile Include="ManageEventTopicWindow.xaml.cs">
+      <DependentUpon>ManageEventTopicWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ManageOrganizerWindow.xaml.cs">
+      <DependentUpon>ManageOrganizerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ParticipantManagerWindow.xaml.cs">
       <DependentUpon>ParticipantManagerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="QuickGenerationWindow.xaml.cs">
       <DependentUpon>QuickGenerationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SaveNewTopicWindow.xaml.cs">
-      <DependentUpon>SaveNewTopicWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SelectEventTopicWindow.xaml.cs">
-      <DependentUpon>SelectEventTopicWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="SelectMultipleParticipantsWindow.xaml.cs">
       <DependentUpon>SelectMultipleParticipantsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SelectMultipleTopicsWindow.xaml.cs">
       <DependentUpon>SelectMultipleTopicsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Selectorganizerwindow.xaml.cs">
-      <DependentUpon>Selectorganizerwindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateEditorWindow.xaml.cs">
       <DependentUpon>TemplateEditorWindow.xaml</DependentUpon>
@@ -225,6 +222,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ManageEventTopicWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ManageOrganizerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ModernStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,23 +246,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SaveNewTopicWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SelectEventTopicWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="SelectMultipleParticipantsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SelectMultipleTopicsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Selectorganizerwindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

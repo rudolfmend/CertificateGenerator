@@ -50,7 +50,7 @@ namespace CertificateGenerator
         {
             try
             {
-                var selectWindow = new SelectOrganizerWindow(App.DatabaseManager);
+                var selectWindow = new ManageOrganizerWindow(App.DatabaseManager);
                 if (selectWindow.ShowDialog() == true)
                 {
                     var selected = selectWindow.SelectedOrganizer;
@@ -69,7 +69,7 @@ namespace CertificateGenerator
         {
             try
             {
-                var selectWindow = new SelectEventTopicWindow(App.DatabaseManager);
+                var selectWindow = new ManageEventTopicWindow(App.DatabaseManager);
                 if (selectWindow.ShowDialog() == true)
                 {
                     var selected = selectWindow.SelectedEventTopic;

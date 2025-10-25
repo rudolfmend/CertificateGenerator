@@ -28,15 +28,7 @@ namespace CertificateGenerator
         {
             InitializeComponent();
             InitializeRepositories();
-            InitializeComponent();
-            InitializeRepositories();
         }
-
-        //private void InitializeDefaults()
-        //{
-        //    // Set default paper format
-        //    CmbPaperFormat.SelectedIndex = 2; // A5 as default
-        //}
 
         private void InitializeRepositories()
         {
@@ -47,7 +39,7 @@ namespace CertificateGenerator
                 _organizerRepo = new OrganizerRepository(dbManager);
                 _topicRepo = new EventTopicRepository(dbManager);
                 _certificateRepo = new CertificateRepository(dbManager);
-                _templateRepo = new CertificateTemplateRepository(dbManager);            
+                _templateRepo = new CertificateTemplateRepository(dbManager);
             }
             catch (Exception ex)
             {
@@ -56,22 +48,11 @@ namespace CertificateGenerator
             }
         }
 
-        // ========== MAIN ACTION ==========
-
-        //private void OpenBulkGeneration_Click(object sender, RoutedEventArgs e)
-        //{
-        //    var bulkWindow = new BulkGenerationWindow(
-        //        TxtEventOrganizer.Text,
-        //        CmbPaperFormat.SelectedIndex
-        //    );
-        //    bulkWindow.ShowDialog();
-        //}
-
         private void OpenBulkGeneration_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var bulkWindow = new BulkGenerationWindow("", 2); // Empty organizer, A5 default
+                var bulkWindow = new BulkGenerationWindow("", 2);
                 bulkWindow.ShowDialog();
             }
             catch (Exception ex)
@@ -90,7 +71,6 @@ namespace CertificateGenerator
             return fileName.Replace(" ", "_");
         }
 
-
         #region MainWindow Clicking on buttons and borders
 
         private void About_Click(object sender, RoutedEventArgs e)
@@ -107,50 +87,22 @@ namespace CertificateGenerator
             privacyWindow.ShowDialog();
         }
 
-
-
         private void OpenTemplateEditorBorder_Click(object sender, MouseButtonEventArgs e)
         {
             OpenTemplateEditor_Click(sender, e);
         }
 
-        //private void OpenTemplateEditor_Click(object sender, MouseButtonEventArgs e)
         private void OpenTemplateEditor_Click(object sender, RoutedEventArgs e)
         {
-            // Vytvoríme inštanciu nového okna
             TemplateEditorWindow editorWindow = new TemplateEditorWindow();
-
-            // Skryjeme aktuálne okno (MainWindow)
             this.Hide();
 
-            // Nastavíme správanie pri zatvorení editoru:
-            // keď sa zavrie TemplateEditorWindow, ukáže sa späť MainWindow
             editorWindow.Closed += (s, args) =>
             {
                 this.Show();
             };
 
-            // Otvoríme nové okno
             editorWindow.Show();
-        }
-
-        private void BtnEventTheme_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var selectWindow = new SelectEventTopicWindow(App.DatabaseManager);
-                if (selectWindow.ShowDialog() == true)
-                {
-                    var selected = selectWindow.SelectedEventTopic;
-                    
-                    _currentTopicId = selected.Id;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Chyba pri otváraní okna:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
         }
 
         private void QuickGeneratePdf_Click(object sender, RoutedEventArgs e)
@@ -168,24 +120,25 @@ namespace CertificateGenerator
             }
         }
 
-
-        // ========== MANAGEMENT WINDOWS ==========
+        // ========== MANAGEMENT WINDOWS - REFACTORED ==========
 
         private void ManageParticipants_Click(object sender, RoutedEventArgs e)
         {
             var participantWindow = new ParticipantManagerWindow(App.DatabaseManager);
             participantWindow.Owner = this;
             participantWindow.ShowDialog();
-
-
         }
 
+        /// <summary>
+        /// UPDATED: Používa nové ManageOrganizerWindow namiesto SelectOrganizerWindow
+        /// </summary>
         private void ManageOrganizers_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var selectWindow = new SelectOrganizerWindow(App.DatabaseManager);
-                selectWindow.ShowDialog();
+                var manageWindow = new ManageOrganizerWindow(App.DatabaseManager, selectionMode: false);
+                manageWindow.Owner = this;
+                manageWindow.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -194,12 +147,16 @@ namespace CertificateGenerator
             }
         }
 
+        /// <summary>
+        /// UPDATED: Používa nové ManageEventTopicWindow namiesto SelectEventTopicWindow
+        /// </summary>
         private void ManageEventTopics_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var selectWindow = new SelectEventTopicWindow(App.DatabaseManager);
-                selectWindow.ShowDialog();
+                var manageWindow = new ManageEventTopicWindow(App.DatabaseManager, selectionMode: false);
+                manageWindow.Owner = this;
+                manageWindow.ShowDialog();
             }
             catch (Exception ex)
             {
