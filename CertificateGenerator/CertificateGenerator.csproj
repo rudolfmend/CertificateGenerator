@@ -159,6 +159,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CertificateHistoryWindow.xaml.cs">
+      <DependentUpon>CertificateHistoryWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Data\CertificateRepository.cs" />
     <Compile Include="Data\CertificateTemplateModel.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
@@ -189,6 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BulkGenerationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CertificateHistoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

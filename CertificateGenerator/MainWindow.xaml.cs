@@ -167,8 +167,17 @@ namespace CertificateGenerator
 
         private void CertificateHistory_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Okno histórie certifikátov bude implementované v ďalšej verzii.",
-                "Pripravované", MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                var historyWindow = new CertificateHistoryWindow();
+                historyWindow.Owner = this;
+                historyWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri otváraní histórie:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #endregion
