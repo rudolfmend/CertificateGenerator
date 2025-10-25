@@ -22,10 +22,7 @@
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
             <StackPanel>
-                <TextBlock Text="🏢" 
-                           FontSize="38"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,8"/>
+
                 <TextBlock Text="Výber uloženého organizátora" 
                            FontSize="18"
                            FontWeight="Bold"

@@ -156,63 +156,28 @@
                        Margin="0,0,0,15" Grid.ColumnSpan="2"/>
 
                     <!-- Toolbar -->
-                    <WrapPanel 
-                           Orientation="Horizontal" 
-                           Margin="0,46,0,180" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                        <Button Content="➕ Pridať účastníka" 
-                            Style="{StaticResource SuccessButton}"
-                            FontSize="13"
-                            Padding="15,8"
-                            Margin="0,0,8,8"
-                            Click="AddParticipant_Click"/>
-
-                        <Button
-                            Style="{StaticResource SuccessButton}"
-                            x:Name="SelectFromDBButton"
-                            FontSize="13"
-                            Padding="15,8"
-                            Margin="0,0,8,8"
-                            Click="SelectFromDB_Click">
-
-                            <TextBlock TextAlignment="Center">
-                                <Run Text="Vybrať uloženého"/>
-                                <LineBreak/>
-                                <Run Text="účastníka"/>
-                            </TextBlock>
-                        </Button>
-
-                        <Button Content="✏️ Upraviť" 
-                            Style="{StaticResource ModernButton}"
-                            Width="110" 
-                            
-                            FontSize="13"
-                            Padding="15,8"
-                            Margin="0,0,8,8"
-                            Click="EditParticipant_Click"/>
-                        <Button Content="🗑️ Odstrániť" 
-                            Style="{StaticResource DangerButton}"
-                            Width="110" 
-                            
-                            FontSize="13"
-                            Padding="15,8"
-                            Margin="0,0,8,8"
-                            Click="RemoveParticipant_Click"/>
+                    <WrapPanel Orientation="Horizontal" Margin="0,46,0,180" Grid.ColumnSpan="2" Grid.RowSpan="2">
+                        <Button Content="Pridať účastníkov" 
+            Style="{StaticResource SuccessButton}"
+            Width="180" 
+            FontSize="13"
+            Padding="15,8"
+            Margin="0,0,8,8"
+            Click="ManageParticipants_Click"/>
                         <Button Content="📄 Import CSV" 
-                            Style="{StaticResource ModernButton}"
-                            Width="130" 
-                            
-                            FontSize="13"
-                            Padding="15,8"
-                            Margin="0,0,8,8"
-                            Click="ImportCsv_Click"/>
+            Style="{StaticResource ModernButton}"
+            Width="130" 
+            FontSize="13"
+            Padding="15,8"
+            Margin="0,0,8,8"
+            Click="ImportCsv_Click"/>
                         <Button Content="🗑️ Vyčistiť všetko" 
-                            Style="{StaticResource SecondaryButton}"
-                            Width="140" 
-                            
-                            FontSize="13"
-                            Padding="15,8"
-                            Margin="0,0,8,8"
-                            Click="ClearList_Click"/>
+            Style="{StaticResource SecondaryButton}"
+            Width="140" 
+            FontSize="13"
+            Padding="15,8"
+            Margin="0,0,8,8"
+            Click="ClearList_Click"/>
                     </WrapPanel>
                     <WrapPanel
                            Orientation="Horizontal" 

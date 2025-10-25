@@ -57,6 +57,29 @@ namespace CertificateGenerator
             UpdatePdfCount();
         }
 
+        private void ManageParticipants_Click(object sender, RoutedEventArgs e)
+        {
+            var participantWindow = new ParticipantManagerWindow(App.DatabaseManager);
+            if (participantWindow.ShowDialog() == true && participantWindow.SelectedParticipant != null)
+            {
+                var selected = participantWindow.SelectedParticipant;
+
+                // Check if already in list
+                if (!Participants.Any(p => p.Name == selected.Name))
+                {
+                    Participants.Add(new Participant
+                    {
+                        Name = selected.Name,
+                        BirthDate = selected.BirthDate,
+                        RegistrationNumber = selected.RegistrationNumber,
+                        Notes = selected.Notes
+                    });
+                }
+            }
+        }
+
+        // Odstrániť staré metódy: AddParticipant_Click, EditParticipant_Click, RemoveParticipant_Click
+
         private void TxtBulkTopics_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePdfCount();
@@ -95,69 +118,6 @@ namespace CertificateGenerator
             }
 
             return topics;
-        }
-
-        private void AddParticipant_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new ParticipantDialog();
-            if (dialog.ShowDialog() == true)
-            {
-                Participants.Add(dialog.Participant);
-
-                // Ulož do databázy
-                try
-                {
-                    var participantModel = new ParticipantModel
-                    {
-                        Name = dialog.Participant.Name,
-                        BirthDate = dialog.Participant.BirthDate,
-                        RegistrationNumber = dialog.Participant.RegistrationNumber,
-                        Notes = dialog.Participant.Notes
-                    };
-                    _participantRepo.Add(participantModel);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Chyba pri ukladaní účastníka: {ex.Message}");
-                }
-            }
-        }
-
-        private void EditParticipant_Click(object sender, RoutedEventArgs e)
-        {
-            if (DgParticipants.SelectedItem is Participant selected)
-            {
-                var dialog = new ParticipantDialog(selected);
-                if (dialog.ShowDialog() == true)
-                {
-                    var index = Participants.IndexOf(selected);
-                    Participants[index] = dialog.Participant;
-                    DgParticipants.Items.Refresh();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Prosím vyberte účastníka na úpravu.", "Informácia",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        private void RemoveParticipant_Click(object sender, RoutedEventArgs e)
-        {
-            if (DgParticipants.SelectedItem is Participant selected)
-            {
-                var result = MessageBox.Show($"Naozaj chcete odstrániť účastníka '{selected.Name}'?",
-                    "Potvrdenie", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
-                {
-                    Participants.Remove(selected);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Prosím vyberte účastníka na odstránenie.", "Informácia",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
         }
 
         private void ClearList_Click(object sender, RoutedEventArgs e)

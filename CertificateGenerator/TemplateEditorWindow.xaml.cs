@@ -387,8 +387,7 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(footerBlock);
                 }
             }
-            catch (Exceptio
-            ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Chyba pri aktualizácii náhľadu: {ex.Message}");
             }

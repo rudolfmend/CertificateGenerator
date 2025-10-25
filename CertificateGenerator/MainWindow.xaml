@@ -2,8 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Generátor certifikátov" 
-        Height="750" 
-        Width="1000"
         MinWidth="750"
         MinHeight="120"
         FontSize="14"
@@ -14,9 +12,9 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" MaxHeight="100"/>
-            <RowDefinition Height="*" MaxHeight="1480"/>
-            <RowDefinition Height="Auto" MaxHeight="48"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Top Menu Bar -->
@@ -64,25 +62,26 @@
               VerticalAlignment="Center">
                     <MenuItem Header="📖 O aplikácii"
                       Click="About_Click"
-                      Padding="10,5" />
+                      Padding="10,5"   Cursor="Hand" />
                     <MenuItem Header="🔒 Ochrana údajov"
                       Click="PrivacyPolicy_Click"
-                      Padding="10,5" />
+                      Padding="10,5"   Cursor="Hand" />
                 </Menu>
             </Grid>
         </Border>
 
-        
+
         <!-- Main Content -->
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto"
-                      Padding="40,30">
+                      Padding="25,18">
             <StackPanel >
 
                 <!-- Main Action - Certificate Generation -->
                 <Border Style="{StaticResource Card}" 
-                        Margin="0,0,0,20"
-                        Background="{StaticResource InputBackground}">
+                        Margin="0,0,0,20"   Cursor="Hand"
+                        Background="{StaticResource InputBackground}"
+                        MouseLeftButtonDown="OpenBulkGeneration_Click">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -91,21 +90,18 @@
 
                         <!-- Icon -->
                         <Border Grid.Column="0"
-                                Background="{StaticResource SuccessColor}"
-                                CornerRadius="12"
-                                Width="80"
-                                Height="80"
                                 Margin="0,0,25,0"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="📦" 
-                                       FontSize="42"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
+                                VerticalAlignment="Stretch">
+
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Stretch"   Width="120" Height="120">
+                                <Image x:Name="picture_papers_in_package" 
+                                    Source="C:\Users\rudol\Downloads\papers_in_package.png"/>
+                            </StackPanel>
                         </Border>
 
                         <!-- Content -->
                         <StackPanel Grid.Column="1"
-                                    VerticalAlignment="Center">
+                                    VerticalAlignment="Center" HorizontalAlignment="Stretch">
                             <TextBlock Text="Vytvoriť certifikáty" 
                                        FontSize="20"
                                        FontWeight="Bold"
@@ -116,24 +112,10 @@
                                        Foreground="{StaticResource TextSecondaryColor}"
                                        TextWrapping="Wrap"
                                        Margin="0,0,0,15"/>
-                            <Button Content="▶ Otvoriť generátor certifikátov" 
-                                    Style="{StaticResource SuccessButton}"
-                                    Width="280"
-                                    Padding="2,15"
-                                    FontSize="14"
-                                    FontWeight="Bold"
-                                    HorizontalAlignment="Left"
-                                    Click="OpenBulkGeneration_Click"/>
+
                         </StackPanel>
                     </Grid>
                 </Border>
-
-                <!-- Management Functions -->
-                <TextBlock Text="Správa údajov" 
-                           FontSize="18"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource TextPrimaryColor}"
-                           Margin="0,10,0,15"/>
 
                 <!-- Function Cards Grid -->
                 <UniformGrid Columns="3" Rows="2" Margin="0,0,0,20">
@@ -160,7 +142,7 @@
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        Margin="0,0,0,15"/>
-                            
+
                         </StackPanel>
                     </Border>
 
@@ -185,8 +167,8 @@
                                        Foreground="{StaticResource TextSecondaryColor}"
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
-                                       Margin="0,0,0,15"/>            
-                            
+                                       Margin="0,0,0,15"/>
+
                         </StackPanel>
                     </Border>
 
@@ -212,7 +194,7 @@
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        Margin="0,0,0,15"/>
-                            
+
                         </StackPanel>
                     </Border>
 
@@ -238,7 +220,7 @@
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        Margin="0,0,0,15"/>
-                            
+
                         </StackPanel>
                     </Border>
 
@@ -248,10 +230,12 @@
                             Cursor="Hand"
                             MouseLeftButtonDown="CertificateHistory_Click">
                         <StackPanel>
-                            <TextBlock Text="📊" 
-                                       FontSize="36"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,10"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Image Source="C:\Users\rudol\Downloads\certificates_history-trsp.png"
+                                    Width="60"  Cursor="Hand"/>
+                                <Image Source="C:\Users\rudol\Downloads\certificates_history-trsp.png"
+                                    Width="60"  Cursor="Hand"/>
+                            </StackPanel>
                             <TextBlock Text="História certifikátov" 
                                        FontSize="16"
                                        FontWeight="Bold"
@@ -264,20 +248,20 @@
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        Margin="0,0,0,15"/>
-                            
+
                         </StackPanel>
                     </Border>
 
                     <!-- Quick Certificate Form Card -->
                     <Border Style="{StaticResource Card}" 
-                            Margin="10,10,0,0"
+                            Margin="10,10,0,0"   Cursor="Hand"
                             MouseLeftButtonDown="QuickGeneratePdf_Click">
-                    <StackPanel>
-                        <TextBlock Text="⚡" 
+                        <StackPanel>
+                            <TextBlock Text="⚡" 
                                     FontSize="32"
                                     HorizontalAlignment="Center"
                                     Margin="0,0,0,8"/>
-                        <TextBlock Text="Rýchle vytvorenie" 
+                            <TextBlock Text="Rýchle vytvorenie" 
                                     FontSize="15"
                                     FontWeight="Bold"
                                     Foreground="{StaticResource TextPrimaryColor}"

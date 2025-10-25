@@ -88,7 +88,7 @@ namespace CertificateGenerator
         {
             try
             {
-                var selectWindow = new SelectParticipantWindow(App.DatabaseManager);
+                var selectWindow = new ParticipantManagerWindow(App.DatabaseManager);
                 if (selectWindow.ShowDialog() == true)
                 {
                     var selected = selectWindow.SelectedParticipant;

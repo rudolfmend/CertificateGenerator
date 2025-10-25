@@ -1,0 +1,134 @@
+﻿<Window x:Class="CertificateGenerator.ParticipantManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Správa účastníkov" 
+        Height="1000" 
+        Width="900"
+        FontSize="14"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundColor}">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Style="{StaticResource Card}" Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="Správa účastníkov" FontSize="18" FontWeight="Bold" 
+                           Foreground="{StaticResource TextPrimaryColor}" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+        <ScrollViewer Grid.Row="1">
+            <Grid Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <!-- Search -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,0,0,15">
+            <StackPanel>
+                <Label Content="🔍 Vyhľadávanie:" Style="{StaticResource ModernLabel}" FontWeight="Bold"/>
+                <TextBox x:Name="TxtSearch" Style="{StaticResource ModernTextBox}" 
+                         TextChanged="TxtSearch_TextChanged"/>
+            </StackPanel>
+        </Border>
+
+        <!-- List of participants -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,0,0,15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Content="Uložení účastníci" Style="{StaticResource ModernLabel}" 
+                       FontSize="15" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <Border Grid.Row="1" BorderThickness="1" BorderBrush="{StaticResource BorderColor}" 
+                        CornerRadius="6" Background="{StaticResource SurfaceColor}">
+                    <DataGrid x:Name="DgParticipants" Style="{StaticResource ModernDataGrid}" 
+                              BorderThickness="0" MouseDoubleClick="DgParticipants_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Meno" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Dátum narodenia" 
+                                                Binding="{Binding BirthDate, StringFormat=dd.MM.yyyy}" Width="130"/>
+                            <DataGridTextColumn Header="Reg. číslo" Binding="{Binding RegistrationNumber}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Form for new/edit participant -->
+        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.ColumnSpan="2" Content="➕ Nový / ✏️ Upraviť účastníka" 
+                       Style="{StaticResource ModernLabel}" FontSize="15" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,5,0">
+                    <Label Content="Meno *" Style="{StaticResource ModernLabel}"/>
+                    <TextBox x:Name="TxtName" Style="{StaticResource ModernTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
+                    <Label Content="Dátum narodenia" Style="{StaticResource ModernLabel}"/>
+                    <DatePicker x:Name="DtpBirthDate" Style="{StaticResource ModernDatePicker}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,5,0">
+                    <Label Content="Reg. číslo" Style="{StaticResource ModernLabel}"/>
+                    <TextBox x:Name="TxtRegistrationNumber" Style="{StaticResource ModernTextBox}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Margin="0,0,0,0">
+                    <Label Content="Poznámky" Style="{StaticResource ModernLabel}"/>
+                    <TextBox x:Name="TxtNotes" Style="{StaticResource ModernTextBox}" 
+                             Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                </StackPanel>
+            </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Content="🗑️ Odstrániť" Style="{StaticResource DangerButton}"
+                    Width="130" Height="44" Click="Delete_Click"/>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Content="💾 Uložiť" Style="{StaticResource SuccessButton}"
+                        Width="120" Height="44" Margin="0,0,10,0" Click="Save_Click"/>
+                <Button Content="🆕 Nový" Style="{StaticResource ModernButton}"
+                        Width="100" Height="44" Margin="0,0,10,0" Click="New_Click"/>
+                <Button Content="✓ Vybrať a zavrieť" Style="{StaticResource SuccessButton}"
+                        Width="160" Height="44" FontWeight="Bold" IsDefault="True" Click="SelectAndClose_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

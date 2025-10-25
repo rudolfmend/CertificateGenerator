@@ -163,6 +163,9 @@
     <Compile Include="Data\CertificateTemplateModel.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
+    <Compile Include="ParticipantManagerWindow.xaml.cs">
+      <DependentUpon>ParticipantManagerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="QuickGenerationWindow.xaml.cs">
       <DependentUpon>QuickGenerationWindow.xaml</DependentUpon>
     </Compile>
@@ -180,9 +183,6 @@
     </Compile>
     <Compile Include="Selectorganizerwindow.xaml.cs">
       <DependentUpon>Selectorganizerwindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Selectparticipantwindow.xaml.cs">
-      <DependentUpon>Selectparticipantwindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateEditorWindow.xaml.cs">
       <DependentUpon>TemplateEditorWindow.xaml</DependentUpon>
@@ -229,7 +229,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ParticipantDialog.xaml">
+    <Page Include="ParticipantManagerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -261,19 +261,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Selectparticipantwindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="TemplateEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParticipantDialog.xaml.cs">
-      <DependentUpon>ParticipantDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PrivacyPolicyWindow.xaml.cs">
       <DependentUpon>PrivacyPolicyWindow.xaml</DependentUpon>
     </Compile>

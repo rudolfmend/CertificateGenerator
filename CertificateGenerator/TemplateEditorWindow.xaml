@@ -24,10 +24,7 @@
                 <Border Style="{StaticResource Card}" 
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <TextBlock Text="🎨" 
-                                   FontSize="38"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
+                        
                         <TextBlock Text="Editor šablón certifikátov" 
                                    FontSize="18"
                                    FontWeight="Bold"
@@ -492,26 +489,6 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
-                <!-- Hlavička náhľadu -->
-                <Border Grid.Row="0"
-                        Background="{StaticResource InputBackground}"
-                        CornerRadius="8,8,0,0"
-                        Padding="15"
-                        Margin="-20,-20,-20,15">
-                    <StackPanel>
-                        <TextBlock Text="👁️ Náhľad certifikátu" 
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Foreground="{StaticResource TextPrimaryColor}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,5"/>
-                        <TextBlock Text="Zmeny sa zobrazia okamžite" 
-                                   FontSize="12"
-                                   Foreground="{StaticResource TextSecondaryColor}"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
 
                 <!-- Scrollovateľný náhľad -->
                 <ScrollViewer Grid.Row="1"

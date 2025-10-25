@@ -153,14 +153,6 @@ namespace CertificateGenerator
             }
         }
 
-        //private void ManageData_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Otvoríme editor šablón
-        //    var templateEditor = new TemplateEditorWindow();
-        //    templateEditor.Owner = this;
-        //    templateEditor.ShowDialog();
-        //}
-
         private void QuickGeneratePdf_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -181,16 +173,11 @@ namespace CertificateGenerator
 
         private void ManageParticipants_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var selectWindow = new SelectParticipantWindow(App.DatabaseManager);
-                selectWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Chyba pri otváraní správy účastníkov:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            var participantWindow = new ParticipantManagerWindow(App.DatabaseManager);
+            participantWindow.Owner = this;
+            participantWindow.ShowDialog();
+
+
         }
 
         private void ManageOrganizers_Click(object sender, RoutedEventArgs e)
