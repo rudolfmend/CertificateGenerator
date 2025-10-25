@@ -362,14 +362,14 @@ namespace CertificateGenerator
                 {
                     var nextLineBlock = new TextBlock
                     {
-                        Text = template.CustomText,
+                        Text = template.CustomFooterText,
                         FontSize = template.TextFontSize - 1,
                         Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(template.TextColor)),
                         TextAlignment = TextAlignment.Center,
                         TextWrapping = TextWrapping.Wrap,
                         Margin = new Thickness(0, 15, 0, 0)
                     };
-                    PreviewContent.Children.Add(footerBlock);
+                    PreviewContent.Children.Add(nextLineBlock);
                 }
 
                 // Vlastný text v pätičke
@@ -387,7 +387,8 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(footerBlock);
                 }
             }
-            catch (Exception ex)
+            catch (Exceptio
+            ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Chyba pri aktualizácii náhľadu: {ex.Message}");
             }

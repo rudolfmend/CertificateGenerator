@@ -159,22 +159,28 @@
                     <WrapPanel 
                            Orientation="Horizontal" 
                            Margin="0,46,0,180" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                        <Button Content="➕ Pridať" 
+                        <Button Content="➕ Pridať účastníka" 
                             Style="{StaticResource SuccessButton}"
-                            Width="110" 
-                            
                             FontSize="13"
                             Padding="15,8"
                             Margin="0,0,8,8"
                             Click="AddParticipant_Click"/>
-                        <Button Content="Vybrať uložené" 
+
+                        <Button
                             Style="{StaticResource SuccessButton}"
-                            Width="110" 
                             x:Name="SelectFromDBButton"
                             FontSize="13"
                             Padding="15,8"
                             Margin="0,0,8,8"
-                            Click="SelectFromDB_Click"/>
+                            Click="SelectFromDB_Click">
+
+                            <TextBlock TextAlignment="Center">
+                                <Run Text="Vybrať uloženého"/>
+                                <LineBreak/>
+                                <Run Text="účastníka"/>
+                            </TextBlock>
+                        </Button>
+
                         <Button Content="✏️ Upraviť" 
                             Style="{StaticResource ModernButton}"
                             Width="110" 
@@ -210,14 +216,22 @@
                     </WrapPanel>
                     <WrapPanel
                            Orientation="Horizontal" 
-                           Margin="0,86,0,210" Grid.ColumnSpan="2" Grid.RowSpan="2" > 
+                           Margin="0,86,0,250" Grid.ColumnSpan="2" Grid.RowSpan="2" > 
 
-                        <Button Content="📋 Vybrať uložené témy" 
+                        <Button 
                             Style="{StaticResource SuccessButton}"
                             FontSize="13"
                             Padding="10,8"
-                            Margin="0,0,0,10"
-                            Click="SelectTopicsFromDB_Click"/>
+                            Margin="0,20,0,10"
+                            Click="SelectTopicsFromDB_Click">
+
+                            <TextBlock TextAlignment="Center">
+                                <Run Text="Vybrať uložené"/>
+                                <LineBreak/>
+                                <Run Text="témy"/>
+                            </TextBlock>
+                        </Button>
+
 
                     </WrapPanel>
                     
