@@ -95,7 +95,7 @@
 
                             <StackPanel Orientation="Vertical" VerticalAlignment="Stretch"   Width="120" Height="120">
                                 <Image x:Name="picture_papers_in_package" 
-                                    Source="C:\Users\rudol\Downloads\papers_in_package.png"/>
+                                    Source="..\Images\papers_in_package.png"/>
                             </StackPanel>
                         </Border>
 
@@ -126,10 +126,9 @@
                             Cursor="Hand"
                             MouseLeftButtonDown="ManageParticipants_Click">
                         <StackPanel>
-                            <TextBlock Text="👥" 
-                                       FontSize="36"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,10"/>
+
+                            <Image Source="..\Images\users_symbol_trsp.png"
+                                    Width="60"  Cursor="Hand"/>
                             <TextBlock Text="Správa účastníkov" 
                                        FontSize="16"
                                        FontWeight="Bold"
@@ -152,10 +151,9 @@
                             Cursor="Hand"
                             MouseLeftButtonDown="ManageOrganizers_Click">
                         <StackPanel>
-                            <TextBlock Text="🏢" 
-                                       FontSize="36"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,10"/>
+                            
+                            <Image Source="..\Images\teacher_symbol-trsp.png"
+                                   Width="60"  />
                             <TextBlock Text="Správa organizátorov" 
                                        FontSize="16"
                                        FontWeight="Bold"
@@ -231,9 +229,9 @@
                             MouseLeftButtonDown="CertificateHistory_Click">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Image Source="C:\Users\rudol\Downloads\certificates_history-trsp.png"
+                                <Image Source="..\Images\three_certificates-trsp.png"
                                     Width="60"  Cursor="Hand"/>
-                                <Image Source="C:\Users\rudol\Downloads\certificates_history-trsp.png"
+                                <Image Source="..\Images\three_certificates-trsp.png"
                                     Width="60"  Cursor="Hand"/>
                             </StackPanel>
                             <TextBlock Text="História certifikátov" 

@@ -296,6 +296,18 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\three_certificates-trsp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\papers_in_package.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\users_symbol_trsp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\teacher_symbol-trsp.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
