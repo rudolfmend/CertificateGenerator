@@ -7,8 +7,8 @@ using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas;
 using iText.Kernel.Pdf.Canvas.Draw;
+using iText.Kernel.Pdf.Colorspace;
 using iText.Layout;
-using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using System;
@@ -59,6 +59,28 @@ namespace CertificateGenerator.Helpers
                 if (template.ShowBorder)
                 {
                     AddPageBorder(pdfDocument, pageSize, template);
+                }
+
+                // Horná dekorácia(vlnovka)
+                if (template.ShowTopDecoration)
+                {
+                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+
+                    // Pozícia: tesne pod horným okrajom
+                    float decorY = pageSize.GetHeight() - template.MarginTop + 15;
+                    float decorStartX = template.MarginLeft;
+                    float decorEndX = pageSize.GetWidth() - template.MarginRight;
+
+                    DrawWavyLine(
+                        canvas,
+                        decorStartX,        // Začiatok X
+                        decorY,             // Y pozícia
+                        decorEndX,          // Koniec X
+                        5,                  // Amplitúda vlny (výška)
+                        20,                 // Vlnová dĺžka
+                        ParseColor(template.TopDecorationColor),
+                        template.TopDecorationThickness
+                    );
                 }
 
                 // Logo na začiatku
@@ -205,6 +227,27 @@ namespace CertificateGenerator.Helpers
                     .SetMarginTop(30);
 
                 document.Add(footer);
+
+                // Dolná dekorácia - na konci dokumentu (pred footer, riadok ~200)
+                if (template.ShowBottomDecoration)
+                {
+                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+
+                    float decorY = template.MarginBottom - 15;
+                    float decorStartX = template.MarginLeft;
+                    float decorEndX = pageSize.GetWidth() - template.MarginRight;
+
+                    DrawWavyLine(
+                        canvas,
+                        decorStartX,
+                        decorY,
+                        decorEndX,
+                        5,
+                        20,
+                        ParseColor(template.BottomDecorationColor),
+                        template.BottomDecorationThickness
+                    );
+                }
             }
         }
 
@@ -308,6 +351,133 @@ namespace CertificateGenerator.Helpers
                 return ColorConstants.BLACK;
             }
         }
+
+        private static void DrawWavyLine(PdfCanvas canvas, float startX, float startY, float endX,
+    float amplitude, float wavelength, Color color, float thickness)
+        {
+            canvas.SaveState();
+            canvas.SetStrokeColor(color);
+            canvas.SetLineWidth(thickness);
+
+            float currentX = startX;
+            bool isUp = true;
+
+            while (currentX < endX)
+            {
+                float nextX = Math.Min(currentX + wavelength, endX);
+                float controlY = isUp ? startY + amplitude : startY - amplitude;
+
+                canvas.CurveTo(
+                    currentX + wavelength / 3, controlY,
+                    currentX + 2 * wavelength / 3, controlY,
+                    nextX, startY
+                );
+
+                currentX = nextX;
+                isUp = !isUp;
+            }
+
+            canvas.Stroke();
+            canvas.RestoreState();
+        }
+
+        private void DrawDiagonalLines(PdfCanvas canvas, float x, float y, float width,
+            float height, Color color, float thickness, int lineCount)
+        {
+            canvas.SaveState();
+            canvas.SetStrokeColor(color);
+            canvas.SetLineWidth(thickness);
+
+            float spacing = width / lineCount;
+
+            for (int i = 0; i < lineCount; i++)
+            {
+                float startX = x + i * spacing;
+                canvas.MoveTo(startX, y);
+                canvas.LineTo(startX + height, y + height);
+            }
+
+            canvas.Stroke();
+            canvas.RestoreState();
+        }
+
+        private void DrawCornerOrnament(PdfCanvas canvas, float x, float y,
+            float size, Color color, string corner)
+        {
+            canvas.SaveState();
+            canvas.SetStrokeColor(color);
+            canvas.SetLineWidth(2);
+
+            // Kreslí ozdobný rohový prvok
+            switch (corner)
+            {
+                case "TOP_LEFT":
+                    // Ornament v ľavom hornom rohu
+                    canvas.MoveTo(x, y - size);
+                    canvas.LineTo(x, y);
+                    canvas.LineTo(x + size, y);
+
+                    // Pridať detaily
+                    canvas.MoveTo(x + 5, y - 5);
+                    canvas.LineTo(x + size / 2, y - 5);
+                    canvas.MoveTo(x + 5, y - 5);
+                    canvas.LineTo(x + 5, y - size / 2);
+                    break;
+                    // Podobne pre ostatné rohy...
+            }
+
+            canvas.Stroke();
+            canvas.RestoreState();
+        }
+
+        //  zatiaľ vynechať gradient funkciu a sústrediť sa na vlnovky a čiary, ktoré fungujú s PdfCanvas metódami
+        //private void DrawGradientBackground(PdfCanvas canvas, PdfDocument pdfDoc,
+        //    float x, float y, float width, float height,
+        //    Color startColor, Color endColor, string direction)
+        //{
+        //    // iText gradient implementation
+        //    PdfShading.Axial shading;
+
+        //    switch (direction)
+        //    {
+        //        case "HORIZONTAL":
+        //            shading = new PdfShading.Axial(
+        //                pdfDoc.GetDefaultColorSpace(),
+        //                x, y + height / 2,
+        //                x + width, y + height / 2,
+        //                startColor.GetColorValue(),
+        //                endColor.GetColorValue()
+        //            );
+        //            break;
+        //        case "DIAGONAL":
+        //            shading = new PdfShading.Axial(
+        //                pdfDoc.GetDefaultColorSpace(),
+        //                x, y,
+        //                x + width, y + height,
+        //                startColor.GetColorValue(),
+        //                endColor.GetColorValue()
+        //            );
+        //            break;
+        //        default: // VERTICAL
+        //            shading = new PdfShading.Axial(
+        //                pdfDoc.GetDefaultColorSpace(),
+        //                x + width / 2, y,
+        //                x + width / 2, y + height,
+        //                startColor.GetColorValue(),
+        //                endColor.GetColorValue()
+        //            );
+        //            break;
+        //    }
+
+        //    PdfPattern.Shading pattern = new PdfPattern.Shading(shading);
+        //    PdfPatternColor patternColor = new PdfPatternColor(pattern);
+
+        //    canvas.SaveState();
+        //    canvas.SetFillColor(patternColor);
+        //    canvas.Rectangle(x, y, width, height);
+        //    canvas.Fill();
+        //    canvas.RestoreState();
+        //}
     }
 }
 

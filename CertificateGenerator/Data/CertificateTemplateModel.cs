@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CertificateGenerator.Data
 {
     /// <summary>
-    /// Model pre šablónu certifikátu
+    /// Model pre šablónu certifikátu - rozšírená verzia
     /// </summary>
     public class CertificateTemplateModel
     {
@@ -56,9 +57,21 @@ namespace CertificateGenerator.Data
         public bool ShowRegistrationNumber { get; set; } = true;
         public bool ShowNotes { get; set; } = true;
 
+        //  Poradie polí (serialized as comma-separated string)
+        public string FieldOrder { get; set; } = "Organizer,EventTopic,EventDate,BirthDate,RegistrationNumber,Notes";
+
         // Vlastný text
         public string CustomHeaderText { get; set; }
         public string CustomFooterText { get; set; }
+
+        //  Formátovanie vlastného textu
+        public string CustomHeaderAlignment { get; set; } = "LEFT"; // LEFT, CENTER, RIGHT
+        public bool CustomHeaderBold { get; set; } = false;
+        public bool CustomHeaderItalic { get; set; } = false;
+
+        public string CustomFooterAlignment { get; set; } = "LEFT";
+        public bool CustomFooterBold { get; set; } = false;
+        public bool CustomFooterItalic { get; set; } = false;
 
         // Štýl rámčeka
         public bool ShowBorder { get; set; } = false;
@@ -77,6 +90,56 @@ namespace CertificateGenerator.Data
         public string LabelBirthDate { get; set; } = "Dátum narodenia:";
         public string LabelRegistrationNumber { get; set; } = "Registračné číslo v komore:";
         public string LabelNotes { get; set; } = "Poznámky:";
+
+        // Dekoratívne prvky
+        public bool ShowTopDecoration { get; set; } = false;
+        public string TopDecorationType { get; set; } = "WAVY_LINE"; // WAVY_LINE, STRAIGHT_LINE, DIAGONAL_LINES, CORNER_ORNAMENTS
+        public string TopDecorationColor { get; set; } = "#2563EB";
+        public int TopDecorationThickness { get; set; } = 2;
+
+        public bool ShowBottomDecoration { get; set; } = false;
+        public string BottomDecorationType { get; set; } = "WAVY_LINE";
+        public string BottomDecorationColor { get; set; } = "#2563EB";
+        public int BottomDecorationThickness { get; set; } = 2;
+
+        public bool ShowSideDecorations { get; set; } = false;
+        public string SideDecorationType { get; set; } = "VERTICAL_LINE"; // VERTICAL_LINE, ORNAMENTAL_BORDER
+        public string SideDecorationColor { get; set; } = "#2563EB";
+
+        // Pokročilý layout
+        public string ContentLayout { get; set; } = "VERTICAL"; // VERTICAL, TWO_COLUMN, THREE_COLUMN
+        public int ColumnSpacing { get; set; } = 20;
+
+        // Pozadie
+        public bool UseGradientBackground { get; set; } = false;
+        public string BackgroundGradientStart { get; set; } = "#FFFFFF";
+        public string BackgroundGradientEnd { get; set; } = "#F3F4F6";
+        public string GradientDirection { get; set; } = "VERTICAL"; // VERTICAL, HORIZONTAL, DIAGONAL
+
+        // Helper metódy pre poradie polí
+        public List<string> GetFieldOrderList()
+        {
+            if (string.IsNullOrWhiteSpace(FieldOrder))
+                return new List<string> { "Organizer", "EventTopic", "EventDate", "BirthDate", "RegistrationNumber", "Notes" };
+
+            return FieldOrder.Split(',').ToList();
+        }
+
+        public void SetFieldOrderList(List<string> fields)
+        {
+            FieldOrder = string.Join(",", fields);
+        }
+    }
+
+    /// <summary>
+    /// Helper class pre pole certifikátu s možnosťou drag&drop
+    /// </summary>
+    public class CertificateField
+    {
+        public string Id { get; set; }
+        public string DisplayName { get; set; }
+        public bool IsVisible { get; set; }
+        public int Order { get; set; }
     }
 
     /// <summary>
@@ -159,5 +222,35 @@ namespace CertificateGenerator.Data
             };
         }
     }
-}
 
+    /// <summary>
+    /// Dostupné fonty pre PDF generovanie (iText podporované)
+    /// </summary>
+    public static class AvailableFonts
+    {
+        public static List<FontInfo> GetAll()
+        {
+            return new List<FontInfo>
+            {
+                new FontInfo { Name = "Helvetica", DisplayName = "Helvetica (Štandardný)" },
+                new FontInfo { Name = "Helvetica-Bold", DisplayName = "Helvetica Bold" },
+                new FontInfo { Name = "Helvetica-Oblique", DisplayName = "Helvetica Italic" },
+                new FontInfo { Name = "Helvetica-BoldOblique", DisplayName = "Helvetica Bold Italic" },
+                new FontInfo { Name = "Times-Roman", DisplayName = "Times New Roman" },
+                new FontInfo { Name = "Times-Bold", DisplayName = "Times Bold" },
+                new FontInfo { Name = "Times-Italic", DisplayName = "Times Italic" },
+                new FontInfo { Name = "Times-BoldItalic", DisplayName = "Times Bold Italic" },
+                new FontInfo { Name = "Courier", DisplayName = "Courier" },
+                new FontInfo { Name = "Courier-Bold", DisplayName = "Courier Bold" },
+                new FontInfo { Name = "Courier-Oblique", DisplayName = "Courier Italic" },
+                new FontInfo { Name = "Courier-BoldOblique", DisplayName = "Courier Bold Italic" }
+            };
+        }
+    }
+
+    public class FontInfo
+    {
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+    }
+}

@@ -1,12 +1,43 @@
 ﻿<Window x:Class="CertificateGenerator.TemplateEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Editor šablón certifikátov - Prispôsobte vzhľad vašich certifikátov" 
+        Title="Editor šablón certifikátov - Prispôsobte vzhľad vašich certifikátov"
         FontSize="14"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         ResizeMode="CanResize"
-        Background="{StaticResource BackgroundColor}">
+        Background="{StaticResource BackgroundColor}"
+        AllowDrop="True">
+
+    <Window.Resources>
+        <!-- Štýl pre draggable položku -->
+        <Style x:Key="DraggableFieldItem" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E2E8F0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F8FAFC"/>
+                    <Setter Property="BorderBrush" Value="#CBD5E1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Štýl pre color preview box -->
+        <Style x:Key="ColorPreview" TargetType="Border">
+            <Setter Property="Width"  Value="40"/>
+            <Setter Property="Height"  Value="30"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness"   Value="1"/>
+            <Setter Property="CornerRadius"    Value="4"/>
+            <Setter Property="Cursor"   Value="Hand"/>
+            <Setter Property="Margin"  Value="5,0,0,0"/>
+        </Style>
+    </Window.Resources>
 
     <Grid Margin="20">
         <Grid.ColumnDefinitions>
@@ -16,95 +47,94 @@
         </Grid.ColumnDefinitions>
 
         <!-- Ľavý panel - Nastavenia -->
-        <ScrollViewer Grid.Column="0" 
+        <ScrollViewer Grid.Column="0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
 
-                <!-- Výber šablóny -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 1. VÝBER A SPRÁVA ŠABLÓNY -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="📋 Šablóna" 
+                        <Label Content="📋 Šablóna"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <Label Content="Názov šablóny:" Style="{StaticResource ModernLabel}"/>
-                        <TextBox x:Name="TxtTemplateName" 
+                        <Label Content="Názov šablóny:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtTemplateName"
                                  Style="{StaticResource ModernTextBox}"
                                  Margin="0,0,0,10"/>
 
-                        <Label Content="Vybrať existujúcu šablónu:" Style="{StaticResource ModernLabel}"/>
+                        <Label Content="Vybrať existujúcu šablónu:"
+                                Style="{StaticResource ModernLabel}"/>
                         <ComboBox x:Name="CmbTemplates"
                                   Style="{StaticResource ModernComboBox}"
                                   DisplayMemberPath="Name"
                                   SelectionChanged="CmbTemplates_SelectionChanged"
                                   Margin="0,0,0,10"/>
 
-                        <CheckBox x:Name="ChkIsDefault" 
+                        <CheckBox x:Name="ChkIsDefault"
                                   Content="Nastaviť ako predvolenú šablónu"
                                   Margin="0,0,0,10"/>
 
                         <WrapPanel Margin="0,5,0,0">
-                            <Button Content="💾 Uložiť" 
+                            <Button Content="💾 Uložiť"
                                     Style="{StaticResource SuccessButton}"
                                     Width="130"
-                                    
                                     FontSize="13"
                                     Margin="0,0,8,0"
                                     Click="SaveTemplate_Click"/>
-                            <Button Content="➕ Nová" 
+                            <Button Content="➕ Nová"
                                     Style="{StaticResource ModernButton}"
                                     Width="130"
-                                    
                                     FontSize="13"
                                     Margin="0,0,8,0"
                                     Click="NewTemplate_Click"/>
-                            <Button Content="🗑️ Odstrániť" 
+                            <Button Content="🗑️ Odstrániť"
                                     Style="{StaticResource DangerButton}"
                                     Width="130"
-                                    
                                     FontSize="13"
                                     Click="DeleteTemplate_Click"/>
                         </WrapPanel>
                     </StackPanel>
                 </Border>
 
-                <!-- Predvolené šablóny -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 2. PREDVOLENÉ ŠABLÓNY -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="🎭 Predvolené šablóny" 
+                        <Label Content="🎭 Predvolené šablóny"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
                         <WrapPanel>
-                            <Button Content="Klasická" 
+                            <Button Content="Klasická"
                                     Style="{StaticResource SecondaryButton}"
                                     Width="100"
                                     Padding="0,14"
                                     FontSize="12"
                                     Margin="0,0,8,8"
                                     Click="LoadClassicTemplate_Click"/>
-                            <Button Content="Moderná" 
+                            <Button Content="Moderná"
                                     Style="{StaticResource SecondaryButton}"
                                     Width="100"
                                     Padding="0,14"
                                     FontSize="12"
                                     Margin="0,0,8,8"
                                     Click="LoadModernTemplate_Click"/>
-                            <Button Content="Elegantná" 
+                            <Button Content="Elegantná"
                                     Style="{StaticResource SecondaryButton}"
                                     Width="100"
                                     Padding="0,14"
                                     FontSize="12"
                                     Margin="0,0,8,8"
                                     Click="LoadElegantTemplate_Click"/>
-                            <Button Content="Minimalistická" 
+                            <Button Content="Minimalistická"
                                     Style="{StaticResource SecondaryButton}"
                                     Width="100"
                                     Padding="0,14"
@@ -115,116 +145,383 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Farby -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 3. ROZLOŽENIE OBSAHU -->
+                <!-- Layout -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="🎨 Farby" 
+                        <Label Content="📐 Rozloženie obsahu"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                        <Label Content="Typ layoutu:"
+                               Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbContentLayout"
+                                  Style="{StaticResource ModernComboBox}"
+                                  SelectionChanged="AnySettingChanged"
+                                  Margin="0,0,0,10">
+                            <ComboBoxItem Content="Vertikálny (klasický)"
+                                          Tag="VERTICAL"
+                                          IsSelected="True"/>
+                            <ComboBoxItem Content="Dva stĺpce"
+                                          Tag="TWO_COLUMN"/>
+                            <ComboBoxItem Content="Tri stĺpce"
+                                          Tag="THREE_COLUMN"/>
+                        </ComboBox>
 
-                            <Label Grid.Row="0" Grid.Column="0" Content="Farba titulku:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtTitleColor" 
-                                     Grid.Row="0" Grid.Column="1"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="#000000"
-                                     Margin="5,0,0,10"
-                                     TextChanged="ColorChanged"/>
-
-                            <Label Grid.Row="1" Grid.Column="0" Content="Farba textu:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtTextColor" 
-                                     Grid.Row="1" Grid.Column="1"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="#000000"
-                                     Margin="5,0,0,10"
-                                     TextChanged="ColorChanged"/>
-
-                            <Label Grid.Row="2" Grid.Column="0" Content="Akcent:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtAccentColor" 
-                                     Grid.Row="2" Grid.Column="1"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="#2563EB"
-                                     Margin="5,0,0,10"
-                                     TextChanged="ColorChanged"/>
-
-                            <Label Grid.Row="3" Grid.Column="0" Content="Pozadie:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtBackgroundColor" 
-                                     Grid.Row="3" Grid.Column="1"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="#FFFFFF"
-                                     Margin="5,0,0,0"
-                                     TextChanged="ColorChanged"/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Veľkosti písma -->
-                <Border Style="{StaticResource Card}" 
-                        Margin="0,0,0,15">
-                    <StackPanel>
-                        <Label Content="📐 Veľkosti písma" 
-                               Style="{StaticResource ModernLabel}"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Margin="0,0,0,10"/>
-
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="100"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Grid.Row="0" Grid.Column="0" Content="Veľkosť titulku:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtTitleFontSize" 
-                                     Grid.Row="0" Grid.Column="1"
+                        <StackPanel x:Name="PnlColumnLayout"
+                                    Visibility="Collapsed">
+                            <Label Content="Medzera medzi stĺpcami:"
+                                   Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtColumnSpacing"
                                      Style="{StaticResource ModernTextBox}"
                                      Text="20"
-                                     Margin="5,0,0,10"
-                                     TextChanged="FontSizeChanged"/>
+                                     TextChanged="AnySettingChanged"
+                                     Margin="0,0,0,10"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
 
-                            <Label Grid.Row="1" Grid.Column="0" Content="Veľkosť hlavičky:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtHeaderFontSize" 
-                                     Grid.Row="1" Grid.Column="1"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="12"
-                                     Margin="5,0,0,10"
-                                     TextChanged="FontSizeChanged"/>
+                <!-- 4. POZADIE -->
+                <!-- Gradientné pozadie -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="🎨 Pozadie"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
 
-                            <Label Grid.Row="2" Grid.Column="0" Content="Veľkosť textu:" Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtTextFontSize" 
-                                     Grid.Row="2" Grid.Column="1"
+                        <CheckBox x:Name="ChkUseGradient"
+                                  Content="Použiť gradientné pozadie"
+                                  Margin="0,0,0,10"
+                                  Checked="BackgroundChanged"
+                                  Unchecked="BackgroundChanged"/>
+
+                        <StackPanel x:Name="PnlGradient"
+                                    IsEnabled="{Binding IsChecked, ElementName=ChkUseGradient}">
+                            <Label Content="Začiatočná farba:"
+                                   Style="{StaticResource ModernLabel}"/>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="TxtGradientStart"
+                                         Grid.Column="0"
+                                         Style="{StaticResource ModernTextBox}"
+                                         Text="#FFFFFF"
+                                         TextChanged="BackgroundChanged"/>
+                                <Border x:Name="GradientStartPreview"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ColorPreview}"
+                                        Background="#FFFFFF"
+                                        MouseLeftButtonDown="GradientStartPreview_Click"/>
+                            </Grid>
+
+                            <Label Content="Koncová farba:"
+                                   Style="{StaticResource ModernLabel}"/>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="TxtGradientEnd"
+                                         Grid.Column="0"
+                                         Style="{StaticResource ModernTextBox}"
+                                         Text="#F3F4F6"
+                                         TextChanged="BackgroundChanged"/>
+                                <Border x:Name="GradientEndPreview"
+                                        Grid.Column="1"
+                                        Style="{StaticResource ColorPreview}"
+                                        Background="#F3F4F6"
+                                        MouseLeftButtonDown="GradientEndPreview_Click"/>
+                            </Grid>
+
+                            <Label Content="Smer gradientu:"
+                                   Style="{StaticResource ModernLabel}"/>
+                            <ComboBox x:Name="CmbGradientDirection"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectionChanged="BackgroundChanged"
+                                      Margin="0,0,0,10">
+                                <ComboBoxItem Content="Vertikálny"
+                                              Tag="VERTICAL"
+                                              IsSelected="True"/>
+                                <ComboBoxItem Content="Horizontálny"
+                                              Tag="HORIZONTAL"/>
+                                <ComboBoxItem Content="Diagonálny"
+                                              Tag="DIAGONAL"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 5. FARBY TEXTU -->
+                <!-- Farby s Color Picker -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="🎨 Farby"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <!-- Farba titulku -->
+                        <Label Content="Farba titulku:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtTitleColor"
+                                     Grid.Column="0"
                                      Style="{StaticResource ModernTextBox}"
-                                     Text="10"
-                                     Margin="5,0,0,0"
-                                     TextChanged="FontSizeChanged"/>
+                                     Text="#000000"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="TitleColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#000000"
+                                    MouseLeftButtonDown="TitleColorPreview_Click"/>
+                        </Grid>
+
+                        <!-- Farba textu -->
+                        <Label Content="Farba textu:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtTextColor"
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="#000000"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="TextColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#000000"
+                                    MouseLeftButtonDown="TextColorPreview_Click"/>
+                        </Grid>
+
+                        <!-- Akcent -->
+                        <Label Content="Akcent:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtAccentColor"
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="#2563EB"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="AccentColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#2563EB"
+                                    MouseLeftButtonDown="AccentColorPreview_Click"/>
+                        </Grid>
+
+                        <!-- Farba pozadia -->
+                        <Label Content="Farba pozadia:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtBackgroundColor"
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="#FFFFFF"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="BackgroundColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#FFFFFF"
+                                    MouseLeftButtonDown="BackgroundColorPreview_Click"/>
+                        </Grid>
+
+                        <!-- Farba rámčeka -->
+                        <Label Content="Farba rámčeka:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtBorderColor"
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="#000000"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="BorderColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#000000"
+                                    MouseLeftButtonDown="BorderColorPreview_Click"/>
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- Okraje -->
-                <Border Style="{StaticResource Card}" 
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="📏 Okraje (px)" 
+                        <Label Content="✨ Dekorácie"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <!-- Horná dekorácia -->
+                        <CheckBox x:Name="ChkShowTopDecoration"
+                                  Content="Horná dekorácia (vlnovka)"
+                                  Margin="0,0,0,10"
+                                  Checked="AnySettingChanged"
+                                  Unchecked="AnySettingChanged"/>
+
+                        <Label Content="Farba hornej dekorácie:"
+                               Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtTopDecorationColor"
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="#2563EB"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="TopDecorationColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#2563EB"
+                                    MouseLeftButtonDown="TopDecorationColorPreview_Click"/>
+                        </Grid>
+
+                        <Label Content="Hrúbka:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtTopDecorationThickness"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="2"
+                                 TextChanged="AnySettingChanged"
+                                 Margin="0,0,0,10"/>
+
+                        <!-- Dolná dekorácia -->
+                        <Label Content="Hrúbka:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtBottomDecorationThickness"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="2"
+                                 TextChanged="AnySettingChanged"
+                                 Margin="0,0,0,10"/>
+                        <CheckBox x:Name="ChkShowBottomDecoration"
+                                  Content="Dolná dekorácia (vlnovka)"
+                                  Margin="0,10,0,10"
+                                  Checked="AnySettingChanged"
+                                  Unchecked="AnySettingChanged"/>
+
+                        <Label Content="Farba dolnej dekorácie:"
+                               Style="{StaticResource ModernLabel}"/>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="TxtBottomDecorationColor"
+                                     Grid.Column="0"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="#2563EB"
+                                     TextChanged="ColorChanged"/>
+                            <Border x:Name="BottomDecorationColorPreview"
+                                    Grid.Column="1"
+                                    Style="{StaticResource ColorPreview}"
+                                    Background="#2563EB"
+                                    MouseLeftButtonDown="BottomDecorationColorPreview_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 6. PÍSMO -->
+                <!-- Písma s Font Picker -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="🔤 Písma"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <!-- Font titulku -->
+                        <Label Content="Font titulku:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbTitleFont"
+                                  Style="{StaticResource ModernComboBox}"
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValuePath="Name"
+                                  Margin="0,0,0,10"
+                                  SelectionChanged="FontChanged"/>
+
+                        <Label Content="Veľkosť titulku:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtTitleFontSize"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="20"
+                                 Margin="0,0,0,10"
+                                 TextChanged="FontSizeChanged"/>
+
+                        <!-- Font hlavičky -->
+                        <Label Content="Font hlavičky:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbHeaderFont"
+                                  Style="{StaticResource ModernComboBox}"
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValuePath="Name"
+                                  Margin="0,0,0,10"
+                                  SelectionChanged="FontChanged"/>
+
+                        <Label Content="Veľkosť hlavičky:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtHeaderFontSize"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="12"
+                                 Margin="0,0,0,10"
+                                 TextChanged="FontSizeChanged"/>
+
+                        <!-- Font textu -->
+                        <Label Content="Font textu:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbTextFont"
+                                  Style="{StaticResource ModernComboBox}"
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValuePath="Name"
+                                  Margin="0,0,0,10"
+                                  SelectionChanged="FontChanged"/>
+
+                        <Label Content="Veľkosť textu:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtTextFontSize"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="10"
+                                 TextChanged="FontSizeChanged"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 7. OKRAJE -->
+                <!-- Okraje -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="📏 Okraje (px)"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
@@ -240,207 +537,237 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,5,0">
-                                <Label Content="Hore:" Style="{StaticResource ModernLabel}"/>
-                                <TextBox x:Name="TxtMarginTop" 
-                                         Style="{StaticResource ModernTextBox}"
-                                         Text="30"
-                                         TextChanged="MarginChanged"/>
-                            </StackPanel>
+                            <Label Grid.Row="0"
+                                    Grid.Column="0"
+                                    Content="Hore:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtMarginTop"
+                                     Grid.Row="0"
+                                    Grid.Column="1"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="30"
+                                     Margin="5,0,0,10"
+                                     TextChanged="MarginChanged"/>
 
-                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,0,0,0">
-                                <Label Content="Vpravo:" Style="{StaticResource ModernLabel}"/>
-                                <TextBox x:Name="TxtMarginRight" 
-                                         Style="{StaticResource ModernTextBox}"
-                                         Text="30"
-                                         TextChanged="MarginChanged"/>
-                            </StackPanel>
+                            <Label Grid.Row="1"
+                                    Grid.Column="0"
+                                    Content="Vpravo:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtMarginRight"
+                                     Grid.Row="1"
+                                    Grid.Column="1"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="30"
+                                     Margin="5,0,0,10"
+                                     TextChanged="MarginChanged"/>
+                        </Grid>
 
-                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,5,0">
-                                <Label Content="Dole:" Style="{StaticResource ModernLabel}"/>
-                                <TextBox x:Name="TxtMarginBottom" 
-                                         Style="{StaticResource ModernTextBox}"
-                                         Text="30"
-                                         TextChanged="MarginChanged"/>
-                            </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
-                                <Label Content="Vľavo:" Style="{StaticResource ModernLabel}"/>
-                                <TextBox x:Name="TxtMarginLeft" 
-                                         Style="{StaticResource ModernTextBox}"
-                                         Text="30"
-                                         TextChanged="MarginChanged"/>
-                            </StackPanel>
+                            <Label Grid.Row="0"
+                                    Grid.Column="0"
+                                    Content="Dole:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtMarginBottom"
+                                     Grid.Row="0"
+                                    Grid.Column="1"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="30"
+                                     Margin="5,0,0,10"
+                                     TextChanged="MarginChanged"/>
+
+                            <Label Grid.Row="1"
+                                    Grid.Column="0"
+                                    Content="Vľavo:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtMarginLeft"
+                                     Grid.Row="1"
+                                    Grid.Column="1"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="30"
+                                     Margin="5,0,0,0"
+                                     TextChanged="MarginChanged"/>
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- Rámček -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 8. RÁMČEK -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="🖼️ Rámček" 
+                        <Label Content="🖼️ Rámček"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <CheckBox x:Name="ChkShowBorder" 
+                        <CheckBox x:Name="ChkShowBorder"
                                   Content="Zobraziť rámček"
                                   Margin="0,0,0,10"
                                   Checked="BorderSettingsChanged"
                                   Unchecked="BorderSettingsChanged"/>
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="100"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
-                                <Label Content="Farba rámčeka:" Style="{StaticResource ModernLabel}"/>
-                                <TextBox x:Name="TxtBorderColor" 
-                                         Style="{StaticResource ModernTextBox}"
-                                         Text="#000000"
-                                         TextChanged="BorderSettingsChanged"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                <Label Content="Hrúbka:" Style="{StaticResource ModernLabel}"/>
-                                <TextBox x:Name="TxtBorderWidth" 
-                                         Style="{StaticResource ModernTextBox}"
-                                         Text="2"
-                                         TextChanged="BorderSettingsChanged"/>
-                            </StackPanel>
-                        </Grid>
+                        <Label Content="Hrúbka rámčeka (px):"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtBorderWidth"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="2"
+                                 TextChanged="BorderSettingsChanged"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Titulok certifikátu -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 9. TITULOK CERTIFIKÁTU -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="📝 Titulok certifikátu" 
+                        <Label Content="📌 Titulok certifikátu"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <CheckBox x:Name="ChkShowTitle" 
+                        <CheckBox x:Name="ChkShowTitle"
                                   Content="Zobraziť titulok"
                                   IsChecked="True"
                                   Margin="0,0,0,10"
                                   Checked="TitleSettingsChanged"
                                   Unchecked="TitleSettingsChanged"/>
 
-                        <Label Content="Text titulku:" Style="{StaticResource ModernLabel}"/>
-                        <TextBox x:Name="TxtCertificateTitle" 
+                        <Label Content="Text titulku:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtCertificateTitle"
                                  Style="{StaticResource ModernTextBox}"
                                  Text="CERTIFIKÁT O ABSOLVOVANÍ"
                                  Margin="0,0,0,10"
                                  TextChanged="TitleSettingsChanged"/>
 
-                        <Label Content="Zarovnanie:" Style="{StaticResource ModernLabel}"/>
+                        <Label Content="Zarovnanie:"
+                                Style="{StaticResource ModernLabel}"/>
                         <ComboBox x:Name="CmbTitleAlignment"
                                   Style="{StaticResource ModernComboBox}"
                                   SelectedIndex="1"
                                   SelectionChanged="TitleSettingsChanged">
-                            <ComboBoxItem Content="Vľavo" Tag="LEFT"/>
-                            <ComboBoxItem Content="Na stred" Tag="CENTER"/>
-                            <ComboBoxItem Content="Vpravo" Tag="RIGHT"/>
+                            <ComboBoxItem Content="Vľavo"
+                                    Tag="LEFT"/>
+                            <ComboBoxItem Content="Na stred"
+                                    Tag="CENTER"/>
+                            <ComboBoxItem Content="Vpravo"
+                                    Tag="RIGHT"/>
                         </ComboBox>
                     </StackPanel>
                 </Border>
 
-                <!-- Oddeľovač -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 10. ODDEĽOVAČ -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="➖ Oddeľovacia čiara" 
+                        <Label Content="➖ Oddeľovač"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <CheckBox x:Name="ChkShowSeparator" 
+                        <CheckBox x:Name="ChkShowSeparator"
                                   Content="Zobraziť oddeľovač"
                                   IsChecked="True"
                                   Margin="0,0,0,10"
                                   Checked="SeparatorSettingsChanged"
                                   Unchecked="SeparatorSettingsChanged"/>
 
-                        <Label Content="Štýl oddeľovača:" Style="{StaticResource ModernLabel}"/>
+                        <Label Content="Štýl oddeľovača:"
+                                Style="{StaticResource ModernLabel}"/>
                         <ComboBox x:Name="CmbSeparatorStyle"
                                   Style="{StaticResource ModernComboBox}"
                                   SelectedIndex="0"
                                   SelectionChanged="SeparatorSettingsChanged">
-                            <ComboBoxItem Content="Podčiarknutie" Tag="UNDERLINE"/>
-                            <ComboBoxItem Content="Čiara" Tag="LINE"/>
-                            <ComboBoxItem Content="Žiadny" Tag="NONE"/>
+                            <ComboBoxItem Content="Podčiarknutie"
+                                    Tag="UNDERLINE"/>
+                            <ComboBoxItem Content="Čiara"
+                                    Tag="LINE"/>
+                            <ComboBoxItem Content="Žiadny"
+                                    Tag="NONE"/>
                         </ComboBox>
                     </StackPanel>
                 </Border>
 
-                <!-- Viditeľnosť polí -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 11. PORADIE A VIDITEĽNOSŤ POLÍ -->
+                <!-- Poradie polí s drag & drop -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="👁️ Viditeľnosť polí" 
+                        <Label Content="🔢 Poradie a viditeľnosť polí"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <CheckBox x:Name="ChkShowOrganizer" 
-                                  Content="Zobraziť organizátora"
-                                  IsChecked="True"
-                                  Margin="0,0,0,6"
-                                  Checked="FieldVisibilityChanged"
-                                  Unchecked="FieldVisibilityChanged"/>
-                        <CheckBox x:Name="ChkShowEventTopic" 
-                                  Content="Zobraziť tému podujatia"
-                                  IsChecked="True"
-                                  Margin="0,0,0,6"
-                                  Checked="FieldVisibilityChanged"
-                                  Unchecked="FieldVisibilityChanged"/>
-                        <CheckBox x:Name="ChkShowEventDate" 
-                                  Content="Zobraziť dátum podujatia"
-                                  IsChecked="True"
-                                  Margin="0,0,0,6"
-                                  Checked="FieldVisibilityChanged"
-                                  Unchecked="FieldVisibilityChanged"/>
-                        <CheckBox x:Name="ChkShowBirthDate" 
-                                  Content="Zobraziť dátum narodenia"
-                                  IsChecked="True"
-                                  Margin="0,0,0,6"
-                                  Checked="FieldVisibilityChanged"
-                                  Unchecked="FieldVisibilityChanged"/>
-                        <CheckBox x:Name="ChkShowRegistrationNumber" 
-                                  Content="Zobraziť registračné číslo"
-                                  IsChecked="True"
-                                  Margin="0,0,0,6"
-                                  Checked="FieldVisibilityChanged"
-                                  Unchecked="FieldVisibilityChanged"/>
-                        <CheckBox x:Name="ChkShowNotes" 
-                                  Content="Zobraziť poznámky"
-                                  IsChecked="True"
-                                  Checked="FieldVisibilityChanged"
-                                  Unchecked="FieldVisibilityChanged"/>
+                        <TextBlock Text="Presúvaním zmeníte poradie zobrazenia"
+                                   Foreground="#64748B"
+                                   FontSize="12"
+                                   Margin="0,0,0,10"/>
+
+                        <ListBox x:Name="LstFields"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 AllowDrop="True"
+                                 PreviewMouseLeftButtonDown="LstFields_PreviewMouseLeftButtonDown"
+                                 PreviewMouseMove="LstFields_PreviewMouseMove"
+                                 Drop="LstFields_Drop"
+                                 DragOver="LstFields_DragOver">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource DraggableFieldItem}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="☰"
+                                                       FontSize="16"
+                                                       Foreground="#94A3B8"
+                                                       Margin="0,0,10,0"
+                                                       VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding DisplayName}"
+                                                       VerticalAlignment="Center"/>
+
+                                            <CheckBox Grid.Column="2"
+                                                      IsChecked="{Binding IsVisible}"
+                                                      Checked="FieldVisibilityChanged"
+                                                      Unchecked="FieldVisibilityChanged"
+                                                      VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </StackPanel>
                 </Border>
 
-                <!-- Vlastný text -->
-                <Border Style="{StaticResource Card}" 
+                <!-- 12. VLASTNÝ TEXT V ZÁHLAVÍ -->
+                <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="✏️ Vlastný text" 
+                        <Label Content="✏️ Vlastný text v záhlaví"
                                Style="{StaticResource ModernLabel}"
                                FontSize="15"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <Label Content="Text v záhlaví:" Style="{StaticResource ModernLabel}"/>
-                        <TextBox x:Name="TxtCustomHeader" 
+                        <TextBox x:Name="TxtCustomHeader"
                                  Style="{StaticResource ModernTextBox}"
                                  Height="60"
                                  TextWrapping="Wrap"
@@ -449,22 +776,341 @@
                                  Margin="0,0,0,10"
                                  TextChanged="CustomTextChanged"/>
 
-                        <Label Content="Text v pätičke:" Style="{StaticResource ModernLabel}"/>
-                        <TextBox x:Name="TxtCustomFooter" 
+                        <Label Content="Formátovanie:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <WrapPanel Margin="0,0,0,10">
+                            <ToggleButton x:Name="BtnHeaderBold"
+                                          Content="B"
+                                          FontWeight="Bold"
+                                          Width="35"
+                                          Height="35"
+                                          Margin="0,0,5,0"
+                                          Checked="HeaderFormattingChanged"
+                                          Unchecked="HeaderFormattingChanged"
+                                          ToolTip="Tučné"/>
+                            <ToggleButton x:Name="BtnHeaderItalic"
+                                          Content="I"
+                                          FontStyle="Italic"
+                                          Width="35"
+                                          Height="35"
+                                          Margin="0,0,5,0"
+                                          Checked="HeaderFormattingChanged"
+                                          Unchecked="HeaderFormattingChanged"
+                                          ToolTip="Kurzíva"/>
+                            <ComboBox x:Name="CmbHeaderAlignment"
+                                      Width="100"
+                                      Height="35"
+                                      SelectedIndex="0"
+                                      SelectionChanged="HeaderFormattingChanged">
+                                <ComboBoxItem Content="Vľavo"
+                                        Tag="LEFT"/>
+                                <ComboBoxItem Content="Stred"
+                                        Tag="CENTER"/>
+                                <ComboBoxItem Content="Vpravo"
+                                        Tag="RIGHT"/>
+                            </ComboBox>
+                        </WrapPanel>
+
+                        <Label Content="✏️ Vlastný text v pätičke"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,10,0,10"/>
+
+                        <TextBox x:Name="TxtCustomFooter"
                                  Style="{StaticResource ModernTextBox}"
                                  Height="60"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
                                  VerticalScrollBarVisibility="Auto"
+                                 Margin="0,0,0,10"
                                  TextChanged="CustomTextChanged"/>
+
+                        <Label Content="Formátovanie:"
+                                Style="{StaticResource ModernLabel}"/>
+                        <WrapPanel>
+                            <ToggleButton x:Name="BtnFooterBold"
+                                          Content="B"
+                                          FontWeight="Bold"
+                                          Width="35"
+                                          Height="35"
+                                          Margin="0,0,5,0"
+                                          Checked="FooterFormattingChanged"
+                                          Unchecked="FooterFormattingChanged"
+                                          ToolTip="Tučné"/>
+                            <ToggleButton x:Name="BtnFooterItalic"
+                                          Content="I"
+                                          FontStyle="Italic"
+                                          Width="35"
+                                          Height="35"
+                                          Margin="0,0,5,0"
+                                          Checked="FooterFormattingChanged"
+                                          Unchecked="FooterFormattingChanged"
+                                          ToolTip="Kurzíva"/>
+                            <ComboBox x:Name="CmbFooterAlignment"
+                                      Width="100"
+                                      Height="35"
+                                      SelectedIndex="0"
+                                      SelectionChanged="FooterFormattingChanged">
+                                <ComboBoxItem Content="Vľavo"
+                                        Tag="LEFT"/>
+                                <ComboBoxItem Content="Stred"
+                                        Tag="CENTER"/>
+                                <ComboBoxItem Content="Vpravo"
+                                        Tag="RIGHT"/>
+                            </ComboBox>
+                        </WrapPanel>
                     </StackPanel>
                 </Border>
+
+                <!-- 14. DEKORATÍVNE PRVKY -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="✨ Dekoratívne prvky"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <!-- 13. DEKORÁCIE -->
+                        <!-- Horná dekorácia -->
+                        <StackPanel x:Name="PnlTopDecoration"
+                                    IsEnabled="{Binding IsChecked, ElementName=ChkShowTopDecoration}">
+                            <Label Content="Typ hornej dekorácie:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <ComboBox x:Name="CmbTopDecorationType"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectionChanged="DecorationChanged"
+                                      Margin="0,0,0,10">
+                                <ComboBoxItem Content="Vlnovka"
+                                        Tag="WAVY_LINE"
+                                        IsSelected="True"/>
+                                <ComboBoxItem Content="Rovná čiara"
+                                        Tag="STRAIGHT_LINE"/>
+                                <ComboBoxItem Content="Šikmé čiary"
+                                        Tag="DIAGONAL_LINES"/>
+                                <ComboBoxItem Content="Rohové ozdoby"
+                                        Tag="CORNER_ORNAMENTS"/>
+                            </ComboBox>
+
+                            <Label Content="Farba dekorácie:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+
+                            </Grid>
+
+                            <Label Content="Hrúbka:"
+                                    Style="{StaticResource ModernLabel}"/>
+
+                        </StackPanel>
+
+                        <!--Dolná dekorácia-->
+
+                        <StackPanel x:Name="PnlBottomDecoration"
+                                    IsEnabled="{Binding IsChecked, ElementName=ChkShowBottomDecoration}">
+                            <Label Content="Typ dolnej dekorácie:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <ComboBox x:Name="CmbBottomDecorationType"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectionChanged="DecorationChanged"
+                                      Margin="0,0,0,10">
+                                <ComboBoxItem Content="Vlnovka"
+                                        Tag="WAVY_LINE"
+                                        IsSelected="True"/>
+                                <ComboBoxItem Content="Rovná čiara"
+                                        Tag="STRAIGHT_LINE"/>
+                                <ComboBoxItem Content="Šikmé čiary"
+                                        Tag="DIAGONAL_LINES"/>
+                                <ComboBoxItem Content="Rohové ozdoby"
+                                        Tag="CORNER_ORNAMENTS"/>
+                            </ComboBox>
+
+                            <Label Content="Farba dekorácie:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Bočné dekorácie -->
+                        <CheckBox x:Name="ChkShowSideDecorations"
+                                  Content="Zobrazit bočné dekorácie"
+                                  Margin="0,10,0,10"
+                                  Checked="DecorationChanged"
+                                  Unchecked="DecorationChanged"/>
+                    </StackPanel>
+                </Border>
+
+
+
+                <!-- 15. LOGO -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="🖼️ Logo"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <CheckBox x:Name="ChkShowLogo"
+                                  Content="Zobraziť logo"
+                                  Margin="0,0,0,10"
+                                  Checked="LogoChanged"
+                                  Unchecked="LogoChanged"/>
+
+                        <StackPanel x:Name="PnlLogo"
+                                    IsEnabled="{Binding IsChecked, ElementName=ChkShowLogo}">
+                            <Button Content="📁 Vybrať logo"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="SelectLogo_Click"
+                                    Margin="0,0,0,10"/>
+
+                            <Label Content="Cesta k logu:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtLogoPath"
+                                     Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True"
+                                     Margin="0,0,0,10"/>
+
+                            <Label Content="Veľkosť loga:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtLogoSize"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="80"
+                                     TextChanged="LogoChanged"
+                                     Margin="0,0,0,10"/>
+
+                            <Label Content="Pozícia loga:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <ComboBox x:Name="CmbLogoPosition"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectionChanged="LogoChanged"
+                                      Margin="0,0,0,10">
+                                <ComboBoxItem Content="Hore vľavo"
+                                        Tag="TOP_LEFT"/>
+                                <ComboBoxItem Content="Hore v strede"
+                                        Tag="TOP_CENTER"
+                                        IsSelected="True"/>
+                                <ComboBoxItem Content="Hore vpravo"
+                                        Tag="TOP_RIGHT"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 16. PEČIATKY A PODPISY -->
+                <Border Style="{StaticResource Card}"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="✍️ Pečiatky a podpisy"
+                               Style="{StaticResource ModernLabel}"
+                               FontSize="15"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <!-- Pečiatka -->
+                        <CheckBox x:Name="ChkShowStamp"
+                                  Content="Zobraziť pečiatku"
+                                  Margin="0,0,0,10"
+                                  Checked="StampChanged"
+                                  Unchecked="StampChanged"/>
+
+                        <StackPanel x:Name="PnlStamp"
+                                    IsEnabled="{Binding IsChecked, ElementName=ChkShowStamp}">
+                            <Button Content="📁 Vybrať pečiatku"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="SelectStamp_Click"
+                                    Margin="0,0,0,10"/>
+
+                            <Label Content="Cesta k pečiatke:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtStampPath"
+                                     Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True"
+                                     Margin="0,0,0,10"/>
+
+                            <Label Content="Veľkosť pečiatky:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtStampSize"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="60"
+                                     TextChanged="StampChanged"
+                                     Margin="0,0,0,10"/>
+
+                            <Label Content="Priehľadnosť pečiatky (0-100):"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtStampOpacity"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="70"
+                                     TextChanged="StampChanged"
+                                     Margin="0,0,0,15"/>
+                        </StackPanel>
+
+                        <!-- Podpis -->
+                        <CheckBox x:Name="ChkShowSignature"
+                                  Content="Zobraziť podpis"
+                                  Margin="0,0,0,10"
+                                  Checked="SignatureChanged"
+                                  Unchecked="SignatureChanged"/>
+
+                        <StackPanel x:Name="PnlSignature"
+                                    IsEnabled="{Binding IsChecked, ElementName=ChkShowSignature}">
+                            <Button Content="📁 Vybrať podpis"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="SelectSignature_Click"
+                                    Margin="0,0,0,10"/>
+
+                            <Label Content="Cesta k podpisu:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtSignaturePath"
+                                     Style="{StaticResource ModernTextBox}"
+                                     IsReadOnly="True"
+                                     Margin="0,0,0,10"/>
+
+                            <Label Content="Veľkosť podpisu:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtSignatureSize"
+                                     Style="{StaticResource ModernTextBox}"
+                                     Text="80"
+                                     TextChanged="SignatureChanged"
+                                     Margin="0,0,0,10"/>
+
+                            <Label Content="Pozícia podpisu:"
+                                    Style="{StaticResource ModernLabel}"/>
+                            <ComboBox x:Name="CmbSignaturePosition"
+                                      Style="{StaticResource ModernComboBox}"
+                                      SelectionChanged="SignatureChanged"
+                                      Margin="0,0,0,10">
+                                <ComboBoxItem Content="Vľavo"
+                                        Tag="LEFT"/>
+                                <ComboBoxItem Content="V strede"
+                                        Tag="CENTER"
+                                        IsSelected="True"/>
+                                <ComboBoxItem Content="Vpravo"
+                                        Tag="RIGHT"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+
 
             </StackPanel>
         </ScrollViewer>
 
         <!-- Pravý panel - Náhľad -->
-        <Border Grid.Column="2" 
+        <Border Grid.Column="2"
                 Style="{StaticResource Card}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -499,16 +1145,16 @@
                         CornerRadius="0,0,8,8"
                         Padding="15"
                         Margin="-20,15,-20,-20">
-                    <StackPanel Orientation="Horizontal" 
+                    <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center">
-                        <Button Content="🔄 Obnoviť náhľad" 
+                        <Button Content="🔄 Obnoviť náhľad"
                                 Style="{StaticResource ModernButton}"
                                 Width="180"
-                                Padding="0,18"                                
+                                Padding="0,18"
                                 FontSize="13"
                                 Margin="0,0,10,0"
                                 Click="RefreshPreview_Click"/>
-                        <Button Content="📄 Testovať PDF" 
+                        <Button Content="📄 Testovať PDF"
                                 Style="{StaticResource SuccessButton}"
                                 Width="180"
                                 Padding="0,18"
@@ -520,3 +1166,4 @@
         </Border>
     </Grid>
 </Window>
+    
