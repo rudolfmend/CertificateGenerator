@@ -285,7 +285,8 @@
                     FontWeight="Bold"
                     Margin="0,0,15,0"
                     Click="GenerateBulkPdf_Click"/>
-            <Button Content="✖️ Zavrieť" 
+                <Button Content="✖️ Zavrieť"
+                        IsCancel="True"
                     Style="{StaticResource SecondaryButton}"
                     Padding="20,10"
                     FontSize="15"

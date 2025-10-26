@@ -22,13 +22,17 @@ namespace CertificateGenerator
         private OrganizerRepository _organizerRepo;
         private EventTopicRepository _topicRepo;
         private CertificateRepository _certificateRepo;
+        private bool _hasUnsavedChanges = false;
 
         public BulkGenerationWindow()
         {
             InitializeComponent();
             Participants = new ObservableCollection<Participant>();
             DgParticipants.ItemsSource = Participants;
-            Participants.CollectionChanged += (s, e) => UpdateStatistics();
+            Participants.CollectionChanged += (s, e) => {
+                UpdateStatistics();
+                _hasUnsavedChanges = Participants.Count > 0 || !string.IsNullOrWhiteSpace(TxtBulkTopics.Text);
+            };
             InitializeRepositories();
         }
 
@@ -78,11 +82,10 @@ namespace CertificateGenerator
             }
         }
 
-        // Odstrániť staré metódy: AddParticipant_Click, EditParticipant_Click, RemoveParticipant_Click
-
         private void TxtBulkTopics_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePdfCount();
+            _hasUnsavedChanges = Participants.Count > 0 || !string.IsNullOrWhiteSpace(TxtBulkTopics.Text);
         }
 
         private void UpdatePdfCount()
@@ -475,7 +478,11 @@ namespace CertificateGenerator
                 errorCount == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
 
             if (successCount > 0)
+            {
+                _hasUnsavedChanges = false; // Reset po úspešnom generovaní
                 System.Diagnostics.Process.Start("explorer.exe", folderPath);
+            }
+            System.Diagnostics.Debug.WriteLine("Bulk PDF generation completed.");
         }
 
         private string GetSelectedPaperFormat()

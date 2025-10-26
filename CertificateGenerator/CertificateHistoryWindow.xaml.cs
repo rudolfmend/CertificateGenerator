@@ -53,6 +53,15 @@ namespace CertificateGenerator
             }
         }
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
+        }
+
         private void UpdateStatistics()
         {
             TxtTotalCount.Text = _allCertificates.Count.ToString();

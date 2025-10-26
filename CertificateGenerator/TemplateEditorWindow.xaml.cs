@@ -3,8 +3,6 @@ using CertificateGenerator.Helpers;
 using iText.Kernel.Geom;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +15,7 @@ namespace CertificateGenerator
         private CertificateTemplateRepository _templateRepo;
         private CertificateTemplateModel _currentTemplate;
         private bool _isLoading = false;
+        private bool _hasUnsavedChanges = false;
 
         public TemplateEditorWindow()
         {
@@ -61,6 +60,31 @@ namespace CertificateGenerator
             {
                 MessageBox.Show($"Chyba pri načítaní šablón:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        //  true pri akejkoľvek zmene v editore
+        private void AnySettingChanged(object sender, EventArgs e)
+        {
+            if (!_isLoading) _hasUnsavedChanges = true;
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Escape)
+            {
+                if (_hasUnsavedChanges)
+                {
+                    var result = MessageBox.Show(
+                        "Máte rozpísanú prácu. Naozaj zavrieť?",
+                        "Potvrdenie",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+                    if (result != MessageBoxResult.Yes) return;
+                }
+                this.Close();
             }
         }
 
@@ -139,7 +163,8 @@ namespace CertificateGenerator
             finally
             {
                 _isLoading = false;
-                UpdatePreview();
+                _hasUnsavedChanges = false; 
+                UpdatePreview(); 
             }
         }
 
@@ -508,6 +533,7 @@ namespace CertificateGenerator
                 }
 
                 LoadTemplates();
+                _hasUnsavedChanges = false; // Reset po uložení
             }
             catch (Exception ex)
             {
@@ -520,6 +546,7 @@ namespace CertificateGenerator
         {
             LoadNewTemplate();
             CmbTemplates.SelectedIndex = -1;
+            _hasUnsavedChanges = false;
         }
 
         private void DeleteTemplate_Click(object sender, RoutedEventArgs e)

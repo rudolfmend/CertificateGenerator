@@ -196,6 +196,7 @@
                         Margin="0,0,8,0"
                         Click="DeleteRecord_Click"/>
                 <Button Content="✖️ Zavrieť" 
+                        IsCancel="True"
                         Style="{StaticResource SecondaryButton}"
                         Click="Close_Click"/>
             </StackPanel>

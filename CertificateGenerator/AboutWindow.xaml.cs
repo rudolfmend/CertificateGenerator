@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace CertificateGenerator
 {
@@ -31,6 +32,15 @@ namespace CertificateGenerator
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error loading system info: {ex.Message}");
+            }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
             }
         }
 

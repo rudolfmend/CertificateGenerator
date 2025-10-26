@@ -27,6 +27,15 @@ namespace CertificateGenerator
             DgParticipants.ItemsSource = _allParticipants;
         }
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
+        }
+
         private void TxtSearch_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             string searchTerm = TxtSearch.Text?.Trim();

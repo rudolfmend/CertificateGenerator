@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace CertificateGenerator
 {
@@ -11,6 +12,15 @@ namespace CertificateGenerator
         public PrivacyPolicyWindow()
         {
             InitializeComponent();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

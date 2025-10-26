@@ -46,6 +46,15 @@ namespace CertificateGenerator
             }
         }
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
+        }
+
         private void SelectOrganizer_Click(object sender, RoutedEventArgs e)
         {
             try
