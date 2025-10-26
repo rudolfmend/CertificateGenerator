@@ -1,0 +1,53 @@
+DatabaseManager.cs s nasledujúcimi funkciami:
+Hlavné funkcie:
+1. Automatická správa databáz:
+
+Vytvára názvy: CertificateGenerator_{MachineGUID}_{Timestamp}.db
+Automaticky detekuje a načíta lokálnu databázu
+Ak neexistuje, vytvorí novú
+
+2. Podpora viacerých databáz:
+
+GetAllDatabases() - zoznam všetkých DB
+GetDatabaseInfo() - detaily o DB (pôvod, veľkosť, čas)
+SwitchDatabase() - prepínanie medzi DB
+HasForeignDatabases() - detekcia cudzích DB
+
+3. Zlučovanie:
+
+MergeDatabases() - zlúči všetky DB do jednej
+Automatická záloha pred zlúčením (ZIP súbor)
+Zachováva všetky záznamy vrátane duplicít
+Vymaže staré DB po úspešnom zlúčení
+
+4. Helper classes:
+
+DatabaseInfo - informácie o DB (s formátovaným výstupom)
+MergeResult - výsledok zlúčenia
+
+5. Súbory:
+
+DatabaseManager.cs - hlavná trieda s:
+
+Uloženie v Documents/CertificateGenerator/Databases/
+Formát názvu: CertificateGenerator_{8-char-GUID}_{timestamp}.db
+Automatická detekcia a zlučovanie
+Uvítacia správa pri prvom spustení
+
+
+DatabaseHelper.cs - UI helper metódy:
+
+OpenDatabaseFolder() - otvorí priečinok
+ExportDatabase() / ImportDatabase()
+ShowMergeDatabasesDialog() - dialog na zlúčenie
+CheckForForeignDatabasesOnStartup() - kontrola pri štarte
+
+
+Príklady kódu - MainWindow implementácia
+
+Kľúčové zmeny oproti originálu:
+✅ Dokumenty namiesto AppData
+✅ Kratší názov s GUID namiesto MachineGUID
+✅ Uvítacia správa pri prvom spustení
+✅ Menu položky pre správu databáz
+✅ Automatická detekcia cudzích DB pri štarte

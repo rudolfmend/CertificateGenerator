@@ -114,6 +114,8 @@
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -165,6 +167,7 @@
     <Compile Include="Data\CertificateRepository.cs" />
     <Compile Include="Data\CertificateTemplateModel.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
+    <Compile Include="Data\DatabaseHelper.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
     <Compile Include="ManageEventTopicWindow.xaml.cs">
       <DependentUpon>ManageEventTopicWindow.xaml</DependentUpon>

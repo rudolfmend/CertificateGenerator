@@ -396,4 +396,117 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
     </Style>
 
+    <!-- Shadow efekt pre popup - MUSÍ BYŤ PRED ModernMenuItem! -->
+    <DropShadowEffect x:Key="DropShadowEffect"
+                      Color="#000000"
+                      Direction="270"
+                      ShadowDepth="2"
+                      BlurRadius="8"
+                      Opacity="0.15"/>
+
+    <!-- Modern Menu Style s zaobleným dizajnom -->
+    <Style x:Key="ModernMenuItem" TargetType="MenuItem">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border x:Name="Border"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Ikona -->
+                            <ContentPresenter Grid.Column="0"
+                                            ContentSource="Icon"
+                                            Margin="0,0,8,0"
+                                            VerticalAlignment="Center"/>
+
+                            <!-- Header text -->
+                            <ContentPresenter Grid.Column="1"
+                                            ContentSource="Header"
+                                            RecognizesAccessKey="True"
+                                            VerticalAlignment="Center"/>
+
+                            <!-- Šípka pre submenu -->
+                            <Path Grid.Column="2"
+                                  x:Name="RightArrow"
+                                  Data="M 0 0 L 4 3.5 L 0 7 Z"
+                                  Fill="{StaticResource TextSecondaryColor}"
+                                  Margin="8,0,0,0"
+                                  VerticalAlignment="Center"
+                                  Visibility="Collapsed"/>
+
+                            <!-- Popup pre submenu -->
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Placement="Bottom"
+                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Focusable="False"
+                                   PopupAnimation="Fade"
+                                   VerticalOffset="5">
+                                <Border Background="{StaticResource SurfaceColor}"
+                                        BorderBrush="{StaticResource BorderColor}"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="4"
+                                        Effect="{StaticResource DropShadowEffect}">
+                                    <StackPanel IsItemsHost="True" 
+                                              KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Hover efekt -->
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource InputBackground}"/>
+                        </Trigger>
+
+                        <!-- Submenu indicator -->
+                        <Trigger Property="Role" Value="TopLevelHeader">
+                            <Setter TargetName="PART_Popup" Property="Placement" Value="Bottom"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="SubmenuHeader">
+                            <Setter TargetName="RightArrow" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_Popup" Property="Placement" Value="Right"/>
+                            <Setter TargetName="PART_Popup" Property="HorizontalOffset" Value="5"/>
+                        </Trigger>
+
+                        <!-- Disabled -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryColor}"/>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Separator štýl -->
+    <Style x:Key="ModernMenuSeparator" TargetType="Separator">
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Margin" Value="8,4"/>
+        <Setter Property="Background" Value="{StaticResource BorderColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Background="{TemplateBinding Background}" 
+                            Height="{TemplateBinding Height}"
+                            Margin="{TemplateBinding Margin}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 </ResourceDictionary>

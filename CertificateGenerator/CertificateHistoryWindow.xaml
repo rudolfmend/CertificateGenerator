@@ -2,7 +2,7 @@
 <Window x:Class="CertificateGenerator.CertificateHistoryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="História certifikátov" 
+        Title="História certifikátov - Prehľad všetkých vytvorených certifikátov a štatistiky" 
         Height="800" 
         Width="1200"
         MinHeight="580" 
@@ -20,24 +20,6 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
-        <!-- Header -->
-        <Border Grid.Row="0" 
-                Style="{StaticResource Card}" 
-                Margin="0,0,0,15">
-            <StackPanel>
-                <TextBlock Text="História vygenerovaných certifikátov" 
-                           FontSize="20"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource TextPrimaryColor}"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,5"/>
-                <TextBlock Text="Prehľad všetkých vytvorených certifikátov a štatistiky" 
-                           FontSize="13"
-                           Foreground="{StaticResource TextSecondaryColor}"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
 
         <!-- Filters -->
         <Border Grid.Row="1" 
@@ -61,7 +43,8 @@
                 </StackPanel>
 
                 <!-- Date From -->
-                <StackPanel Grid.Column="1" Margin="0,0,15,0">
+                <StackPanel Grid.Column="1" Margin="0,0,15,0"
+                        VerticalAlignment="Bottom">
                     <Label Content="Od dátumu:" Style="{StaticResource ModernLabel}"/>
                     <DatePicker x:Name="DtpDateFrom" 
                                 Style="{StaticResource ModernDatePicker}"
@@ -69,7 +52,8 @@
                 </StackPanel>
 
                 <!-- Date To -->
-                <StackPanel Grid.Column="2" Margin="0,0,15,0">
+                <StackPanel Grid.Column="2" Margin="0,0,15,0"
+                        VerticalAlignment="Bottom">
                     <Label Content="Do dátumu:" Style="{StaticResource ModernLabel}"/>
                     <DatePicker x:Name="DtpDateTo" 
                                 Style="{StaticResource ModernDatePicker}"
@@ -146,43 +130,44 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-
-            <Separator  Grid.Row="2" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" Background="Gray" Margin="-29,0,-660,10" />
-
+            <!--<Separator  Grid.Row="2" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" Background="Gray" Margin="-29,0,-660,10" />-->
 
             <!-- Buttons -->
-            <Border Grid.Row="2" Padding="25,15,25,0" Background="Blue" Margin="-30,-10,-700,15" >
+            <Border Grid.Row="2" Padding="25,0,25,0"   >
                 <!-- Statistics -->
                 <Border Grid.Column="0"
                         Background="{StaticResource InputBackground}"
                         CornerRadius="8"
-                        Padding="20,12"
-                        Margin="0,0,15,0">
+                        Padding="20,15,0,5">
                     <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="📊 Celkom certifikátov: " 
+                        <TextBlock Text="Celkom certifikátov: " 
                                    FontWeight="SemiBold"
-                                   FontSize="14"/>
+                                   FontSize="14"
+                                   Padding="0,0,2,10" />
                         <TextBlock x:Name="TxtTotalCount" 
                                    Text="0" 
                                    Foreground="{StaticResource PrimaryColor}" 
                                    FontWeight="Bold"
-                                   FontSize="14"/>
+                                   FontSize="14" 
+                                   Padding="0,0,2,10" />
                         <TextBlock Text=" | Zobrazených: " 
-                                   Margin="20,0,0,0"
+                                   Margin="25,0,0,10"
                                    FontWeight="SemiBold"
-                                   FontSize="14"/>
+                                   FontSize="14" 
+                                   Padding="0,0,2,10" />
                         <TextBlock x:Name="TxtFilteredCount" 
                                    Text="0" 
                                    Foreground="{StaticResource SuccessColor}" 
                                    FontWeight="Bold"
-                                   FontSize="14"/>
+                                   FontSize="14"
+                                   Padding="0,0,2,10" />
                     </StackPanel>
                 </Border>
-
             </Border>
+            
                 <!-- Action Buttons -->
             <StackPanel Grid.Column="1" 
-                        Orientation="Horizontal">
+                        Orientation="Horizontal" Margin="0,0,0,10"  >
                 <Button Content="📂 Otvoriť súbor" 
                         Style="{StaticResource ModernButton}"
                         Margin="0,0,8,0"

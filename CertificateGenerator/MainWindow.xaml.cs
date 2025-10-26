@@ -23,11 +23,16 @@ namespace CertificateGenerator
         private int _currentOrganizerId = 0;
         private int _currentParticipantId = 0;
         private int _currentTopicId = 0;
+        private DatabaseManager _dbManager;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeRepositories();
+            // Inicializácia databázového managera
+            _dbManager = new DatabaseManager();
+            // Kontrola cudzích databáz pri štarte
+            this.Loaded += MainWindow_Loaded;        
         }
 
         private void InitializeRepositories()
@@ -178,6 +183,58 @@ namespace CertificateGenerator
                 MessageBox.Show($"Chyba pri otváraní histórie:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        #endregion
+
+        #region Database Manager
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Skontroluje cudzie databázy pri spustení
+            DatabaseHelper.CheckForForeignDatabasesOnStartup(_dbManager);
+        }
+
+        // Menu položky
+        private void OpenDatabaseFolder_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseHelper.OpenDatabaseFolder(_dbManager);
+        }
+
+        private void ExportDatabase_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseHelper.ExportDatabase(_dbManager);
+        }
+
+        private void ImportDatabase_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseHelper.ImportDatabase(_dbManager);
+        }
+
+        private void MergeDatabases_Click(object sender, RoutedEventArgs e)
+        {
+            bool shouldRestart = DatabaseHelper.ShowMergeDatabasesDialog(_dbManager);
+
+            if (shouldRestart)
+            {
+                // Reštartuj aplikáciu
+                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void ShowDatabaseInfo_Click(object sender, RoutedEventArgs e)
+        {
+            string currentDb = System.IO.Path.GetFileName(_dbManager.GetDatabasePath());
+            string folder = _dbManager.GetDatabaseFolder();
+
+            MessageBox.Show(
+                $"Aktívna databáza:\n{currentDb}\n\n" +
+                $"Umiestnenie:\n{folder}\n\n" +
+                $"Machine ID:\n{_dbManager.GetMachineIdentifier()}",
+                "Informácie o databáze",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
 
         #endregion

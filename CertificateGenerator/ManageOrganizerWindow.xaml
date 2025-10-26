@@ -11,7 +11,7 @@
         ResizeMode="CanResize"
         Background="{StaticResource BackgroundColor}">
 
-    <Grid Margin="30">
+    <Grid Margin="10,10,0,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="15"/>
@@ -27,33 +27,6 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
-            <Border Grid.Row="0" 
-                    Style="{StaticResource Card}" 
-                    Margin="0,0,0,20">
-                <TextBlock Text="Uložení organizátori" 
-                           FontSize="18"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource TextPrimaryColor}"
-                           HorizontalAlignment="Center"/>
-            </Border>
-
-            <!-- Search Box -->
-            <Border Grid.Row="1" 
-                    Style="{StaticResource Card}" 
-                    Margin="0,0,0,15">
-                <StackPanel>
-                    <Label Content="🔍 Vyhľadávanie:" 
-                           Style="{StaticResource ModernLabel}"
-                           FontWeight="Bold"
-                           Margin="0,0,0,8"/>
-                    <TextBox x:Name="TxtSearch" 
-                             Style="{StaticResource ModernTextBox}"
-                             TextChanged="TxtSearch_TextChanged"
-                             ToolTip="Zadajte názov organizátora"/>
-                </StackPanel>
-            </Border>
-
             <!-- Organizers List -->
             <Border Grid.Row="2" 
                     Style="{StaticResource Card}" 
@@ -61,17 +34,36 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0"
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                        <TextBlock Text="Uložení organizátori" 
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryColor}"
+                                   Margin="0,0,0,15"
+                               HorizontalAlignment="Center"/>
+                        <Label Content="🔍 Vyhľadávanie:" 
+                               Style="{StaticResource ModernLabel}"
+                               FontWeight="Bold"
+                               Margin="0,0,0,8"/>
+                        <TextBox x:Name="TxtSearch" 
+                                 Style="{StaticResource ModernTextBox}"
+                                 TextChanged="TxtSearch_TextChanged"
+                                 ToolTip="Zadajte názov organizátora"/>
+                    </StackPanel>
+
+                    <Label Grid.Row="1" 
                            Content="Zoznam organizátorov"
                            Style="{StaticResource ModernLabel}"
                            FontSize="15"
                            FontWeight="Bold"
                            Margin="0,0,0,15"/>
 
-                    <Border Grid.Row="1"
+                    <Border Grid.Row="2"
                             BorderThickness="1"
                             BorderBrush="{StaticResource BorderColor}"
                             CornerRadius="6"

@@ -54,19 +54,52 @@
                        TextWrapping="Wrap" />
                 </StackPanel>
 
-                <!-- Pravá strana: menu -->
+                <!-- Pravá strana: menu s modernými štýlmi -->
                 <Menu Grid.Column="1"
-              Background="Transparent"
-              Foreground="{StaticResource TextPrimaryColor}"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Center">
+      Background="Transparent"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Center">
+
+                    <!-- Databázové menu -->
+                    <MenuItem Header="💾 Databáza"
+              Style="{StaticResource ModernMenuItem}">
+                        <MenuItem Header="📂 Otvoriť priečinok s databázami" 
+                  Click="OpenDatabaseFolder_Click"
+                  Style="{StaticResource ModernMenuItem}" />
+
+                        <Separator Style="{StaticResource ModernMenuSeparator}"/>
+
+                        <MenuItem Header="📤 Exportovať databázu..." 
+                  Click="ExportDatabase_Click"
+                  Style="{StaticResource ModernMenuItem}" />
+
+                        <MenuItem Header="📥 Importovať databázu..." 
+                  Click="ImportDatabase_Click"
+                  Style="{StaticResource ModernMenuItem}" />
+
+                        <Separator Style="{StaticResource ModernMenuSeparator}"/>
+
+                        <MenuItem Header="🔀 Zlúčiť databázy..." 
+                  Click="MergeDatabases_Click"
+                  ToolTip="Zlúči všetky databázy z rôznych počítačov do jednej"
+                  Style="{StaticResource ModernMenuItem}" />
+
+                        <Separator Style="{StaticResource ModernMenuSeparator}"/>
+
+                        <MenuItem Header="ℹ️ Informácie o databáze" 
+                  Click="ShowDatabaseInfo_Click"
+                  Style="{StaticResource ModernMenuItem}" />
+                    </MenuItem>
+
                     <MenuItem Header="📖 O aplikácii"
-                      Click="About_Click"
-                      Padding="10,5"   Cursor="Hand" />
+              Click="About_Click"
+              Style="{StaticResource ModernMenuItem}" />
+
                     <MenuItem Header="🔒 Ochrana údajov"
-                      Click="PrivacyPolicy_Click"
-                      Padding="10,5"   Cursor="Hand" />
+              Click="PrivacyPolicy_Click"
+              Style="{StaticResource ModernMenuItem}" />
                 </Menu>
+
             </Grid>
         </Border>
 

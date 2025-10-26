@@ -11,7 +11,7 @@
         ResizeMode="CanResize"
         Background="{StaticResource BackgroundColor}">
 
-    <Grid Margin="30">
+    <Grid Margin="25,10,25,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="15"/>
@@ -27,26 +27,20 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
-            <Border Grid.Row="0" 
-                    Style="{StaticResource Card}" 
-                    Margin="0,0,0,20">
-                <TextBlock Text="Uložené témy podujatí" 
-                           FontSize="18"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource TextPrimaryColor}"
-                           HorizontalAlignment="Center"/>
-            </Border>
-
             <!-- Search Box -->
             <Border Grid.Row="1" 
                     Style="{StaticResource Card}" 
                     Margin="0,0,0,15">
                 <StackPanel>
+                    <TextBlock Text="Uložené témy podujatí" 
+                           FontSize="17"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryColor}"
+                           HorizontalAlignment="Center"/>
                     <Label Content="🔍 Vyhľadávanie:" 
                            Style="{StaticResource ModernLabel}"
                            FontWeight="Bold"
-                           Margin="0,0,0,8"/>
+                           Margin="0,10,0,8"/>
                     <TextBox x:Name="TxtSearch" 
                              Style="{StaticResource ModernTextBox}"
                              TextChanged="TxtSearch_TextChanged"

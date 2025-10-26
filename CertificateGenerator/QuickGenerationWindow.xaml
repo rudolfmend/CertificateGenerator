@@ -18,25 +18,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0" 
-                Style="{StaticResource Card}" 
-                Margin="0,0,18,20" Padding="0,0,0,10"
-                MaxHeight="160">
-            <StackPanel>
-                <TextBlock Text="Rýchle vytvorenie certifikátu" 
-                           FontSize="20"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource TextPrimaryColor}"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,5"/>
-                <TextBlock Text="Vyplňte údaje a vygenerujte PDF certifikát" 
-                           FontSize="12"
-                           Foreground="{StaticResource TextSecondaryColor}"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
-
         <!-- Content -->
         <ScrollViewer Grid.Row="1" 
                       VerticalScrollBarVisibility="Auto"
@@ -47,11 +28,15 @@
                 <Border Style="{StaticResource Card}" 
                         Margin="0,0,0,15">
                     <StackPanel>
+                <TextBlock Text="Vyplňte údaje a vygenerujte PDF certifikát" 
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondaryColor}"
+                           HorizontalAlignment="Left"/>
                         <Label Content="📋 Údaje o podujatí"
                                Style="{StaticResource ModernLabel}"
                                FontSize="16"
                                FontWeight="Bold"
-                               Margin="0,0,0,15"/>
+                               Margin="0,10,0,15"/>
 
                         <!-- Organizer -->
                         <Label Content="Organizátor:" Style="{StaticResource ModernLabel}"/>

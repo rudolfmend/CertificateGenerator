@@ -1,7 +1,7 @@
 ﻿<Window x:Class="CertificateGenerator.TemplateEditorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Editor šablón certifikátov" 
+        Title="Editor šablón certifikátov - Prispôsobte vzhľad vašich certifikátov" 
         FontSize="14"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
@@ -20,23 +20,6 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
-                <!-- Hlavička -->
-                <Border Style="{StaticResource Card}" 
-                        Margin="0,0,0,15">
-                    <StackPanel>
-                        
-                        <TextBlock Text="Editor šablón certifikátov" 
-                                   FontSize="18"
-                                   FontWeight="Bold"
-                                   Foreground="{StaticResource TextPrimaryColor}"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,5"/>
-                        <TextBlock Text="Prispôsobte vzhľad vašich certifikátov" 
-                                   FontSize="12"
-                                   Foreground="{StaticResource TextSecondaryColor}"
-                                   HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
 
                 <!-- Výber šablóny -->
                 <Border Style="{StaticResource Card}" 

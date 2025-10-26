@@ -70,7 +70,10 @@ CertificateGenerator/
 
 SQLite database is automatically created at:
 ```
-%LocalAppData%\CertificateGenerator\CertificateGenerator.db
+C:\Users\[User Name]\Documents\CertificateGenerator\Databases\CertificateGenerator_{8-char-GUID}_{timestamp}.db
+Name format: CertificateGenerator_{8-char-GUID}_{timestamp}.db
+Automatic detection and merging
+Welcome message on first launch
 ```
 
 Contains tables:
