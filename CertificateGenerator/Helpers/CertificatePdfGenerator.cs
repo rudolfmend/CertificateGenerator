@@ -37,6 +37,9 @@ namespace CertificateGenerator.Helpers
             using (PdfDocument pdfDocument = new PdfDocument(writer))
             using (Document document = new Document(pdfDocument, pageSize))
             {
+                // Explicitné vytvorenie stránky pred akýmkoľvek prístupom
+                pdfDocument.AddNewPage(pageSize);
+
                 // Nastavenie okrajov
                 document.SetMargins(
                     template.MarginTop,
@@ -64,7 +67,7 @@ namespace CertificateGenerator.Helpers
                 // Horná dekorácia(vlnovka)
                 if (template.ShowTopDecoration)
                 {
-                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetPage(1));
 
                     // Pozícia: tesne pod horným okrajom
                     float decorY = pageSize.GetHeight() - template.MarginTop + 15;
@@ -146,11 +149,14 @@ namespace CertificateGenerator.Helpers
                 }
 
                 // Meno účastníka
-                document.Add(new Paragraph($"{template.LabelParticipant} {participantName}")
-                    .SetFont(headerFont)
-                    .SetFontSize(template.HeaderFontSize + 2)
-                    .SetFontColor(titleColor)
-                    .SetMarginBottom(15));
+                if (template.ShowName && !string.IsNullOrWhiteSpace(participantName))
+                {
+                    document.Add(new Paragraph($"{template.LabelParticipant} {participantName}")
+                        .SetFont(headerFont)
+                        .SetFontSize(template.HeaderFontSize + 2)
+                        .SetFontColor(titleColor)
+                        .SetMarginBottom(15));
+                }
 
                 // Dátum podujatia
                 if (template.ShowEventDate && eventDate.HasValue)
@@ -219,7 +225,7 @@ namespace CertificateGenerator.Helpers
                 }
 
                 // Časová pečiatka
-                Paragraph footer = new Paragraph($"\nVytvorené: {DateTime.Now:dd.MM.yyyy HH:mm}")
+                Paragraph footer = new Paragraph($"Tento certifikát slúži ako potvrdenie o udelení jedného kreditu  za účasť na seminári na oddelení FBLR Rastislavova 45, Košice.")
                     .SetFont(textFont)
                     .SetFontSize(template.TextFontSize - 1)
                     .SetFontColor(ParseColor("#888888"))
@@ -231,7 +237,7 @@ namespace CertificateGenerator.Helpers
                 // Dolná dekorácia - na konci dokumentu (pred footer, riadok ~200)
                 if (template.ShowBottomDecoration)
                 {
-                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetPage(1));
 
                     float decorY = template.MarginBottom - 15;
                     float decorStartX = template.MarginLeft;
@@ -253,7 +259,7 @@ namespace CertificateGenerator.Helpers
 
         private static void AddPageBorder(PdfDocument pdfDocument, PageSize pageSize, CertificateTemplateModel template)
         {
-            PdfPage page = pdfDocument.GetFirstPage();
+            PdfPage page = pdfDocument.GetPage(1);
             PdfCanvas canvas = new PdfCanvas(page);
 
             Color borderColor = ParseColor(template.BorderColor);
@@ -311,20 +317,33 @@ namespace CertificateGenerator.Helpers
         {
             try
             {
+                // Použitie fontov s Unicode (CP1250) podporou pre slovenčinu
+                string encoding = "Cp1250"; // Central European encoding
+
                 if (fontFamily == null || fontFamily.Contains("Helvetica-Bold"))
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
                 else if (fontFamily.Contains("Helvetica-Oblique") || fontFamily.Contains("Italic"))
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_OBLIQUE);
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_OBLIQUE, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+                else if (fontFamily.Contains("Times-Bold"))
+                    return PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
                 else if (fontFamily.Contains("Times"))
-                    return PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN);
+                    return PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
                 else if (fontFamily.Contains("Courier"))
-                    return PdfFontFactory.CreateFont(StandardFonts.COURIER);
+                    return PdfFontFactory.CreateFont(StandardFonts.COURIER, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
                 else
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
             }
             catch
             {
-                return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+                // Fallback: ak zlyha Cp1250, skús bez encodingu
+                try
+                {
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+                }
+                catch
+                {
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+                }
             }
         }
 
@@ -480,4 +499,3 @@ namespace CertificateGenerator.Helpers
         //}
     }
 }
-

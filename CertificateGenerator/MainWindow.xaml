@@ -18,90 +18,149 @@
         </Grid.RowDefinitions>
 
         <!-- Top Menu Bar -->
-        <Border Grid.Row="0"
+        <Border x:Name="BorderOnTop" Grid.Row="0"
         Background="{StaticResource SurfaceColor}"
         BorderBrush="{StaticResource BorderColor}"
         BorderThickness="0,0,0,1"
         Padding="20,10">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <!-- Ľavá strana: ikona + názov + podnadpis -->
-                <StackPanel Grid.Column="0"
+                <!-- Notifikačná lišta pre cudzie databázy -->
+                <Border x:Name="DatabaseNotificationBar" Grid.Row="0"
+                        Background="#FFF3CD"
+                        BorderBrush="#FFC107"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="15,10"
+                        Margin="0,0,0,10"
+                        Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="⚠️" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" />
+
+                        <TextBlock x:Name="DatabaseNotificationText" Grid.Column="1"
+                                   Text="Boli detekované databázy z iných počítačov."
+                                   FontSize="13"
+                                   Foreground="#856404"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap" />
+
+                        <Button Grid.Column="2"
+                                Content="Zlúčiť teraz"
+                                Click="MergeDatabases_Click"
+                                Padding="10,5"
+                                Margin="10,0,5,0"
+                                Background="#FFC107"
+                                BorderBrush="#FFA000"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand" />
+
+                        <Button Grid.Column="3"
+                                Content="✕"
+                                Click="CloseNotification_Click"
+                                Padding="8,5"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="#856404"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                ToolTip="Zavrieť oznámenie" />
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Ľavá strana: ikona + názov + podnadpis -->
+                    <StackPanel Grid.Column="0"
                     Orientation="Vertical"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal"
+                        <StackPanel Orientation="Horizontal"
                         VerticalAlignment="Center">
-                        <TextBlock Text="📜"
+                            <TextBlock Text="📜"
                            FontSize="26"
                            Margin="0,0,10,0"
                            VerticalAlignment="Center" />
-                        <TextBlock Text="Certificate Generator"
+                            <TextBlock Text="Certificate Generator"
                            FontSize="20"
                            FontWeight="Bold"
                            Foreground="{StaticResource TextPrimaryColor}"
                            VerticalAlignment="Center" />
-                    </StackPanel>
+                        </StackPanel>
 
-                    <TextBlock Text="nástroj na vytváranie certifikátov o absolvovaní odborných školení"
+                        <TextBlock Text="nástroj na vytváranie certifikátov o absolvovaní odborných školení"
                        FontSize="13"
                        Foreground="{StaticResource TextSecondaryColor}"
                        Margin="4,3,0,0"
                        TextWrapping="Wrap" />
-                </StackPanel>
+                    </StackPanel>
 
-                <!-- Pravá strana: menu s modernými štýlmi -->
-                <Menu Grid.Column="1"
+                    <!-- Pravá strana: menu s modernými štýlmi -->
+                    <Menu Grid.Column="1"
       Background="Transparent"
       HorizontalAlignment="Right"
       VerticalAlignment="Center">
 
-                    <!-- Databázové menu -->
-                    <MenuItem Header="💾 Databáza"
+                        <!-- Databázové menu -->
+                        <MenuItem Header="💾 Databáza"
               Style="{StaticResource ModernMenuItem}">
-                        <MenuItem Header="📂 Otvoriť priečinok s databázami" 
+                            <MenuItem Header="📂 Otvoriť priečinok s databázami" 
                   Click="OpenDatabaseFolder_Click"
                   Style="{StaticResource ModernMenuItem}" />
 
-                        <Separator Style="{StaticResource ModernMenuSeparator}"/>
+                            <Separator Style="{StaticResource ModernMenuSeparator}"/>
 
-                        <MenuItem Header="📤 Exportovať databázu..." 
+                            <MenuItem Header="📤 Exportovať databázu..." 
                   Click="ExportDatabase_Click"
                   Style="{StaticResource ModernMenuItem}" />
 
-                        <MenuItem Header="📥 Importovať databázu..." 
+                            <MenuItem Header="📥 Importovať databázu..." 
                   Click="ImportDatabase_Click"
                   Style="{StaticResource ModernMenuItem}" />
 
-                        <Separator Style="{StaticResource ModernMenuSeparator}"/>
+                            <Separator Style="{StaticResource ModernMenuSeparator}"/>
 
-                        <MenuItem Header="🔀 Zlúčiť databázy..." 
+                            <MenuItem Header="🔀 Zlúčiť databázy..." 
                   Click="MergeDatabases_Click"
                   ToolTip="Zlúči všetky databázy z rôznych počítačov do jednej"
                   Style="{StaticResource ModernMenuItem}" />
 
-                        <Separator Style="{StaticResource ModernMenuSeparator}"/>
+                            <Separator Style="{StaticResource ModernMenuSeparator}"/>
 
-                        <MenuItem Header="ℹ️ Informácie o databáze" 
+                            <MenuItem Header="ℹ️ Informácie o databáze" 
                   Click="ShowDatabaseInfo_Click"
                   Style="{StaticResource ModernMenuItem}" />
-                    </MenuItem>
+                        </MenuItem>
 
-                    <MenuItem Header="📖 O aplikácii"
+                        <MenuItem Header="📖 O aplikácii"
               Click="About_Click"
               Style="{StaticResource ModernMenuItem}" />
 
-                    <MenuItem Header="🔒 Ochrana údajov"
+                        <MenuItem Header="🔒 Ochrana údajov"
               Click="PrivacyPolicy_Click"
               Style="{StaticResource ModernMenuItem}" />
-                </Menu>
+                    </Menu>
 
+                </Grid>
             </Grid>
         </Border>
+
 
 
         <!-- Main Content -->

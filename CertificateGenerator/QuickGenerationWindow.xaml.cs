@@ -214,9 +214,19 @@ namespace CertificateGenerator
             var selectedItem = CmbPaperFormat.SelectedItem as ComboBoxItem;
             string format = selectedItem?.Content.ToString() ?? "A5";
 
-            if (format.StartsWith("A3")) return PageSize.A3;
-            if (format.StartsWith("A4")) return PageSize.A4;
-            return PageSize.A5;
+
+            PageSize size;
+            if (format.StartsWith("A3")) size = PageSize.A3;
+            else if (format.StartsWith("A4")) size = PageSize.A4;
+            else size = PageSize.A5;
+
+            // Otočenie na šírku ak je zaškrtnuté
+            if (ChkLandscape?.IsChecked == true)
+            {
+                size = size.Rotate();
+            }
+
+            return size;
         }
 
         private string GetSelectedPaperFormat()

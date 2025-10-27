@@ -529,12 +529,22 @@ namespace CertificateGenerator
 
             string format = selectedItem.Content.ToString();
 
+
+            PageSize size;
             if (format.StartsWith("A3"))
-                return PageSize.A3;
+                size = PageSize.A3;
             else if (format.StartsWith("A4"))
-                return PageSize.A4;
+                size = PageSize.A4;
             else
-                return PageSize.A5;
+                size = PageSize.A5;
+
+            // Otočenie na šírku ak je zaškrtnuté
+            if (ChkBulkLandscape?.IsChecked == true)
+            {
+                size = size.Rotate();
+            }
+
+            return size;
         }
 
         private void SelectFromDB_Click(object sender, RoutedEventArgs e)

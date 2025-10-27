@@ -28,7 +28,7 @@
                 <Border Style="{StaticResource Card}" 
                         Margin="0,0,0,15">
                     <StackPanel>
-                <TextBlock Text="Vyplňte údaje a vygenerujte PDF certifikát" 
+                        <TextBlock Text="Vyplňte údaje a vygenerujte PDF certifikát" 
                            FontSize="12"
                            Foreground="{StaticResource TextSecondaryColor}"
                            HorizontalAlignment="Left"/>
@@ -154,6 +154,10 @@
                             <ComboBoxItem Content="A4 (210 × 297 mm)"/>
                             <ComboBoxItem Content="A5 (148 × 210 mm)"/>
                         </ComboBox>
+                        <CheckBox x:Name="ChkLandscape"
+                                  Content="Orientácia na šírku (landscape)"
+                                  Margin="0,10,0,0"
+                                  IsChecked="True"/>
                     </StackPanel>
                 </Border>
 
@@ -163,7 +167,7 @@
         <Separator  Grid.Row="2" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" Background="gray" Margin="-30,-21,-30,10" />
 
         <Border Grid.Row="2" Padding="15,5" Background="White" Margin="-25,-15,-25,4" >
-        <!-- Action Buttons -->
+            <!-- Action Buttons -->
             <StackPanel  
                         Orientation="Horizontal" 
                         HorizontalAlignment="Center">

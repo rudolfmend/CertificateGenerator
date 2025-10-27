@@ -14,91 +14,95 @@
         HorizontalScrollBarVisibility="Auto"
         VerticalScrollBarVisibility="Auto">
 
-    <Grid Margin="30" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Grid Margin="30" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0" 
+            <!-- Header -->
+            <Border Grid.Row="0" 
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
-            <StackPanel>
-                <TextBlock Text="Hromadné generovanie PDF certifikátov" 
+                <StackPanel>
+                    <TextBlock Text="Hromadné generovanie PDF certifikátov" 
                            FontSize="20"
                            FontWeight="Bold"
                            Foreground="{StaticResource TextPrimaryColor}"
                            HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
+                </StackPanel>
+            </Border>
 
-        <!-- Common Data Section -->
-        <Border Grid.Row="1" 
+            <!-- Common Data Section -->
+            <Border Grid.Row="1" 
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
 
-                <!-- Left Column -->
-                <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                    <Label Content="⚙️ Spoločné údaje"
+                    <!-- Left Column -->
+                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                        <Label Content="⚙️ Spoločné údaje"
                            Style="{StaticResource ModernLabel}"
                            FontSize="16"
                            FontWeight="Bold"
                            Margin="0,0,0,15"/>
 
-                    <Label Content="Organizátor:" Style="{StaticResource ModernLabel}"/>
-                    <TextBox x:Name="TxtBulkOrganizer" 
+                        <Label Content="Organizátor:" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="TxtBulkOrganizer" 
                              Text=""
                              Style="{StaticResource ModernTextBox}"
                              Margin="0,0,0,15"/>
 
-                    <Label Content="Formát papiera:" Style="{StaticResource ModernLabel}"/>
-                    <ComboBox x:Name="CmbBulkPaperFormat" 
+                        <Label Content="Formát papiera:" Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbBulkPaperFormat" 
                               Style="{StaticResource ModernComboBox}">
-                        <ComboBoxItem Content="A3 (297 × 420 mm)" />
-                        <ComboBoxItem Content="A4 (210 × 297 mm)" />
-                        <ComboBoxItem Content="A5 (148 × 210 mm)" IsSelected="True"/>
-                    </ComboBox>
-                </StackPanel>
+                            <ComboBoxItem Content="A3 (297 × 420 mm)" />
+                            <ComboBoxItem Content="A4 (210 × 297 mm)" />
+                            <ComboBoxItem Content="A5 (148 × 210 mm)" IsSelected="True"/>
+                        </ComboBox>
+                        <CheckBox x:Name="ChkBulkLandscape"
+                              Content="Orientácia na šírku (landscape)"
+                              Margin="0,10,0,0"
+                              IsChecked="True"/>
+                    </StackPanel>
 
-                <!-- Right Column - Topics and Dates -->
-                <Border Grid.Column="1" 
+                    <!-- Right Column - Topics and Dates -->
+                    <Border Grid.Column="1" 
                         Background="{StaticResource InputBackground}"
                         CornerRadius="8"
                         Padding="15">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <Label Grid.Row="0"
+                            <Label Grid.Row="0"
                                Content="📋 Témy podujatí a dátumy"
                                Style="{StaticResource ModernLabel}"
                                FontSize="16"
                                FontWeight="Bold"
                                Margin="0,0,0,10"/>
 
-                        <!-- Instructions -->
-                        <TextBlock Grid.Row="1" 
+                            <!-- Instructions -->
+                            <TextBlock Grid.Row="1" 
                                    TextWrapping="Wrap" 
                                    Margin="0,0,0,10"
                                    Foreground="{StaticResource TextSecondaryColor}"
                                    FontSize="12"
                                    Text="Vložte témy podujatí (každá na nový riadok, alebo oddelené čiarkou/bodkočiarkou). Pre každú tému sa vytvorí samostatný certifikát." />
 
-                        <!-- Topics TextBox -->
-                        <TextBox Grid.Row="2"
+                            <!-- Topics TextBox -->
+                            <TextBox Grid.Row="2"
                                  x:Name="TxtBulkTopics" 
                                  Style="{StaticResource ModernTextBox}"
                                  Height="Auto"
@@ -110,30 +114,30 @@
                                  Margin="0,0,0,10"
                                  TextChanged="TxtBulkTopics_TextChanged"/>
 
-                        <!-- Topics Counter -->
-                        <Border Grid.Row="3"
+                            <!-- Topics Counter -->
+                            <Border Grid.Row="3"
                                 Background="{StaticResource SurfaceColor}"
                                 CornerRadius="6"
                                 Padding="12,8">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="Počet tém: " FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TxtTopicsCount" Text="0" 
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="Počet tém: " FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="TxtTopicsCount" Text="0" 
                                            Foreground="{StaticResource PrimaryColor}" 
                                            FontWeight="Bold"/>
-                                <TextBlock Text=" → " Margin="10,0" FontWeight="Bold"/>
-                                <TextBlock Text="Bude vytvorených " />
-                                <TextBlock x:Name="TxtPdfCount" Text="0" 
+                                    <TextBlock Text=" → " Margin="10,0" FontWeight="Bold"/>
+                                    <TextBlock Text="Bude vytvorených " />
+                                    <TextBlock x:Name="TxtPdfCount" Text="0" 
                                            Foreground="{StaticResource SuccessColor}" 
                                            FontWeight="Bold"/>
-                                <TextBlock Text=" PDF súborov"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </Border>
-            </Grid>
-        </Border>
+                                    <TextBlock Text=" PDF súborov"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
 
-        <!-- Participants List Section -->
+            <!-- Participants List Section -->
             <Border Grid.Row="2" 
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
@@ -181,7 +185,7 @@
                     </WrapPanel>
                     <WrapPanel
                            Orientation="Horizontal" 
-                           Margin="0,86,0,250" Grid.ColumnSpan="2" Grid.RowSpan="2" > 
+                           Margin="0,86,0,250" Grid.ColumnSpan="2" Grid.RowSpan="2" >
 
                         <Button 
                             Style="{StaticResource SuccessButton}"
@@ -199,7 +203,7 @@
 
 
                     </WrapPanel>
-                    
+
                     <!-- DataGrid -->
                     <Border Grid.Row="1"
                         BorderThickness="1"
@@ -230,55 +234,55 @@
                     </Border>
                 </Grid>
             </Border>
-        
-        <!-- Statistics -->
-        <Border Grid.Row="3" 
+
+            <!-- Statistics -->
+            <Border Grid.Row="3" 
                 Background="{StaticResource InputBackground}"
                 CornerRadius="8"
                 Padding="20,12"
                 Margin="0,0,0,20">
-            <StackPanel Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal" 
                         HorizontalAlignment="Center">
-                <TextBlock Text="👥 Účastníkov: " 
+                    <TextBlock Text="👥 Účastníkov: " 
                            FontWeight="SemiBold"
                            FontSize="15"/>
-                <TextBlock x:Name="TxtParticipantCount" 
+                    <TextBlock x:Name="TxtParticipantCount" 
                            Text="0" 
                            Foreground="{StaticResource PrimaryColor}" 
                            FontWeight="Bold"
                            FontSize="15"/>
-                <TextBlock Text=" × " 
+                    <TextBlock Text=" × " 
                            Margin="15,0" 
                            FontWeight="Bold"
                            FontSize="15"/>
-                <TextBlock Text="📋 Tém: " 
+                    <TextBlock Text="📋 Tém: " 
                            FontWeight="SemiBold"
                            FontSize="15"/>
-                <TextBlock x:Name="TxtTopicsCountSummary" 
+                    <TextBlock x:Name="TxtTopicsCountSummary" 
                            Text="0" 
                            Foreground="{StaticResource SuccessColor}" 
                            FontWeight="Bold"
                            FontSize="15"/>
-                <TextBlock Text=" = " 
+                    <TextBlock Text=" = " 
                            Margin="15,0" 
                            FontWeight="Bold"
                            FontSize="15"/>
-                <TextBlock Text="📄 Celkom PDF: " 
+                    <TextBlock Text="📄 Celkom PDF: " 
                            FontWeight="SemiBold"
                            FontSize="15"/>
-                <TextBlock x:Name="TxtTotalPdfCount" 
+                    <TextBlock x:Name="TxtTotalPdfCount" 
                            Text="0" 
                            Foreground="{StaticResource DangerColor}" 
                            FontWeight="Bold" 
                            FontSize="18"/>
-            </StackPanel>
-        </Border>
+                </StackPanel>
+            </Border>
 
-        <!-- Action Buttons -->
-        <StackPanel Grid.Row="4" 
+            <!-- Action Buttons -->
+            <StackPanel Grid.Row="4" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Center">
-            <Button Content="📦 Vybrať priečinok a generovať" 
+                <Button Content="📦 Vybrať priečinok a generovať" 
                     Style="{StaticResource SuccessButton}"
                     Padding="20,10"
                     FontSize="15"
@@ -291,8 +295,8 @@
                     Padding="20,10"
                     FontSize="15"
                     Click="Close_Click"/>
-        </StackPanel>
-    </Grid>
+            </StackPanel>
+        </Grid>
 
     </ScrollViewer>
 </Window>

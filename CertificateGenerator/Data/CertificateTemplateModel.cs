@@ -53,12 +53,13 @@ namespace CertificateGenerator.Data
         public bool ShowOrganizer { get; set; } = true;
         public bool ShowEventTopic { get; set; } = true;
         public bool ShowEventDate { get; set; } = true;
+        public bool ShowName { get; set; } = true;
         public bool ShowBirthDate { get; set; } = true;
         public bool ShowRegistrationNumber { get; set; } = true;
         public bool ShowNotes { get; set; } = true;
 
         //  Poradie polí (serialized as comma-separated string)
-        public string FieldOrder { get; set; } = "Organizer,EventTopic,EventDate,BirthDate,RegistrationNumber,Notes";
+        public string FieldOrder { get; set; } = "Organizer,EventTopic,EventDate,Name,BirthDate,RegistrationNumber,Notes";
 
         // Vlastný text
         public string CustomHeaderText { get; set; }
@@ -120,7 +121,7 @@ namespace CertificateGenerator.Data
         public List<string> GetFieldOrderList()
         {
             if (string.IsNullOrWhiteSpace(FieldOrder))
-                return new List<string> { "Organizer", "EventTopic", "EventDate", "BirthDate", "RegistrationNumber", "Notes" };
+                return new List<string> { "Organizer", "EventTopic", "EventDate", "Name", "BirthDate", "RegistrationNumber", "Notes" };
 
             return FieldOrder.Split(',').ToList();
         }
@@ -153,9 +154,9 @@ namespace CertificateGenerator.Data
             TitleColor = "#000000",
             TextColor = "#000000",
             AccentColor = "#2563EB",
-            TitleFontSize = 20,
-            HeaderFontSize = 12,
-            TextFontSize = 10,
+            TitleFontSize = 13,
+            HeaderFontSize = 10,
+            TextFontSize = 12,
             ShowSeparatorLine = true,
             SeparatorStyle = "UNDERLINE"
         };
@@ -166,9 +167,9 @@ namespace CertificateGenerator.Data
             TitleColor = "#1E293B",
             TextColor = "#334155",
             AccentColor = "#10B981",
-            TitleFontSize = 24,
-            HeaderFontSize = 13,
-            TextFontSize = 11,
+            TitleFontSize = 20,
+            HeaderFontSize = 9,
+            TextFontSize = 13,
             ShowSeparatorLine = true,
             SeparatorStyle = "LINE",
             ShowBorder = true,

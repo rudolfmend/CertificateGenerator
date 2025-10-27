@@ -82,8 +82,43 @@ namespace CertificateGenerator.Data
                 Debug.WriteLine($"Chyba pri získavaní MachineGuid: {ex.Message}");
             }
 
-            // Fallback - vytvorenie a uloženie GUID
-            return Guid.NewGuid().ToString("N").Substring(0, 16);
+            // Fallback - použiť uložený alebo vytvoriť nový trvalý GUID
+            return GetOrCreatePersistentIdentifier();
+        }
+
+        /// <summary>
+        /// Získanie alebo vytvorenie trvalého identifikátora (uložený v súbore)
+        /// </summary>
+        private string GetOrCreatePersistentIdentifier()
+        {
+            string identifierFile = Path.Combine(_databaseFolder, ".machine_id");
+
+            try
+            {
+                // Ak súbor existuje, načítaj identifikátor
+                if (File.Exists(identifierFile))
+                {
+                    string existingId = File.ReadAllText(identifierFile).Trim();
+                    if (!string.IsNullOrEmpty(existingId) && existingId.Length == 16)
+                    {
+                        Debug.WriteLine($"Načítaný trvalý identifikátor: {existingId}");
+                        return existingId;
+                    }
+                }
+
+                // Vytvor nový identifikátor a ulož ho
+                string newId = Guid.NewGuid().ToString("N").Substring(0, 16);
+                File.WriteAllText(identifierFile, newId);
+                Debug.WriteLine($"Vytvorený nový trvalý identifikátor: {newId}");
+                return newId;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Chyba pri práci s trvalým identifikátorom: {ex.Message}");
+                // Posledná záchrana - použiť environment username + machine name
+                string fallbackId = $"{Environment.UserName}{Environment.MachineName}";
+                return fallbackId.GetHashCode().ToString("X").PadRight(16, '0').Substring(0, 16);
+            }
         }
 
         /// <summary>

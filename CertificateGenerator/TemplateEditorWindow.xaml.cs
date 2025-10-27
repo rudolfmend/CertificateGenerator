@@ -357,7 +357,7 @@ namespace CertificateGenerator
                 CustomFooterAlignment = ((ComboBoxItem)CmbFooterAlignment.SelectedItem)?.Tag?.ToString() ?? "LEFT",
 
                 // Dekorácie
-    ShowTopDecoration = ChkShowTopDecoration.IsChecked == true,
+                ShowTopDecoration = ChkShowTopDecoration.IsChecked == true,
                 TopDecorationColor = TxtTopDecorationColor.Text,
                 TopDecorationThickness = int.TryParse(TxtTopDecorationThickness.Text, out int topThickness) && topThickness > 0 ? topThickness : 2,
 
@@ -379,6 +379,7 @@ namespace CertificateGenerator
                         case "Organizer": template.ShowOrganizer = field.IsVisible; break;
                         case "EventTopic": template.ShowEventTopic = field.IsVisible; break;
                         case "EventDate": template.ShowEventDate = field.IsVisible; break;
+                        case "Name": template.ShowName = field.IsVisible; break;
                         case "BirthDate": template.ShowBirthDate = field.IsVisible; break;
                         case "RegistrationNumber": template.ShowRegistrationNumber = field.IsVisible; break;
                         case "Notes": template.ShowNotes = field.IsVisible; break;
@@ -632,9 +633,6 @@ namespace CertificateGenerator
                     PreviewContent.Children.Add(separator);
                 }
 
-                // Účastník
-                AddPreviewField("Účastník:", "Ing. Ján Novák", template);
-
                 // Polia podľa poradia
                 if (LstFields.ItemsSource is List<CertificateField> fields)
                 {
@@ -655,6 +653,10 @@ namespace CertificateGenerator
                             case "EventDate":
                                 AddPreviewField(template.LabelEventDate,
                                     DateTime.Now.ToString("dd.MM.yyyy"), template);
+                                break;
+                            case "Name":
+                                AddPreviewField(template.LabelParticipant,
+                                    "Ing. Ján Novák", template);
                                 break;
                             case "BirthDate":
                                 AddPreviewField(template.LabelBirthDate,

@@ -32,7 +32,7 @@ namespace CertificateGenerator
             // Inicializácia databázového managera
             _dbManager = new DatabaseManager();
             // Kontrola cudzích databáz pri štarte
-            this.Loaded += MainWindow_Loaded;        
+            this.Loaded += MainWindow_Loaded;
         }
 
         private void InitializeRepositories()
@@ -57,7 +57,8 @@ namespace CertificateGenerator
         {
             try
             {
-                var bulkWindow = new BulkGenerationWindow("", 2);
+                var bulkWindow = new BulkGenerationWindow
+                    ("", 2);
                 bulkWindow.ShowDialog();
             }
             catch (Exception ex)
@@ -191,8 +192,18 @@ namespace CertificateGenerator
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Skontroluje cudzie databázy pri spustení
-            DatabaseHelper.CheckForForeignDatabasesOnStartup(_dbManager);
+            // Skontroluje cudzie databázy a zobrazí notifikáciu
+            if (_dbManager.HasForeignDatabases())
+            {
+                var foreignDbs = _dbManager.GetForeignDatabases();
+                DatabaseNotificationText.Text = $"Boli detekované {foreignDbs.Count} databázy z iných počítačov.";
+                DatabaseNotificationBar.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void CloseNotification_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseNotificationBar.Visibility = Visibility.Collapsed;
         }
 
         // Menu položky
