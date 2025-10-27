@@ -17,7 +17,7 @@ namespace CertificateGenerator.Data
         }
 
         /// <summary>
-        /// Pridá nového účastníka
+        /// Pridá ho účastníka
         /// </summary>
         public int Add(ParticipantModel participant)
         {

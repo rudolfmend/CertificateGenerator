@@ -135,12 +135,85 @@ namespace CertificateGenerator.Data
     /// <summary>
     /// Helper class pre pole certifikátu s možnosťou drag&drop
     /// </summary>
-    public class CertificateField
+    public class CertificateField : System.ComponentModel.INotifyPropertyChanged
     {
-        public string Id { get; set; }
-        public string DisplayName { get; set; }
-        public bool IsVisible { get; set; }
-        public int Order { get; set; }
+        private string _id;
+        private string _displayName;
+        private bool _isVisible;
+        private int _order;
+        private string _customLabel;
+        private int _fontSize;
+        private bool _isBold;
+        private bool _isItalic;
+        private string _alignment;
+        private string _textColor;
+
+        public string Id
+        {
+            get => _id;
+            set { _id = value; OnPropertyChanged(nameof(Id)); }
+        }
+
+        public string DisplayName
+        {
+            get => _displayName;
+            set { _displayName = value; OnPropertyChanged(nameof(DisplayName)); }
+        }
+
+        public bool IsVisible
+        {
+            get => _isVisible;
+            set { _isVisible = value; OnPropertyChanged(nameof(IsVisible)); }
+        }
+
+        public int Order
+        {
+            get => _order;
+            set { _order = value; OnPropertyChanged(nameof(Order)); }
+        }
+
+        public string CustomLabel
+        {
+            get => _customLabel ?? DisplayName;
+            set { _customLabel = value; OnPropertyChanged(nameof(CustomLabel)); }
+        }
+
+        public int FontSize
+        {
+            get => _fontSize > 0 ? _fontSize : 10;
+            set { _fontSize = value; OnPropertyChanged(nameof(FontSize)); }
+        }
+
+        public bool IsBold
+        {
+            get => _isBold;
+            set { _isBold = value; OnPropertyChanged(nameof(IsBold)); }
+        }
+
+        public bool IsItalic
+        {
+            get => _isItalic;
+            set { _isItalic = value; OnPropertyChanged(nameof(IsItalic)); }
+        }
+
+        public string Alignment
+        {
+            get => _alignment ?? "LEFT";
+            set { _alignment = value; OnPropertyChanged(nameof(Alignment)); }
+        }
+
+        public string TextColor
+        {
+            get => _textColor ?? "#000000";
+            set { _textColor = value; OnPropertyChanged(nameof(TextColor)); }
+        }
+
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
     }
 
     /// <summary>
@@ -233,15 +306,58 @@ namespace CertificateGenerator.Data
         {
             return new List<FontInfo>
             {
-                new FontInfo { Name = "Helvetica", DisplayName = "Helvetica (Štandardný)" },
+                // === WINDOWS SYSTÉMOVÉ FONTY (odporúčané pre slovenčinu) ===
+                new FontInfo { Name = "Arial", DisplayName = "Arial (Odporúčaný - výborná diakritika)" },
+                new FontInfo { Name = "Arial-Bold", DisplayName = "Arial Bold" },
+                new FontInfo { Name = "Arial-Italic", DisplayName = "Arial Italic" },
+                new FontInfo { Name = "Arial-BoldItalic", DisplayName = "Arial Bold Italic" },
+
+                new FontInfo { Name = "Calibri", DisplayName = "Calibri (Moderný, čistý)" },
+                new FontInfo { Name = "Calibri-Bold", DisplayName = "Calibri Bold" },
+                new FontInfo { Name = "Calibri-Italic", DisplayName = "Calibri Italic" },
+                new FontInfo { Name = "Calibri-BoldItalic", DisplayName = "Calibri Bold Italic" },
+
+                new FontInfo { Name = "SegoeUI", DisplayName = "Segoe UI (Windows moderný)" },
+                new FontInfo { Name = "SegoeUI-Bold", DisplayName = "Segoe UI Bold" },
+                new FontInfo { Name = "SegoeUI-Italic", DisplayName = "Segoe UI Italic" },
+                new FontInfo { Name = "SegoeUI-BoldItalic", DisplayName = "Segoe UI Bold Italic" },
+
+                new FontInfo { Name = "Verdana", DisplayName = "Verdana (Výborná čitateľnosť)" },
+                new FontInfo { Name = "Verdana-Bold", DisplayName = "Verdana Bold" },
+                new FontInfo { Name = "Verdana-Italic", DisplayName = "Verdana Italic" },
+                new FontInfo { Name = "Verdana-BoldItalic", DisplayName = "Verdana Bold Italic" },
+
+                new FontInfo { Name = "Tahoma", DisplayName = "Tahoma (Kompaktný)" },
+                new FontInfo { Name = "Tahoma-Bold", DisplayName = "Tahoma Bold" },
+
+                new FontInfo { Name = "Georgia", DisplayName = "Georgia (Elegantný serif)" },
+                new FontInfo { Name = "Georgia-Bold", DisplayName = "Georgia Bold" },
+                new FontInfo { Name = "Georgia-Italic", DisplayName = "Georgia Italic" },
+                new FontInfo { Name = "Georgia-BoldItalic", DisplayName = "Georgia Bold Italic" },
+                
+                // === OPEN-SOURCE FONTY (ak sú nainštalované) ===
+                new FontInfo { Name = "DejaVuSans", DisplayName = "DejaVu Sans" },
+                new FontInfo { Name = "DejaVuSans-Bold", DisplayName = "DejaVu Sans Bold" },
+                new FontInfo { Name = "DejaVuSans-Oblique", DisplayName = "DejaVu Sans Italic" },
+                new FontInfo { Name = "DejaVuSans-BoldOblique", DisplayName = "DejaVu Sans Bold Italic" },
+
+                new FontInfo { Name = "LiberationSans", DisplayName = "Liberation Sans" },
+                new FontInfo { Name = "LiberationSans-Bold", DisplayName = "Liberation Sans Bold" },
+                new FontInfo { Name = "LiberationSans-Italic", DisplayName = "Liberation Sans Italic" },
+                new FontInfo { Name = "LiberationSans-BoldItalic", DisplayName = "Liberation Sans Bold Italic" },
+                
+                // === ŠTANDARDNÉ PDF FONTY (obmedzená diakritika) ===
+                new FontInfo { Name = "Helvetica", DisplayName = "Helvetica (Štandardný PDF - slabšia diakritika)" },
                 new FontInfo { Name = "Helvetica-Bold", DisplayName = "Helvetica Bold" },
                 new FontInfo { Name = "Helvetica-Oblique", DisplayName = "Helvetica Italic" },
                 new FontInfo { Name = "Helvetica-BoldOblique", DisplayName = "Helvetica Bold Italic" },
-                new FontInfo { Name = "Times-Roman", DisplayName = "Times New Roman" },
+
+                new FontInfo { Name = "Times-Roman", DisplayName = "Times New Roman (PDF - slabšia diakritika)" },
                 new FontInfo { Name = "Times-Bold", DisplayName = "Times Bold" },
                 new FontInfo { Name = "Times-Italic", DisplayName = "Times Italic" },
                 new FontInfo { Name = "Times-BoldItalic", DisplayName = "Times Bold Italic" },
-                new FontInfo { Name = "Courier", DisplayName = "Courier" },
+
+                new FontInfo { Name = "Courier", DisplayName = "Courier (Monospace)" },
                 new FontInfo { Name = "Courier-Bold", DisplayName = "Courier Bold" },
                 new FontInfo { Name = "Courier-Oblique", DisplayName = "Courier Italic" },
                 new FontInfo { Name = "Courier-BoldOblique", DisplayName = "Courier Bold Italic" }

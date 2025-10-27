@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
+using System.Windows.Diagnostics;
 
 namespace CertificateGenerator.Data
 {
@@ -85,7 +87,7 @@ namespace CertificateGenerator.Data
             {
                 connection.Open();
 
-                // Skontroluj či už existujú nové stĺpce
+                // Skontroluj či už existujú  stĺpce
                 var checkSql = "PRAGMA table_info(CertificateTemplates)";
                 var columns = new HashSet<string>();
 
@@ -98,7 +100,7 @@ namespace CertificateGenerator.Data
                     }
                 }
 
-                // Pridaj nové stĺpce ak neexistujú
+                // Pridaj  stĺpce ak neexistujú
                 if (!columns.Contains("FieldOrder"))
                 {
                     ExecuteNonQuery(connection,
@@ -177,8 +179,22 @@ namespace CertificateGenerator.Data
                     ExecuteNonQuery(connection,
                         "ALTER TABLE CertificateTemplates ADD COLUMN BottomDecorationThickness INTEGER DEFAULT 2");
                 }
-            }
-        }
+
+				if (!columns.Contains("ContentLayout"))
+				{
+					ExecuteNonQuery(connection,
+						"ALTER TABLE CertificateTemplates ADD COLUMN ContentLayout TEXT DEFAULT 'VERTICAL'");
+				}
+
+				if (!columns.Contains("ColumnSpacing"))
+				{
+					ExecuteNonQuery(connection,
+						"ALTER TABLE CertificateTemplates ADD COLUMN ColumnSpacing INTEGER DEFAULT 20");
+				}
+
+				System.Diagnostics.Debug.WriteLine("[Repository Migration] ContentLayout a ColumnSpacing stĺpce skontrolované/pridané");
+			}
+		}
 
         private void ExecuteNonQuery(SQLiteConnection connection, string sql)
         {
@@ -210,7 +226,7 @@ namespace CertificateGenerator.Data
                     }
                 }
 
-                string sql = @"INSERT INTO CertificateTemplates 
+				string sql = @"INSERT INTO CertificateTemplates 
                     (Name, IsDefault, TitleColor, TextColor, AccentColor, BackgroundColor,
                      TitleFontFamily, TitleFontSize, HeaderFontFamily, HeaderFontSize,
                      TextFontFamily, TextFontSize, MarginTop, MarginRight, MarginBottom, MarginLeft,
@@ -223,6 +239,7 @@ namespace CertificateGenerator.Data
                      LabelBirthDate, LabelRegistrationNumber, LabelNotes,
                      FieldOrder, CustomHeaderAlignment, CustomHeaderBold, CustomHeaderItalic,
                      CustomFooterAlignment, CustomFooterBold, CustomFooterItalic,
+                     ContentLayout, ColumnSpacing,
                      CreatedAt, UpdatedAt)
                     VALUES 
                     (@Name, @IsDefault, @TitleColor, @TextColor, @AccentColor, @BackgroundColor,
@@ -237,9 +254,10 @@ namespace CertificateGenerator.Data
                      @LabelBirthDate, @LabelRegistrationNumber, @LabelNotes,
                      @FieldOrder, @CustomHeaderAlignment, @CustomHeaderBold, @CustomHeaderItalic,
                      @CustomFooterAlignment, @CustomFooterBold, @CustomFooterItalic,
+                     @ContentLayout, @ColumnSpacing,
                      @CreatedAt, @UpdatedAt)";
 
-                using (var command = new SQLiteCommand(sql, connection))
+				using (var command = new SQLiteCommand(sql, connection))
                 {
                     AddParameters(command, template);
                     command.ExecuteNonQuery();
@@ -261,14 +279,6 @@ namespace CertificateGenerator.Data
                     {
                         updateCmd.Parameters.AddWithValue("@Id", template.Id);
                         updateCmd.ExecuteNonQuery();
-
-                        updateCmd.Parameters.AddWithValue("@ShowTopDecoration", template.ShowTopDecoration ? 1 : 0);
-                        updateCmd.Parameters.AddWithValue("@TopDecorationColor", template.TopDecorationColor);
-                        updateCmd.Parameters.AddWithValue("@TopDecorationThickness", template.TopDecorationThickness);
-
-                        updateCmd.Parameters.AddWithValue("@ShowBottomDecoration", template.ShowBottomDecoration ? 1 : 0);
-                        updateCmd.Parameters.AddWithValue("@BottomDecorationColor", template.BottomDecorationColor);
-                        updateCmd.Parameters.AddWithValue("@BottomDecorationThickness", template.BottomDecorationThickness);
                     }
                 }
 
@@ -298,10 +308,15 @@ namespace CertificateGenerator.Data
                     CustomHeaderBold = @CustomHeaderBold, CustomHeaderItalic = @CustomHeaderItalic,
                     CustomFooterAlignment = @CustomFooterAlignment, CustomFooterBold = @CustomFooterBold,
                     CustomFooterItalic = @CustomFooterItalic,
+                    ShowTopDecoration = @ShowTopDecoration, TopDecorationColor = @TopDecorationColor,
+                    TopDecorationThickness = @TopDecorationThickness,
+                    ShowBottomDecoration = @ShowBottomDecoration, BottomDecorationColor = @BottomDecorationColor,
+                    BottomDecorationThickness = @BottomDecorationThickness,
+                    ContentLayout = @ContentLayout, ColumnSpacing = @ColumnSpacing,
                     UpdatedAt = @UpdatedAt
                     WHERE Id = @Id";
 
-                using (var command = new SQLiteCommand(sql, connection))
+				using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Id", template.Id);
                     AddParameters(command, template);
@@ -429,7 +444,7 @@ namespace CertificateGenerator.Data
             command.Parameters.AddWithValue("@LabelRegistrationNumber", template.LabelRegistrationNumber ?? "Registračné číslo:");
             command.Parameters.AddWithValue("@LabelNotes", template.LabelNotes ?? "Poznámky:");
 
-            // Nové parametre
+            //  parametre
             command.Parameters.AddWithValue("@FieldOrder", template.FieldOrder ?? "Organizer,EventTopic,EventDate,BirthDate,RegistrationNumber,Notes");
             command.Parameters.AddWithValue("@CustomHeaderAlignment", template.CustomHeaderAlignment ?? "LEFT");
             command.Parameters.AddWithValue("@CustomHeaderBold", template.CustomHeaderBold ? 1 : 0);
@@ -438,11 +453,25 @@ namespace CertificateGenerator.Data
             command.Parameters.AddWithValue("@CustomFooterBold", template.CustomFooterBold ? 1 : 0);
             command.Parameters.AddWithValue("@CustomFooterItalic", template.CustomFooterItalic ? 1 : 0);
 
-            command.Parameters.AddWithValue("@CreatedAt", template.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+            // Dekorácie
+            command.Parameters.AddWithValue("@ShowTopDecoration", template.ShowTopDecoration ? 1 : 0);
+            command.Parameters.AddWithValue("@TopDecorationColor", template.TopDecorationColor ?? "#2563EB");
+            command.Parameters.AddWithValue("@TopDecorationThickness", template.TopDecorationThickness);
+            command.Parameters.AddWithValue("@ShowBottomDecoration", template.ShowBottomDecoration ? 1 : 0);
+            command.Parameters.AddWithValue("@BottomDecorationColor", template.BottomDecorationColor ?? "#2563EB");
+            command.Parameters.AddWithValue("@BottomDecorationThickness", template.BottomDecorationThickness);
+
+			// Layout obsahu
+			command.Parameters.AddWithValue("@ContentLayout", template.ContentLayout ?? "VERTICAL");
+			command.Parameters.AddWithValue("@ColumnSpacing", template.ColumnSpacing);
+
+			command.Parameters.AddWithValue("@CreatedAt", template.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
             command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+			System.Diagnostics.Debug.WriteLine($"[Repository.AddParameters] ContentLayout={template.ContentLayout}, ColumnSpacing={template.ColumnSpacing}");
         }
 
-        private CertificateTemplateModel MapFromReader(SQLiteDataReader reader)
+		private CertificateTemplateModel MapFromReader(SQLiteDataReader reader)
         {
             return new CertificateTemplateModel
             {
@@ -483,15 +512,15 @@ namespace CertificateGenerator.Data
                 ShowBorder = Convert.ToBoolean(reader["ShowBorder"]),
                 BorderColor = reader["BorderColor"]?.ToString() ?? "#000000",
                 BorderWidth = Convert.ToInt32(reader["BorderWidth"]),
-                LabelOrganizer = reader["LabelOrganizer"]?.ToString() ?? "Organizátor:",
-                LabelEventTopic = reader["LabelEventTopic"]?.ToString() ?? "Téma podujatia:",
-                LabelParticipant = reader["LabelParticipant"]?.ToString() ?? "Účastník:",
-                LabelEventDate = reader["LabelEventDate"]?.ToString() ?? "Dátum podujatia:",
-                LabelBirthDate = reader["LabelBirthDate"]?.ToString() ?? "Dátum narodenia:",
-                LabelRegistrationNumber = reader["LabelRegistrationNumber"]?.ToString() ?? "Registračné číslo:",
-                LabelNotes = reader["LabelNotes"]?.ToString() ?? "Poznámky:",
+                LabelOrganizer = reader["LabelOrganizer"]?.ToString() ?? "Organizátor",
+                LabelEventTopic = reader["LabelEventTopic"]?.ToString() ?? "Téma podujatia",
+                LabelParticipant = reader["LabelParticipant"]?.ToString() ?? "Účastník",
+                LabelEventDate = reader["LabelEventDate"]?.ToString() ?? "Dátum podujatia",
+                LabelBirthDate = reader["LabelBirthDate"]?.ToString() ?? "Dátum narodenia",
+                LabelRegistrationNumber = reader["LabelRegistrationNumber"]?.ToString() ?? "Registračné číslo",
+                LabelNotes = reader["LabelNotes"]?.ToString() ?? "Poznámky",
 
-                // Nové properties
+                //  properties
                 FieldOrder = GetStringOrDefault(reader, "FieldOrder", "Organizer,EventTopic,EventDate,BirthDate,RegistrationNumber,Notes"),
                 CustomHeaderAlignment = GetStringOrDefault(reader, "CustomHeaderAlignment", "LEFT"),
                 CustomHeaderBold = GetBoolOrDefault(reader, "CustomHeaderBold", false),
@@ -510,12 +539,15 @@ namespace CertificateGenerator.Data
                 BottomDecorationColor = GetStringOrDefault(reader, "BottomDecorationColor", "#2563EB"),
                 BottomDecorationThickness = GetIntOrDefault(reader, "BottomDecorationThickness", 2),
 
-                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+				ContentLayout = GetStringOrDefault(reader, "ContentLayout", "VERTICAL"),
+				ColumnSpacing = GetIntOrDefault(reader, "ColumnSpacing", 20),
+
+				CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
                 UpdatedAt = reader["UpdatedAt"] != DBNull.Value ? DateTime.Parse(reader["UpdatedAt"].ToString()) : (DateTime?)null
             };
-        }
+		}
 
-        private string GetStringOrDefault(SQLiteDataReader reader, string columnName, string defaultValue)
+		private string GetStringOrDefault(SQLiteDataReader reader, string columnName, string defaultValue)
         {
             try
             {

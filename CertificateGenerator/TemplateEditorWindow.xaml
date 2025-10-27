@@ -145,46 +145,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 3. ROZLOŽENIE OBSAHU -->
-                <!-- Layout -->
-                <Border Style="{StaticResource Card}"
-                        Margin="0,0,0,15">
-                    <StackPanel>
-                        <Label Content="📐 Rozloženie obsahu"
-                               Style="{StaticResource ModernLabel}"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Margin="0,0,0,10"/>
-
-                        <Label Content="Typ layoutu:"
-                               Style="{StaticResource ModernLabel}"/>
-                        <ComboBox x:Name="CmbContentLayout"
-                                  Style="{StaticResource ModernComboBox}"
-                                  SelectionChanged="AnySettingChanged"
-                                  Margin="0,0,0,10">
-                            <ComboBoxItem Content="Vertikálny (klasický)"
-                                          Tag="VERTICAL"
-                                          IsSelected="True"/>
-                            <ComboBoxItem Content="Dva stĺpce"
-                                          Tag="TWO_COLUMN"/>
-                            <ComboBoxItem Content="Tri stĺpce"
-                                          Tag="THREE_COLUMN"/>
-                        </ComboBox>
-
-                        <StackPanel x:Name="PnlColumnLayout"
-                                    Visibility="Collapsed">
-                            <Label Content="Medzera medzi stĺpcami:"
-                                   Style="{StaticResource ModernLabel}"/>
-                            <TextBox x:Name="TxtColumnSpacing"
-                                     Style="{StaticResource ModernTextBox}"
-                                     Text="20"
-                                     TextChanged="AnySettingChanged"
-                                     Margin="0,0,0,10"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
-                <!-- 4. POZADIE -->
+                <!-- 3. POZADIE -->
                 <!-- Gradientné pozadie -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
@@ -259,7 +220,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 5. FARBY TEXTU -->
+                <!-- 4. FARBY TEXTU -->
                 <!-- Farby s Color Picker -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
@@ -450,7 +411,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 6. PÍSMO -->
+                <!-- 5. PÍSMO -->
                 <!-- Písma s Font Picker -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
@@ -516,7 +477,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 7. OKRAJE -->
+                <!-- 6. OKRAJE -->
                 <!-- Okraje -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
@@ -599,7 +560,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 8. RÁMČEK -->
+                <!-- 7. RÁMČEK -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
@@ -624,7 +585,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 9. TITULOK CERTIFIKÁTU -->
+                <!-- 8. TITULOK CERTIFIKÁTU -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
@@ -665,7 +626,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 10. ODDEĽOVAČ -->
+                <!-- 9. ODDEĽOVAČ -->
                 <Border Style="{StaticResource Card}"
                         Margin="0,0,0,15">
                     <StackPanel>
@@ -698,31 +659,70 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 11. PORADIE A VIDITEĽNOSŤ POLÍ -->
-                <!-- Poradie polí s drag & drop -->
+                <!-- 10. ROZLOŽENIE OBSAHU -->
+                <!-- Layout -->
                 <Border Style="{StaticResource Card}"
-                        Margin="0,0,0,15">
+        Margin="0,0,0,15">
                     <StackPanel>
-                        <Label Content="🔢 Poradie a viditeľnosť polí"
-                               Style="{StaticResource ModernLabel}"
-                               FontSize="15"
-                               FontWeight="Bold"
-                               Margin="0,0,0,10"/>
+                        <Label Content="📐 Rozloženie obsahu"
+               Style="{StaticResource ModernLabel}"
+               FontSize="15"
+               FontWeight="Bold"
+               Margin="0,0,0,10"/>
 
-                        <TextBlock Text="Presúvaním zmeníte poradie zobrazenia"
-                                   Foreground="#64748B"
-                                   FontSize="12"
-                                   Margin="0,0,0,10"/>
+                        <Label Content="Typ layoutu:"
+               Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbContentLayout"
+                                  Style="{StaticResource ModernComboBox}"
+                                  SelectionChanged="CmbContentLayout_SelectionChanged"
+                                  Margin="0,0,0,10">
+                            <ComboBoxItem Content="Vertikálny (klasický)"
+                                  Tag="VERTICAL"
+                                  IsSelected="True"/>       
+                            <ComboBoxItem Content="Dva stĺpce"
+                                    Tag="TWO_COLUMN"/>
+                            <ComboBoxItem Content="Tri stĺpce"
+                                    Tag="THREE_COLUMN"/>
+                        </ComboBox>
+
+                        <StackPanel x:Name="PnlColumnLayout"
+                    Visibility="Collapsed">
+                            <Label Content="Medzera medzi stĺpcami:"
+                   Style="{StaticResource ModernLabel}"/>
+                            <TextBox x:Name="TxtColumnSpacing"
+                     Style="{StaticResource ModernTextBox}"
+                     Text="20"
+                     TextChanged="AnySettingChanged"
+                     Margin="0,0,0,10"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 11. PORADIE A VIDITEĽNOSŤ POLÍ --> 
+                <!-- Poradie polí s drag & drop --> 
+                <Border Style="{StaticResource Card}"  Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="🔢 Poradie a úprava polí"
+               Style="{StaticResource ModernLabel}"
+               FontSize="15"
+               FontWeight="Bold"
+               Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Presúvaním zmeníte poradie, kliknutím upravíte pole"
+                   Foreground="#64748B"
+                   FontSize="12"
+                   Margin="0,0,0,10"/>
 
                         <ListBox x:Name="LstFields"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                 AllowDrop="True"
-                                 PreviewMouseLeftButtonDown="LstFields_PreviewMouseLeftButtonDown"
-                                 PreviewMouseMove="LstFields_PreviewMouseMove"
-                                 Drop="LstFields_Drop"
-                                 DragOver="LstFields_DragOver">
+                 Background="Transparent"
+                 BorderThickness="0"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 AllowDrop="True"
+                 PreviewMouseLeftButtonDown="LstFields_PreviewMouseLeftButtonDown"
+                 PreviewMouseMove="LstFields_PreviewMouseMove"
+                 Drop="LstFields_Drop"
+                 DragOver="LstFields_DragOver"
+                 SelectionChanged="LstFields_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource DraggableFieldItem}">
@@ -734,28 +734,129 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
-                                                       Text="☰"
-                                                       FontSize="16"
-                                                       Foreground="#94A3B8"
-                                                       Margin="0,0,10,0"
-                                                       VerticalAlignment="Center"/>
+                                       Text="☰"
+                                       FontSize="16"
+                                       Foreground="#94A3B8"
+                                       Margin="0,0,10,0"
+                                       VerticalAlignment="Center"/>
 
-                                            <TextBlock Grid.Column="1"
-                                                       Text="{Binding DisplayName}"
-                                                       VerticalAlignment="Center"/>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding DisplayName}"
+                                           FontWeight="SemiBold"
+                                           Margin="0,0,0,2"/>
+                                                <TextBlock Text="{Binding CustomLabel}"
+                                           FontSize="11"
+                                           Foreground="#64748B"/>
+                                            </StackPanel>
 
                                             <CheckBox Grid.Column="2"
-                                                      IsChecked="{Binding IsVisible}"
-                                                      Checked="FieldVisibilityChanged"
-                                                      Unchecked="FieldVisibilityChanged"
-                                                      VerticalAlignment="Center"/>
+                                      IsChecked="{Binding IsVisible}"
+                                      Checked="FieldVisibilityChanged"
+                                      Unchecked="FieldVisibilityChanged"
+                                      VerticalAlignment="Center"
+                                      ToolTip="Zobraziť/Skryť pole"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+
+                        <!-- Panel pre úpravu vybraného poľa -->
+                        <Border x:Name="PnlFieldEditor"
+                Background="#F8FAFC"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="15"
+                Margin="0,15,0,0"
+                Visibility="Collapsed">
+                            <StackPanel>
+                                <Label Content="✏️ Úprava poľa"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+
+                                <Label Content="Vlastný popisok:"
+                       Style="{StaticResource ModernLabel}"/>
+                                <TextBox x:Name="TxtFieldLabel"
+                         Style="{StaticResource ModernTextBox}"
+                         TextChanged="FieldPropertyChanged"
+                         Margin="0,0,0,10"/>
+
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <Label Content="Veľkosť písma:"
+                               Style="{StaticResource ModernLabel}"/>
+                                        <TextBox x:Name="TxtFieldFontSize"
+                                 Style="{StaticResource ModernTextBox}"
+                                 Text="10"
+                                 TextChanged="FieldPropertyChanged"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <Label Content="Zarovnanie:"
+                               Style="{StaticResource ModernLabel}"/>
+                                        <ComboBox x:Name="CmbFieldAlignment"
+                                  Style="{StaticResource ModernComboBox}"
+                                  SelectionChanged="FieldPropertyChanged">
+                                            <ComboBoxItem Content="Vľavo" Tag="LEFT" IsSelected="True"/>
+                                            <ComboBoxItem Content="Stred" Tag="CENTER"/>
+                                            <ComboBoxItem Content="Vpravo" Tag="RIGHT"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Label Content="Formátovanie:"
+                       Style="{StaticResource ModernLabel}"/>
+                                <WrapPanel Margin="0,0,0,10">
+                                    <ToggleButton x:Name="BtnFieldBold"
+                                  Content="B"
+                                  FontWeight="Bold"
+                                  Width="35"
+                                  Height="35"
+                                  Margin="0,0,5,0"
+                                  Checked="FieldPropertyChanged"
+                                  Unchecked="FieldPropertyChanged"
+                                  ToolTip="Tučné"/>
+                                    <ToggleButton x:Name="BtnFieldItalic"
+                                  Content="I"
+                                  FontStyle="Italic"
+                                  Width="35"
+                                  Height="35"
+                                  Margin="0,0,5,0"
+                                  Checked="FieldPropertyChanged"
+                                  Unchecked="FieldPropertyChanged"
+                                  ToolTip="Kurzíva"/>
+                                </WrapPanel>
+
+                                <Label Content="Farba textu:"
+                       Style="{StaticResource ModernLabel}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtFieldColor"
+                             Grid.Column="0"
+                             Style="{StaticResource ModernTextBox}"
+                             Text="#000000"
+                             TextChanged="FieldPropertyChanged"/>
+                                    <Border x:Name="FieldColorPreview"
+                            Grid.Column="1"
+                            Style="{StaticResource ColorPreview}"
+                            Background="#000000"
+                            MouseLeftButtonDown="FieldColorPreview_Click"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Border>
+
 
                 <!-- 12. VLASTNÝ TEXT V ZÁHLAVÍ -->
                 <Border Style="{StaticResource Card}"

@@ -200,7 +200,20 @@
                                 <Run Text="témy"/>
                             </TextBlock>
                         </Button>
+                        
+                        <Button 
+                            Style="{StaticResource SuccessButton}"
+                            FontSize="13"
+                            Padding="10,8"
+                            Margin="0,20,0,10"
+                            Click="ManageOrganizers_Click">
 
+                            <TextBlock TextAlignment="Center">
+                                <Run Text="Vybrať uloženého"/>
+                                <LineBreak/>
+                                <Run Text="organizátora"/>
+                        </TextBlock>
+                    </Button>
 
                     </WrapPanel>
 

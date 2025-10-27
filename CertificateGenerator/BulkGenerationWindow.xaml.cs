@@ -82,6 +82,21 @@ namespace CertificateGenerator
             }
         }
 
+        private void ManageOrganizers_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var manageWindow = new ManageOrganizerWindow(App.DatabaseManager, selectionMode: false);
+                manageWindow.Owner = this;
+                manageWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri otváraní správy organizátorov:\n{ex.Message}",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void TxtBulkTopics_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePdfCount();

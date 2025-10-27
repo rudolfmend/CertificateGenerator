@@ -135,9 +135,6 @@ namespace CertificateGenerator
             participantWindow.ShowDialog();
         }
 
-        /// <summary>
-        /// UPDATED: Používa nové ManageOrganizerWindow namiesto SelectOrganizerWindow
-        /// </summary>
         private void ManageOrganizers_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -154,7 +151,7 @@ namespace CertificateGenerator
         }
 
         /// <summary>
-        /// UPDATED: Používa nové ManageEventTopicWindow namiesto SelectEventTopicWindow
+        /// Používa  ManageEventTopicWindow namiesto SelectEventTopicWindow
         /// </summary>
         private void ManageEventTopics_Click(object sender, RoutedEventArgs e)
         {

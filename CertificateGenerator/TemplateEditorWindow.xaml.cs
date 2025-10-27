@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Forms; // Pre ColorDialog
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace CertificateGenerator
 {
@@ -23,6 +24,7 @@ namespace CertificateGenerator
         // Drag & Drop
         private System.Windows.Point _dragStartPoint;
         private object _draggedItem;
+        private CertificateField _selectedField;
 
         public TemplateEditorWindow()
         {
@@ -249,6 +251,25 @@ namespace CertificateGenerator
 
                 _currentTemplate = template;
 
+
+                // Layout obsahu
+                if (template.ContentLayout == "TWO_COLUMN")
+                    CmbContentLayout.SelectedIndex = 1;
+                else if (template.ContentLayout == "THREE_COLUMN")
+                    CmbContentLayout.SelectedIndex = 2;
+                else
+                    CmbContentLayout.SelectedIndex = 0;
+
+                TxtColumnSpacing.Text = template.ColumnSpacing.ToString();
+
+                // Zobraz panel pre column layout ak nie je vertical
+                PnlColumnLayout.Visibility = (template.ContentLayout != "VERTICAL")
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
+                Debug.WriteLine($"[LoadTemplateToUI] ContentLayout={template.ContentLayout}, ColumnSpacing={template.ColumnSpacing}");
+
+
                 // Dekorácie
                 ChkShowTopDecoration.IsChecked = template.ShowTopDecoration;
                 TxtTopDecorationColor.Text = template.TopDecorationColor;
@@ -317,13 +338,17 @@ namespace CertificateGenerator
                 BackgroundColor = TxtBackgroundColor.Text,
                 BorderColor = TxtBorderColor.Text,
 
+                // Layout obsahu
+                ContentLayout = ((ComboBoxItem)CmbContentLayout.SelectedItem)?.Tag?.ToString() ?? "VERTICAL",
+                ColumnSpacing = int.TryParse(TxtColumnSpacing.Text, out int colSpacing) ? colSpacing : 20,
+
                 // Písma
                 TitleFontFamily = CmbTitleFont.SelectedValue?.ToString() ?? "Helvetica-Bold",
-                TitleFontSize = int.TryParse(TxtTitleFontSize.Text, out int titleSize) && titleSize > 0 ? titleSize : 20,
+                TitleFontSize = int.TryParse(TxtTitleFontSize.Text, out int titleSize) && titleSize > 0 ? titleSize : 13,
                 HeaderFontFamily = CmbHeaderFont.SelectedValue?.ToString() ?? "Helvetica-Bold",
-                HeaderFontSize = int.TryParse(TxtHeaderFontSize.Text, out int headerSize) && headerSize > 0 ? headerSize : 12,
+                HeaderFontSize = int.TryParse(TxtHeaderFontSize.Text, out int headerSize) && headerSize > 0 ? headerSize : 10,
                 TextFontFamily = CmbTextFont.SelectedValue?.ToString() ?? "Helvetica",
-                TextFontSize = int.TryParse(TxtTextFontSize.Text, out int textSize) && textSize > 0 ? textSize : 10,
+                TextFontSize = int.TryParse(TxtTextFontSize.Text, out int textSize) && textSize > 0 ? textSize : 12,
 
                 // Okraje
                 MarginTop = int.TryParse(TxtMarginTop.Text, out int marginTop) ? marginTop : 30,
@@ -365,6 +390,8 @@ namespace CertificateGenerator
                 BottomDecorationColor = TxtBottomDecorationColor.Text,
                 BottomDecorationThickness = int.TryParse(TxtBottomDecorationThickness.Text, out int bottomThickness) && bottomThickness > 0 ? bottomThickness : 2,
             };
+
+            Debug.WriteLine($"[GetTemplateFromUI] ContentLayout={template.ContentLayout}, ColumnSpacing={template.ColumnSpacing}");
 
             // Poradie a viditeľnosť polí
             if (LstFields.ItemsSource is List<CertificateField> fields)
@@ -465,7 +492,7 @@ namespace CertificateGenerator
             }
         }
 
-        // ===== DRAG & DROP EVENTS =====
+        #region DRAG & DROP EVENTS 
         private void LstFields_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _dragStartPoint = e.GetPosition(null);
@@ -546,6 +573,266 @@ namespace CertificateGenerator
             }
             return null;
         }
+
+        // =====  METÓDY PRE ÚPRAVU POLÍ =====
+
+        /// <summary>
+        /// Obsluha výberu poľa v ListBoxe
+        /// </summary>
+        private void LstFields_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LstFields.SelectedItem is CertificateField field)
+            {
+                _selectedField = field;
+                LoadFieldToEditor(field);
+                PnlFieldEditor.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                _selectedField = null;
+                PnlFieldEditor.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        /// <summary>
+        /// Načíta pole do editora
+        /// </summary>
+        private void LoadFieldToEditor(CertificateField field)
+        {
+            _isLoading = true;
+
+            TxtFieldLabel.Text = field.CustomLabel ?? GetDefaultLabel(field.Id);
+            TxtFieldFontSize.Text = field.FontSize > 0 ? field.FontSize.ToString() : "12";
+            TxtFieldColor.Text = field.TextColor ?? "#000000";
+
+            BtnFieldBold.IsChecked = field.IsBold;
+            BtnFieldItalic.IsChecked = field.IsItalic;
+
+            // Nastav zarovnanie
+            string alignment = field.Alignment ?? "LEFT";
+            foreach (ComboBoxItem item in CmbFieldAlignment.Items)
+            {
+                if (item.Tag.ToString() == alignment)
+                {
+                    CmbFieldAlignment.SelectedItem = item;
+                    break;
+                }
+            }
+
+            UpdateFieldColorPreview();
+            _isLoading = false;
+        }
+
+        /// <summary>
+        /// Získa predvolený label pre pole
+        /// </summary>
+        private string GetDefaultLabel(string fieldId)
+        {
+            var labels = new Dictionary<string, string>
+    {
+        { "Organizer", "Organizátor:" },
+        { "EventTopic", "Téma podujatia:" },
+        { "EventDate", "Dátum podujatia:" },
+        { "Name", "Účastník:" },
+        { "BirthDate", "Dátum narodenia:" },
+        { "RegistrationNumber", "Registračné číslo:" },
+        { "Notes", "Poznámky:" }
+    };
+
+            return labels.ContainsKey(fieldId) ? labels[fieldId] : fieldId;
+        }
+
+        /// <summary>
+        /// Obsluha zmeny vlastností poľa
+        /// </summary>
+        private void FieldPropertyChanged(object sender, EventArgs e)
+        {
+            if (_isLoading || _selectedField == null) return;
+
+            _selectedField.CustomLabel = TxtFieldLabel.Text;
+
+            if (int.TryParse(TxtFieldFontSize.Text, out int fontSize))
+                _selectedField.FontSize = fontSize;
+
+            _selectedField.IsBold = BtnFieldBold.IsChecked == true;
+            _selectedField.IsItalic = BtnFieldItalic.IsChecked == true;
+            _selectedField.TextColor = TxtFieldColor.Text;
+
+            if (CmbFieldAlignment.SelectedItem is ComboBoxItem item)
+                _selectedField.Alignment = item.Tag.ToString();
+
+            UpdateFieldColorPreview();
+            _hasUnsavedChanges = true;
+            UpdatePreview();
+        }
+
+        /// <summary>
+        /// Aktualizuje náhľad farby pre pole
+        /// </summary>
+        private void UpdateFieldColorPreview()
+        {
+            try
+            {
+                var color = (Color)ColorConverter.ConvertFromString(TxtFieldColor.Text);
+                FieldColorPreview.Background = new SolidColorBrush(color);
+            }
+            catch
+            {
+                FieldColorPreview.Background = Brushes.Black;
+            }
+        }
+
+        /// <summary>
+        /// Color picker pre farbu poľa
+        /// </summary>
+        private void FieldColorPreview_Click(object sender, MouseButtonEventArgs e)
+        {
+            using (var dialog = new ColorDialog())
+            {
+                var currentColor = (Color)ColorConverter.ConvertFromString(TxtFieldColor.Text);
+                dialog.Color = System.Drawing.Color.FromArgb(currentColor.R, currentColor.G, currentColor.B);
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    TxtFieldColor.Text = $"#{dialog.Color.R:X2}{dialog.Color.G:X2}{dialog.Color.B:X2}";
+                }
+            }
+        }
+
+        // ===== UPRAVENÁ METÓDA LoadFieldsToUI =====
+        // Nahraď existujúcu metódu LoadFieldsToUI touto rozšírenou verziou:
+
+        private void LoadFieldsToUI(CertificateTemplateModel template)
+        {
+            var fieldOrder = template.GetFieldOrderList();
+            var fields = new List<CertificateField>();
+
+            var fieldMap = new Dictionary<string, string>
+    {
+        { "Organizer", "Organizátor" },
+        { "EventTopic", "Téma podujatia" },
+        { "EventDate", "Dátum podujatia" },
+        { "Name", "Meno účastníka" },
+        { "BirthDate", "Dátum narodenia" },
+        { "RegistrationNumber", "Registračné číslo" },
+        { "Notes", "Poznámky" }
+    };
+
+            for (int i = 0; i < fieldOrder.Count; i++)
+            {
+                var fieldId = fieldOrder[i];
+                if (fieldMap.ContainsKey(fieldId))
+                {
+                    var field = new CertificateField
+                    {
+                        Id = fieldId,
+                        DisplayName = fieldMap[fieldId],
+                        IsVisible = GetFieldVisibility(template, fieldId),
+                        Order = i,
+                        CustomLabel = GetFieldCustomLabel(template, fieldId),
+                        FontSize = template.TextFontSize,
+                        IsBold = false,
+                        IsItalic = false,
+                        Alignment = "LEFT",
+                        TextColor = template.TextColor
+                    };
+                    fields.Add(field);
+                }
+            }
+
+            LstFields.ItemsSource = fields;
+        }
+
+        /// <summary>
+        /// Získa vlastný label pre pole zo šablóny
+        /// </summary>
+        private string GetFieldCustomLabel(CertificateTemplateModel template, string fieldId)
+        {
+            switch (fieldId)
+            {
+                case "Organizer": return template.LabelOrganizer;
+                case "EventTopic": return template.LabelEventTopic;
+                case "EventDate": return template.LabelEventDate;
+                case "Name": return template.LabelParticipant;
+                case "BirthDate": return template.LabelBirthDate;
+                case "RegistrationNumber": return template.LabelRegistrationNumber;
+                case "Notes": return template.LabelNotes;
+                default: return GetDefaultLabel(fieldId);
+            }
+        }
+
+        // ===== UPRAVENÁ METÓDA UpdatePreview =====
+        // V existujúcej metóde UpdatePreview() pridaj v cykle cez polia podporu pre vlastné formátovanie:
+
+        /*
+        V časti kde sa vytvárajú TextBlocky pre polia, uprav takto:
+
+        foreach (var field in fields)
+        {
+            if (!field.IsVisible) continue;
+
+            var labelBlock = new TextBlock
+            {
+                Text = field.CustomLabel,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(field.TextColor)),
+                FontSize = field.FontSize,
+                FontWeight = field.IsBold ? FontWeights.Bold : FontWeights.Normal,
+                FontStyle = field.IsItalic ? FontStyles.Italic : FontStyles.Normal,
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+
+            // Zarovnanie
+            switch (field.Alignment)
+            {
+                case "CENTER":
+                    labelBlock.TextAlignment = TextAlignment.Center;
+                    break;
+                case "RIGHT":
+                    labelBlock.TextAlignment = TextAlignment.Right;
+                    break;
+                default:
+                    labelBlock.TextAlignment = TextAlignment.Left;
+                    break;
+            }
+
+            PreviewContent.Children.Add(labelBlock);
+
+            // Hodnota poľa (TextBox pre editáciu)
+            var valueBox = new TextBox
+            {
+                Text = GetSampleFieldValue(field.Id),
+                FontSize = field.FontSize,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(field.TextColor)),
+                BorderThickness = new Thickness(0, 0, 0, 1),
+                BorderBrush = Brushes.LightGray,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0, 0, 0, 10),
+                IsReadOnly = true
+            };
+
+            PreviewContent.Children.Add(valueBox);
+        }
+        */
+
+        /// <summary>
+        /// Získa ukážkovú hodnotu pre pole
+        /// </summary>
+        private string GetSampleFieldValue(string fieldId)
+        {
+            switch (fieldId)
+            {
+                case "Organizer": return "Vzdelávacia akadémia, s.r.o.";
+                case "EventTopic": return "Moderné metódy vzdelávania";
+                case "EventDate": return DateTime.Now.ToString("dd.MM.yyyy");
+                case "Name": return "Ing. Ján Novák";
+                case "BirthDate": return "01.01.1990";
+                case "RegistrationNumber": return "12345";
+                case "Notes": return "Účastník absolvoval seminár ";
+                default: return "[Ukážková hodnota]";
+            }
+        }
+
+        #endregion
 
         // ===== UPDATE PREVIEW =====
         private void UpdatePreview()
@@ -636,40 +923,67 @@ namespace CertificateGenerator
                 // Polia podľa poradia
                 if (LstFields.ItemsSource is List<CertificateField> fields)
                 {
-                    foreach (var field in fields.OrderBy(f => f.Order))
-                    {
-                        if (!field.IsVisible) continue;
+                    Debug.WriteLine($"[UpdatePreview] ContentLayout={template.ContentLayout}, Počet viditeľných polí={fields.Count(f => f.IsVisible)}");
 
-                        switch (field.Id)
+                    var visibleFields = fields.Where(f => f.IsVisible).ToList();
+
+                    // Rozhodnutie na základe layoutu
+                    if (template.ContentLayout == "TWO_COLUMN" || template.ContentLayout == "THREE_COLUMN")
+                    {
+                        // VIACSTĹPCOVÝ LAYOUT
+                        int columnCount = template.ContentLayout == "TWO_COLUMN" ? 2 : 3;
+                        Debug.WriteLine($"[UpdatePreview] Použitie {columnCount}-stĺpcového layoutu");
+
+                        // Vytvor Grid pre stĺpce
+                        var columnsGrid = new Grid();
+
+                        // Definuj stĺpce
+                        for (int i = 0; i < columnCount; i++)
                         {
-                            case "Organizer":
-                                AddPreviewField(template.LabelOrganizer,
-                                    "Slovenská komora medicínsko-technických pracovníkov", template);
-                                break;
-                            case "EventTopic":
-                                AddPreviewField(template.LabelEventTopic,
-                                    "Moderné trendy v zdravotníctve", template);
-                                break;
-                            case "EventDate":
-                                AddPreviewField(template.LabelEventDate,
-                                    DateTime.Now.ToString("dd.MM.yyyy"), template);
-                                break;
-                            case "Name":
-                                AddPreviewField(template.LabelParticipant,
-                                    "Ing. Ján Novák", template);
-                                break;
-                            case "BirthDate":
-                                AddPreviewField(template.LabelBirthDate,
-                                    "01.01.1990", template);
-                                break;
-                            case "RegistrationNumber":
-                                AddPreviewField(template.LabelRegistrationNumber,
-                                    "12345", template);
-                                break;
-                            case "Notes":
-                                AddPreviewField(template.LabelNotes,
-                                    "Toto je ukážkový text poznámky.", template);
-                                break;
+                            columnsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+                            // Pridaj medzeru medzi stĺpcami (okrem posledného)
+                            if (i < columnCount - 1)
+                            {
+                                columnsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(template.ColumnSpacing) });
+                            }
+                        }
+
+                        // Rozdeľ polia do stĺpcov
+                        int fieldsPerColumn = (int)Math.Ceiling((double)visibleFields.Count / columnCount);
+                        Debug.WriteLine($"[UpdatePreview] Polí na stĺpec: {fieldsPerColumn}");
+
+                        for (int col = 0; col < columnCount; col++)
+                        {
+                            var columnPanel = new StackPanel();
+
+                            // Vypočítaj rozsah polí pre tento stĺpec
+                            int startIdx = col * fieldsPerColumn;
+                            int endIdx = Math.Min(startIdx + fieldsPerColumn, visibleFields.Count);
+
+                            Debug.WriteLine($"[UpdatePreview] Stĺpec {col}: polia {startIdx}-{endIdx}");
+
+                            for (int i = startIdx; i < endIdx; i++)
+                            {
+                                var field = visibleFields[i];
+                                AddFieldToPanel(columnPanel, field);
+                            }
+
+                            // Pridaj stĺpec do Gridu (Grid.Column = col * 2 kvôli medzerám)
+                            Grid.SetColumn(columnPanel, col * 2);
+                            columnsGrid.Children.Add(columnPanel);
+                        }
+
+                        PreviewContent.Children.Add(columnsGrid);
+                    }
+                    else
+                    {
+                        // VERTIKÁLNY LAYOUT (klasický)
+                        Debug.WriteLine($"[UpdatePreview] Použitie vertikálneho layoutu");
+
+                        foreach (var field in visibleFields)
+                        {
+                            AddFieldToPanel(PreviewContent, field);
                         }
                     }
                 }
@@ -702,6 +1016,56 @@ namespace CertificateGenerator
                 System.Windows.MessageBox.Show($"Chyba pri aktualizácii náhľadu:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+
+        /// <summary>
+        /// Pridá pole (label + value) do panelu
+        /// </summary>
+        private void AddFieldToPanel(System.Windows.Controls.Panel panel, CertificateField field)
+        {
+            Debug.WriteLine($"[AddFieldToPanel] Pridávam pole: {field.Id} ({field.DisplayName})");
+
+            var labelBlock = new TextBlock
+            {
+                Text = field.CustomLabel,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(field.TextColor)),
+                FontSize = field.FontSize,
+                FontWeight = field.IsBold ? FontWeights.Bold : FontWeights.Normal,
+                FontStyle = field.IsItalic ? FontStyles.Italic : FontStyles.Normal,
+                Margin = new Thickness(0, 0, 0, 5)
+            };
+
+            // Zarovnanie
+            switch (field.Alignment)
+            {
+                case "CENTER":
+                    labelBlock.TextAlignment = TextAlignment.Center;
+                    break;
+                case "RIGHT":
+                    labelBlock.TextAlignment = TextAlignment.Right;
+                    break;
+                default:
+                    labelBlock.TextAlignment = TextAlignment.Left;
+                    break;
+            }
+
+            panel.Children.Add(labelBlock);
+
+            // Hodnota poľa (TextBox pre editáciu)
+            var valueBox = new System.Windows.Controls.TextBox
+            {
+                Text = GetSampleFieldValue(field.Id),
+                FontSize = field.FontSize,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(field.TextColor)),
+                BorderThickness = new Thickness(0, 0, 0, 1),
+                BorderBrush = Brushes.LightGray,
+                Background = Brushes.Transparent,
+                Margin = new Thickness(0, 0, 0, 10),
+                IsReadOnly = true
+            };
+
+            panel.Children.Add(valueBox);
         }
 
         private void AddPreviewField(string label, string value, CertificateTemplateModel template)
@@ -786,6 +1150,25 @@ namespace CertificateGenerator
                 LoadTemplateToUI(template);
                 LoadFieldsList(template);
             }
+        }
+
+        private void CmbContentLayout_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isLoading) return;
+
+            if (CmbContentLayout.SelectedItem is ComboBoxItem item)
+            {
+                string layout = item.Tag?.ToString() ?? "VERTICAL";
+                Debug.WriteLine($"[CmbContentLayout_SelectionChanged] Zvolený layout: {layout}");
+
+                // Zobraz/skry panel s nastaveniami stĺpcov
+                PnlColumnLayout.Visibility = (layout != "VERTICAL")
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+
+            UpdatePreview();
+            _hasUnsavedChanges = true;
         }
 
         private void ColorChanged(object sender, TextChangedEventArgs e)
