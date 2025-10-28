@@ -22,10 +22,14 @@ namespace CertificateGenerator
         private int _currentParticipantId = 0;
         private int _currentTopicId = 0;
 
+        // NOVÁ FUNKČNOSŤ - Aktuálne vybraná šablóna
+        private CertificateTemplateModel _currentTemplate;
+
         public QuickGenerationWindow()
         {
             InitializeComponent();
             InitializeRepositories();
+            LoadDefaultTemplate();
         }
 
         private void InitializeRepositories()
@@ -43,6 +47,71 @@ namespace CertificateGenerator
             {
                 MessageBox.Show($"Chyba pri inicializácii:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// NOVÁ FUNKČNOSŤ - Načíta predvolenú šablónu alebo vytvorí základnú
+        /// </summary>
+        private void LoadDefaultTemplate()
+        {
+            try
+            {
+                _currentTemplate = _templateRepo.GetDefault();
+
+                if (_currentTemplate != null)
+                {
+                    TxtSelectedTemplateName.Text = _currentTemplate.Name;
+                }
+                else
+                {
+                    // Ak neexistuje žiadna predvolená šablóna, použi minimalistickú modrú
+                    var preset = ModernTemplatePresets.GetMinimalistBluePreset();
+                    _currentTemplate = preset.Template;
+                    TxtSelectedTemplateName.Text = "Minimalistická modrá (predvolená)";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Chyba pri načítaní predvolenej šablóny:\n{ex.Message}",
+                    "Varovanie", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                // Fallback - použiť základnú šablónu
+                _currentTemplate = new CertificateTemplateModel
+                {
+                    Name = "Základná šablóna"
+                };
+                TxtSelectedTemplateName.Text = "Základná šablóna";
+            }
+        }
+
+        /// <summary>
+        /// NOVÁ FUNKČNOSŤ - Otvorí galériu šablón
+        /// </summary>
+        private void ChangeTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var galleryWindow = new TemplateGalleryWindow(App.DatabaseManager);
+                if (galleryWindow.ShowDialog() == true && galleryWindow.TemplateSelected)
+                {
+                    _currentTemplate = galleryWindow.SelectedTemplate;
+                    TxtSelectedTemplateName.Text = _currentTemplate.Name;
+
+                    MessageBox.Show(
+                        $"Šablóna '{_currentTemplate.Name}' bola úspešne vybraná.",
+                        "Šablóna zmenená",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Chyba pri otváraní galérie šablón:\n{ex.Message}",
+                    "Chyba",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -102,10 +171,12 @@ namespace CertificateGenerator
                 {
                     var selected = selectWindow.SelectedParticipant;
                     TxtParticipantName.Text = selected.Name;
-                    DtpBirthDate.SelectedDate = selected.BirthDate;
-                    TxtRegistrationNumber.Text = selected.RegistrationNumber;
-                    TxtNotes.Text = selected.Notes;
                     _currentParticipantId = selected.Id;
+
+                    if (selected.BirthDate.HasValue)
+                        DtpBirthDate.SelectedDate = selected.BirthDate.Value;
+
+                    TxtRegistrationNumber.Text = selected.RegistrationNumber;
                 }
             }
             catch (Exception ex)
@@ -115,32 +186,67 @@ namespace CertificateGenerator
             }
         }
 
+        /// <summary>
+        /// UPRAVENÁ FUNKČNOSŤ - Generuje PDF s vybranou šablónou
+        /// </summary>
         private void GeneratePdf_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtParticipantName.Text))
             {
-                MessageBox.Show("Prosím vyplňte meno účastníka.", "Chyba",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Meno účastníka je povinné!",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
+
+            // Skontroluj, či je šablóna načítaná
+            if (_currentTemplate == null)
+            {
+                MessageBox.Show("Šablóna nie je načítaná. Načíta sa predvolená šablóna.",
+                    "Varovanie", MessageBoxButton.OK, MessageBoxImage.Warning);
+                LoadDefaultTemplate();
+
+                if (_currentTemplate == null)
+                {
+                    MessageBox.Show("Nepodarilo sa načítať žiadnu šablónu!",
+                        "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
 
             try
             {
-                SaveFileDialog saveDialog = new SaveFileDialog
+                var saveDialog = new SaveFileDialog
                 {
-                    Filter = "PDF súbory (*.pdf)|*.pdf",
-                    FileName = $"Certificate_{SanitizeFileName(TxtParticipantName.Text)}.pdf",
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                    Filter = "PDF súbor (*.pdf)|*.pdf",
+                    FileName = $"Certificate_{TxtParticipantName.Text.Replace(" ", "_")}_{DateTime.Now:yyyyMMdd}.pdf"
                 };
 
                 if (saveDialog.ShowDialog() == true)
                 {
-                    CreatePdfDocument(saveDialog.FileName);
-                    SaveCertificateToHistory(saveDialog.FileName);
+                    PageSize pageSize = GetSelectedPageSize();
+
+                    // Generuj PDF s vybranou šablónou
+                    CertificatePdfGenerator.GeneratePdf(
+                        saveDialog.FileName,
+                        _currentTemplate,
+                        TxtOrganizer.Text,
+                        TxtEventTopic.Text,
+                        DtpEventDate.SelectedDate,
+                        TxtParticipantName.Text,
+                        DtpBirthDate.SelectedDate,
+                        TxtRegistrationNumber.Text,
+                        TxtNotes.Text,
+                        pageSize
+                    );
+
+                    // Ulož do histórie
+                    SaveToHistory(saveDialog.FileName);
 
                     var result = MessageBox.Show(
-                        $"PDF certifikát bol úspešne vytvorený!\n\nChcete ho otvoriť?",
-                        "Úspech", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                        $"Certifikát bol úspešne vytvorený!\n\nOtvoriť súbor?",
+                        "Úspech",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Information);
 
                     if (result == MessageBoxResult.Yes)
                     {
@@ -150,115 +256,74 @@ namespace CertificateGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri vytváraní PDF:\n{ex.Message}",
+                MessageBox.Show($"Chyba pri generovaní PDF:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void CreatePdfDocument(string filePath)
-        {
-            PageSize pageSize = GetSelectedPageSize();
-            CertificateTemplateModel template = _templateRepo.GetDefault();
-
-            CertificatePdfGenerator.GeneratePdf(
-                filePath,
-                template,
-                TxtOrganizer.Text,
-                TxtEventTopic.Text,
-                DtpEventDate.SelectedDate,
-                TxtParticipantName.Text,
-                DtpBirthDate.SelectedDate,
-                TxtRegistrationNumber.Text,
-                TxtNotes.Text,
-                pageSize
-            );
-        }
-
-        private void SaveCertificateToHistory(string filePath)
-        {
-            try
-            {
-                var certificate = new CertificateModel
-                {
-                    OrganizerId = _currentOrganizerId,
-                    OrganizerName = TxtOrganizer.Text ?? "",
-                    ParticipantId = _currentParticipantId,
-                    ParticipantName = TxtParticipantName.Text,
-                    ParticipantBirthDate = DtpBirthDate.SelectedDate,
-                    ParticipantRegistrationNumber = TxtRegistrationNumber.Text,
-                    EventTopicId = _currentTopicId,
-                    EventTopicName = TxtEventTopic.Text ?? "",
-                    EventDate = DtpEventDate.SelectedDate,
-                    Notes = TxtNotes.Text,
-                    PaperFormat = GetSelectedPaperFormat(),
-                    FilePath = filePath
-                };
-
-                _certificateRepo.Add(certificate);
-
-                if (_currentOrganizerId > 0)
-                    _organizerRepo.IncrementUsage(_currentOrganizerId);
-                if (_currentParticipantId > 0)
-                    _participantRepo.IncrementUsage(_currentParticipantId);
-                if (_currentTopicId > 0)
-                    _topicRepo.IncrementUsage(_currentTopicId);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to save history: {ex.Message}");
             }
         }
 
         private PageSize GetSelectedPageSize()
         {
-            var selectedItem = CmbPaperFormat.SelectedItem as ComboBoxItem;
-            string format = selectedItem?.Content.ToString() ?? "A5";
-
-
+            bool landscape = ChkLandscape.IsChecked == true;
             PageSize size;
-            if (format.StartsWith("A3")) size = PageSize.A3;
-            else if (format.StartsWith("A4")) size = PageSize.A4;
-            else size = PageSize.A5;
 
-            // Otočenie na šírku ak je zaškrtnuté
-            if (ChkLandscape?.IsChecked == true)
+            switch (CmbPaperFormat.SelectedIndex)
             {
-                size = size.Rotate();
+                case 0: // A3
+                    size = landscape ? PageSize.A3.Rotate() : PageSize.A3;
+                    break;
+                case 1: // A4
+                    size = landscape ? PageSize.A4.Rotate() : PageSize.A4;
+                    break;
+                case 2: // A5
+                default:
+                    size = landscape ? PageSize.A5.Rotate() : PageSize.A5;
+                    break;
             }
 
             return size;
         }
 
-        private string GetSelectedPaperFormat()
+        private void SaveToHistory(string filePath)
         {
-            var selectedItem = CmbPaperFormat.SelectedItem as ComboBoxItem;
-            string format = selectedItem?.Content.ToString() ?? "A5";
-
-            if (format.StartsWith("A3")) return "A3";
-            if (format.StartsWith("A4")) return "A4";
-            return "A5";
-        }
-
-        private string SanitizeFileName(string fileName)
-        {
-            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+            try
             {
-                fileName = fileName.Replace(c, '_');
+                // CertificateModel očakáva int, nie int?
+                //   0 ako "žiadna hodnota" namiesto null
+                var certificate = new CertificateModel
+                {
+                    OrganizerId = _currentOrganizerId,  // Priamo int (0 ak nie je nastavené)
+                    OrganizerName = TxtOrganizer.Text,
+                    EventTopicId = _currentTopicId,      // Priamo int (0 ak nie je nastavené)
+                    EventTopicName = TxtEventTopic.Text,
+                    EventDate = DtpEventDate.SelectedDate,
+                    ParticipantId = _currentParticipantId, // Priamo int (0 ak nie je nastavené)
+                    ParticipantName = TxtParticipantName.Text,
+                    ParticipantBirthDate = DtpBirthDate.SelectedDate,
+                    ParticipantRegistrationNumber = TxtRegistrationNumber.Text,
+                    Notes = TxtNotes.Text,
+                    FilePath = filePath,
+                    PaperFormat = CmbPaperFormat.Text,
+                    CreatedAt = DateTime.Now
+                };
+
+                _certificateRepo.Add(certificate);
             }
-            return fileName.Replace(" ", "_");
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Certifikát bol vytvorený, ale nepodarilo sa uložiť históriu:\n{ex.Message}",
+                    "Varovanie", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void ClearForm_Click(object sender, RoutedEventArgs e)
         {
             TxtOrganizer.Clear();
             TxtEventTopic.Clear();
+            DtpEventDate.SelectedDate = null;
             TxtParticipantName.Clear();
+            DtpBirthDate.SelectedDate = null;
             TxtRegistrationNumber.Clear();
             TxtNotes.Clear();
-            DtpEventDate.SelectedDate = null;
-            DtpBirthDate.SelectedDate = null;
-            CmbPaperFormat.SelectedIndex = 2;
-
             _currentOrganizerId = 0;
             _currentParticipantId = 0;
             _currentTopicId = 0;
@@ -268,16 +333,12 @@ namespace CertificateGenerator
         {
             try
             {
-                var bulkWindow = new BulkGenerationWindow(
-                    TxtOrganizer.Text ?? "",
-                    CmbPaperFormat.SelectedIndex
-                );
-                bulkWindow.Owner = this;
+                var bulkWindow = new BulkGenerationWindow();
                 bulkWindow.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri otváraní:\n{ex.Message}",
+                MessageBox.Show($"Chyba pri otváraní okna hromadného generovania:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -287,19 +348,16 @@ namespace CertificateGenerator
             try
             {
                 var editorWindow = new TemplateEditorWindow();
-                editorWindow.Owner = this;
                 editorWindow.ShowDialog();
+
+                // Po zatvorení editora, aktualizuj šablónu ak bola zmenená
+                LoadDefaultTemplate();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri otváraní:\n{ex.Message}",
+                MessageBox.Show($"Chyba pri otváraní editora šablón:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

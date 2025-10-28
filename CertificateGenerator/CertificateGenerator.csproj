@@ -165,11 +165,14 @@
     <Compile Include="CertificateHistoryWindow.xaml.cs">
       <DependentUpon>CertificateHistoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Data\CertificateRepository.cs" />
     <Compile Include="Data\CertificateTemplateModel.cs" />
+    <Compile Include="Data\CertificateTemplateModelExtensions.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
     <Compile Include="Data\DatabaseHelper.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
+    <Compile Include="Helpers\ModernTemplatePresets.cs" />
     <Compile Include="ManageEventTopicWindow.xaml.cs">
       <DependentUpon>ManageEventTopicWindow.xaml</DependentUpon>
     </Compile>
@@ -190,6 +193,9 @@
     </Compile>
     <Compile Include="TemplateEditorWindow.xaml.cs">
       <DependentUpon>TemplateEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateGalleryWindow.xaml.cs">
+      <DependentUpon>TemplateGalleryWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
@@ -266,6 +272,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TemplateEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateGalleryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
