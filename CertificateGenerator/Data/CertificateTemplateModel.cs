@@ -40,6 +40,7 @@ namespace CertificateGenerator.Data
         public string SeparatorStyle { get; set; } = "UNDERLINE"; // UNDERLINE, LINE, NONE
 
         // Logo/Obrázok
+        public bool ShowLogo { get; set; } = false;
         public string LogoPath { get; set; }
         public string LogoPosition { get; set; } = "TOP"; // TOP, BOTTOM, NONE
         public int LogoWidth { get; set; } = 100;

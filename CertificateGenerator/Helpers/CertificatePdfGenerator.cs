@@ -270,123 +270,149 @@ namespace CertificateGenerator.Helpers
                     // === VYKRESLENIE PODĽA LAYOUTU ===
                     if (template.ContentLayout == "MODERN")
                     {
-                        // MODERNÝ LAYOUT - individuálne umiestnenie polí
+                        // MODERNÝ PROFESIONÁLNY LAYOUT
 
-                        // 1. TÉMA SEMINÁRA - hore, centrované
+                        float pageWidth = document.GetPdfDocument().GetDefaultPageSize().GetWidth();
+                        float pageHeight = document.GetPdfDocument().GetDefaultPageSize().GetHeight();
+
+                        // 1. LOGO - ľavý horný roh
+                        if (template.ShowLogo && !string.IsNullOrWhiteSpace(template.LogoPath) && File.Exists(template.LogoPath))
+                        {
+                            try
+                            {
+                                ImageData imageData = ImageDataFactory.Create(template.LogoPath);
+                                iText.Layout.Element.Image logo = new iText.Layout.Element.Image(imageData)
+                                    .SetWidth(template.LogoWidth)
+                                    .SetHeight(template.LogoHeight)
+                                    .SetFixedPosition(template.MarginLeft, pageHeight - template.MarginTop - template.LogoHeight);
+
+                                document.Add(logo);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine($"Chyba pri načítaní loga: {ex.Message}");
+                            }
+                        }
+
+                        // 2. DEKORATÍVNE VLNOVKY hore
+                        if (template.ShowTopDecoration)
+                        {
+                            PdfCanvas canvas = new PdfCanvas(document.GetPdfDocument().GetFirstPage());
+                            Color waveColor = new DeviceRgb(System.Drawing.ColorTranslator.FromHtml(template.TopDecorationColor));
+
+                            DrawWave(canvas, waveColor, 0, pageHeight - 80, 8, 60, pageWidth);
+                            DrawWave(canvas, waveColor, -20, pageHeight - 85, 10, 70, pageWidth);
+                        }
+
+                        // 3. TÉMA SEMINÁRA - vpravo hore
                         if (template.ShowEventTopic && !string.IsNullOrWhiteSpace(eventTopic))
                         {
-                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelEventTopic) ? "Téma seminára" : template.LabelEventTopic)
+                            Div topicDiv = new Div()
+                                .SetFixedPosition(template.MarginLeft, pageHeight - 180, pageWidth - template.MarginLeft - template.MarginRight);
+
+                            topicDiv.Add(new Paragraph(eventTopic)
                                 .SetFont(headerFont)
-                                .SetFontSize(template.HeaderFontSize)
-                                .SetFontColor(textColor)
-                                .SetTextAlignment(TextAlignment.CENTER)
-                                .SetMarginBottom(5));
-
-                            document.Add(new Paragraph(eventTopic)
-                                .SetFont(textFont)
-                                .SetFontSize(template.TextFontSize + 2)
-                                .SetFontColor(textColor)
-                                .SetTextAlignment(TextAlignment.CENTER)
-                                .SetMarginBottom(25));
-                        }
-
-                        // 2. MENO ÚČASTNÍKA - veľké, centrované
-                        if (template.ShowName && !string.IsNullOrWhiteSpace(participantName))
-                        {
-                            document.Add(new Paragraph(participantName)
-                                .SetFont(textFont)
-                                .SetFontSize(template.TextFontSize + 6)
-                                .SetFontColor(textColor)
-                                .SetTextAlignment(TextAlignment.CENTER)
-                                .SetMarginBottom(10));
-                        }
-
-                        // 3. DÁTUM NARODENIA a REGISTRAČNÉ ČÍSLO - vedľa siebie, centrované
-                        Table infoTable = new Table(new float[] { 1, 1 }).UseAllAvailableWidth()
-                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
-                            .SetMarginBottom(30);
-
-                        string birthInfo = "";
-                        string regInfo = "";
-
-                        if (template.ShowBirthDate && birthDate.HasValue)
-                        {
-                            birthInfo = birthDate.Value.ToString("d. M. yyyy");
-                        }
-
-                        if (template.ShowRegistrationNumber && !string.IsNullOrWhiteSpace(registrationNumber))
-                        {
-                            regInfo = "Reg.č. " + registrationNumber;
-                        }
-
-                        Cell birthCell = new Cell()
-                            .Add(new Paragraph(birthInfo)
-                                .SetFont(textFont)
-                                .SetFontSize(template.TextFontSize)
-                                .SetFontColor(textColor)
-                                .SetTextAlignment(TextAlignment.CENTER))
-                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER);
-
-                        Cell regCell = new Cell()
-                            .Add(new Paragraph(regInfo)
-                                .SetFont(textFont)
-                                .SetFontSize(template.TextFontSize)
-                                .SetFontColor(textColor)
-                                .SetTextAlignment(TextAlignment.CENTER))
-                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER);
-
-                        infoTable.AddCell(birthCell);
-                        infoTable.AddCell(regCell);
-                        document.Add(infoTable);
-
-                        // 4. DÁTUM KONANIA - vpravo dole
-                        if (template.ShowEventDate && eventDate.HasValue)
-                        {
-                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelEventDate) ? "Dátum konania podujatia" : template.LabelEventDate)
-                                .SetFont(headerFont)
-                                .SetFontSize(template.HeaderFontSize - 1)
+                                .SetFontSize(template.TextFontSize + 4)
                                 .SetFontColor(textColor)
                                 .SetTextAlignment(TextAlignment.RIGHT)
-                                .SetMarginTop(20)
-                                .SetMarginBottom(3));
+                                .SetMarginBottom(5));
 
-                            document.Add(new Paragraph(eventDate.Value.ToString("d. M. yyyy"))
-                                .SetFont(textFont)
-                                .SetFontSize(template.TextFontSize + 2)
-                                .SetFontColor(textColor)
-                                .SetTextAlignment(TextAlignment.RIGHT));
+                            topicDiv.Add(new Paragraph("_________________________________")
+                                .SetTextAlignment(TextAlignment.RIGHT)
+                                .SetFontColor(new DeviceRgb(System.Drawing.ColorTranslator.FromHtml(template.AccentColor)))
+                                .SetFontSize(template.TextFontSize));
+
+                            document.Add(topicDiv);
                         }
 
-                        // 5. ORGANIZÁTOR - ak je viditeľný
+                        // 4. HLAVNÁ SEKCIA - tabuľka s 2 stĺpcami
+                        Table mainTable = new Table(new float[] { 3, 2 })
+                            .UseAllAvailableWidth()
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+                            .SetMarginTop(pageHeight - 300);
+
+                        // ĽAVÝ STĹPEC - Meno a údaje
+                        Cell leftCell = new Cell()
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+                            .SetVerticalAlignment(VerticalAlignment.TOP);
+
+                        if (template.ShowName && !string.IsNullOrWhiteSpace(participantName))
+                        {
+                            leftCell.Add(new Paragraph(participantName)
+                                .SetFont(headerFont)
+                                .SetFontSize(template.TextFontSize + 8)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.LEFT)
+                                .SetMarginBottom(10));
+
+                            string infoLine = "";
+                            if (template.ShowBirthDate && birthDate.HasValue)
+                                infoLine = birthDate.Value.ToString("d. M. yyyy");
+
+                            if (template.ShowRegistrationNumber && !string.IsNullOrWhiteSpace(registrationNumber))
+                            {
+                                if (!string.IsNullOrEmpty(infoLine)) infoLine += " | ";
+                                infoLine += registrationNumber;
+                            }
+
+                            if (!string.IsNullOrEmpty(infoLine))
+                            {
+                                leftCell.Add(new Paragraph(infoLine)
+                                    .SetFont(textFont)
+                                    .SetFontSize(template.TextFontSize)
+                                    .SetFontColor(textColor)
+                                    .SetTextAlignment(TextAlignment.LEFT));
+                            }
+                        }
+
+                        mainTable.AddCell(leftCell);
+
+                        // PRAVÝ STĹPEC - Dátum a organizátor
+                        Cell rightCell = new Cell()
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+                            .SetVerticalAlignment(VerticalAlignment.TOP);
+
+                        if (template.ShowEventDate && eventDate.HasValue)
+                        {
+                            rightCell.Add(new Paragraph(eventDate.Value.ToString("d. M. yyyy"))
+                                .SetFont(headerFont)
+                                .SetFontSize(template.TextFontSize + 3)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.RIGHT)
+                                .SetMarginBottom(12));
+                        }
+
                         if (template.ShowOrganizer && !string.IsNullOrWhiteSpace(organizerName))
                         {
-                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelOrganizer) ? "Organizátor:" : template.LabelOrganizer)
-                                .SetFont(headerFont)
-                                .SetFontSize(template.HeaderFontSize)
-                                .SetFontColor(textColor)
-                                .SetMarginTop(15)
-                                .SetMarginBottom(5));
-
-                            document.Add(new Paragraph(organizerName)
+                            rightCell.Add(new Paragraph(organizerName)
                                 .SetFont(textFont)
-                                .SetFontSize(template.TextFontSize)
+                                .SetFontSize(template.TextFontSize - 1)
                                 .SetFontColor(textColor)
-                                .SetMarginBottom(15));
+                                .SetTextAlignment(TextAlignment.RIGHT)
+                                .SetMaxWidth(200));
                         }
 
-                        // 6. POZNÁMKY - ak sú viditeľné
+                        mainTable.AddCell(rightCell);
+                        document.Add(mainTable);
+
+                        // 5. POZNÁMKY
                         if (template.ShowNotes && !string.IsNullOrWhiteSpace(notes))
                         {
-                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelNotes) ? "Poznámky:" : template.LabelNotes)
-                                .SetFont(headerFont)
-                                .SetFontSize(template.HeaderFontSize)
-                                .SetFontColor(textColor)
-                                .SetMarginBottom(5));
-
                             document.Add(new Paragraph(notes)
                                 .SetFont(textFont)
                                 .SetFontSize(template.TextFontSize)
-                                .SetFontColor(textColor));
+                                .SetFontColor(textColor)
+                                .SetMarginTop(30));
+                        }
+
+                        // 6. DEKORATÍVNE VLNOVKY dole
+                        if (template.ShowBottomDecoration)
+                        {
+                            PdfCanvas canvas = new PdfCanvas(document.GetPdfDocument().GetFirstPage());
+                            Color waveColor = new DeviceRgb(System.Drawing.ColorTranslator.FromHtml(template.BottomDecorationColor));
+
+                            DrawWave(canvas, waveColor, 0, 100, 8, 60, pageWidth);
+                            DrawWave(canvas, waveColor, -20, 95, 10, 70, pageWidth);
                         }
                     }
                     else if (template.ContentLayout == "TWO_COLUMN")
@@ -765,6 +791,27 @@ namespace CertificateGenerator.Helpers
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Nakreslí vlnovku na canvas
+        /// </summary>
+        private static void DrawWave(PdfCanvas canvas, Color color, float startX, float startY, float amplitude, float waveLength, float width)
+        {
+            canvas.SetStrokeColor(color);
+            canvas.SetLineWidth(1.5f);
+            canvas.MoveTo(startX, startY);
+
+            for (float x = startX; x < width + 100; x += waveLength)
+            {
+                canvas.CurveTo(
+                    x + waveLength / 4, startY + amplitude,
+                    x + 3 * waveLength / 4, startY - amplitude,
+                    x + waveLength, startY
+                );
+            }
+
+            canvas.Stroke();
         }
     }
 
