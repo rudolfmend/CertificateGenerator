@@ -92,6 +92,9 @@ namespace CertificateGenerator.Data
         public string LabelRegistrationNumber { get; set; } = "Registračné číslo v komore:";
         public string LabelNotes { get; set; } = "Poznámky:";
 
+        // Dekor písma 
+        public bool TitleUnderlined { get; set; }
+
         // Dekoratívne prvky
         public bool ShowTopDecoration { get; set; } = false;
         public string TopDecorationType { get; set; } = "WAVY_LINE"; // WAVY_LINE, STRAIGHT_LINE, DIAGONAL_LINES, CORNER_ORNAMENTS

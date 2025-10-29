@@ -20,7 +20,8 @@ namespace CertificateGenerator.Helpers
                 GetModernGradientPreset(),
                 GetProfessionalDarkPreset(),
                 GetCreativeColorfulPreset(),
-                GetClassicBorderedPreset()
+                GetClassicBorderedPreset(),
+                GetOrnamentalLuxuryPreset()
             };
         }
 
@@ -69,7 +70,7 @@ namespace CertificateGenerator.Helpers
                     SeparatorStyle = "UNDERLINE",
 
                     // Dekorácie
-                    ShowTopDecoration = true,
+                    ShowTopDecoration = false,
                     TopDecorationColor = "#3B82F6",
                     TopDecorationThickness = 3,
                     ShowBottomDecoration = true,
@@ -116,14 +117,14 @@ namespace CertificateGenerator.Helpers
                     Name = "Elegantná zlatá",
 
                     // Farby
-                    TitleColor = "#92400E", // Tmavé zlato/hnedá
-                    TextColor = "#1C1917", // Takmer čierna
+                    TitleColor = "#92400E",  // Tmavé zlato/hnedá
+                    TextColor = "#1C1917",   // Takmer čierna
                     AccentColor = "#D97706", // Zlatá
                     BackgroundColor = "#FFFBEB", // Krémová
 
                     // Fonty
                     TitleFontFamily = "Times-Bold",
-                    TitleFontSize = 15,
+                    TitleFontSize = 13,
                     HeaderFontFamily = "Times-Bold",
                     HeaderFontSize = 10,
                     TextFontFamily = "Times-Roman",
@@ -139,9 +140,10 @@ namespace CertificateGenerator.Helpers
                     TitleAlignment = "CENTER",
                     CertificateTitle = "POTVRDENIE O ÚČASTI NA ODBORNOM SEMINÁRI \n Cumulus, s.r.o. Rastislavova 45, Košice 040 01",
                     ShowTitle = true,
+                    TitleUnderlined = true,
 
                     // Oddeľovacia čiara
-                    ShowSeparatorLine = true,
+                    ShowSeparatorLine = false,
                     SeparatorStyle = "DOUBLE_LINE",
 
                     // Dekorácie
@@ -294,6 +296,7 @@ namespace CertificateGenerator.Helpers
                     TitleAlignment = "CENTER",
                     CertificateTitle = "CERTIFIKÁT",
                     ShowTitle = true,
+                    TitleUnderlined = true,
 
                     // Oddeľovacia čiara
                     ShowSeparatorLine = true,
@@ -475,6 +478,117 @@ namespace CertificateGenerator.Helpers
                     LogoPosition = "TOP",
                     LogoWidth = 100,
                     LogoHeight = 100
+                }
+            };
+        }
+
+        /// <summary>
+        /// Ozdobná luxusná šablóna - bohatý dizajn s viacerými ozdobnými prvkami
+        /// </summary>
+        public static TemplatePreset GetOrnamentalLuxuryPreset()
+        {
+            return new TemplatePreset
+            {
+                Name = "Ozdobná luxusná",
+                Description = "Bohatý dizajn s viacerými čiarami, ozdobnými prvkami a detailnými textovými poliami",
+                PreviewImagePath = "pack://application:,,,/Resources/Templates/ornamental_luxury.png",
+                Category = "Luxusný",
+                Template = new CertificateTemplateModel
+                {
+                    Name = "Ozdobná luxusná",
+
+                    // Farby - elegantná kombinécia bordovej a zlata
+                    TitleColor = "#7C2D12",  // Tmavo bordová
+                    TextColor = "#1C1917",   // Takmer čierna
+                    AccentColor = "#B45309", // Bronzová/zlatá
+                    BackgroundColor = "#FFF9F0", // Jemná krémová
+
+                    // Fonty 
+                    TitleFontFamily = "Times-Bold",
+                    TitleFontSize = 14,
+                    HeaderFontFamily = "Times-Bold",
+                    HeaderFontSize = 9,
+                    TextFontFamily = "Times-Roman",
+                    TextFontSize = 12,
+
+                    // Okraje 
+                    MarginTop = 10,
+                    MarginRight = 75,
+                    MarginBottom = 20,
+                    MarginLeft = 75,
+
+                    // Titulok
+                    TitleAlignment = "CENTER",
+                    CertificateTitle = "POTVRDENIE O ÚČASTI NA ODBORNOM SEMINÁRI",
+                    ShowTitle = true,
+                    TitleUnderlined = false,
+
+                    // Oddeľovacia čiara pod titulkom
+                    ShowSeparatorLine = true,
+                    SeparatorStyle = "DOUBLE_LINE",
+
+                    // Horná dekorácia 
+                    ShowTopDecoration = false,
+                    TopDecorationType = "WAVY_LINE",
+                    TopDecorationColor = "#B45309",
+                    TopDecorationThickness = 1,
+
+                    // Dolná dekorácia - zodpovedá hornej
+                    ShowBottomDecoration = false,
+                    BottomDecorationType = "WAVY_LINE",
+                    BottomDecorationColor = "#B45309",
+                    BottomDecorationThickness = 1,
+
+                    // Bočné dekorácie - ornamenty
+                    ShowSideDecorations = true,
+                    SideDecorationType = "ORNAMENTAL_BORDER",
+                    SideDecorationColor = "#B45309",
+
+                    // Ozdobný rámček
+                    ShowBorder = true,
+                    BorderColor = "#7C2D12",
+                    BorderWidth = 1,
+
+                    // Viditeľnosť všetkých polí - maximálne informácie
+                    ShowOrganizer = true,
+                    ShowEventTopic = true,
+                    ShowEventDate = true,
+                    ShowName = true,
+                    ShowBirthDate = true,
+                    ShowRegistrationNumber = true,
+                    ShowNotes = true,
+
+                    // Layout - vertikálny 
+                    ContentLayout = "TWO_COLUMN",
+                    FieldOrder = "Name,BirthDate,RegistrationNumber,EventTopic,EventDate,Organizer,Notes",
+
+                    // Logo
+                    LogoPosition = "TOP",
+                    LogoWidth = 110,
+                    LogoHeight = 110,
+
+                    // Vlastné texty - pridané špeciálne hlavičky a pätičky
+                    CustomHeaderText = "",
+                    CustomHeaderAlignment = "CENTER",
+                    CustomHeaderBold = false,
+
+                    CustomFooterText = "Tento certifikát potvrdzuje úspešné absolvovanie vzdelávacieho podujatia\n" +
+                                        "a udeľuje sa zaň jeden kredit.\n" +
+                                        "Cumulus, s.r.o. Rastislavova 45, Košice 040 01",
+                    CustomFooterAlignment = "CENTER",
+                    CustomFooterBold = false,
+                    CustomFooterItalic = true,
+
+                    // Predvolené popisky polí - detailnejšie
+                    LabelOrganizer = "Cumulus, s.r.o. Rastislavova 45, Košice 040 01",
+                    LabelEventTopic = "Téma a obsah seminára\n",
+                    LabelParticipant = "",
+                    LabelEventDate = "Dátum konania podujatia\n",
+                    LabelBirthDate = "Dátum narodenia\n",
+                    LabelRegistrationNumber = "Registračné číslo\n",
+                    LabelNotes = "Ďalšie poznámky a údaje\n"
+
+                    //LabelParticipant = "Meno a priezvisko účastníka\n",
                 }
             };
         }

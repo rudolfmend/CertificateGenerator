@@ -14,6 +14,7 @@ using iText.Layout.Properties;
 using System;
 using System.IO;
 using System.Diagnostics;
+using iText.IO.Font;
 
 namespace CertificateGenerator.Helpers
 {
@@ -36,517 +37,531 @@ namespace CertificateGenerator.Helpers
         {
             using (PdfWriter writer = new PdfWriter(filePath))
             using (PdfDocument pdfDocument = new PdfDocument(writer))
-            using (Document document = new Document(pdfDocument, pageSize))
             {
-                // Explicitné vytvorenie stránky pred akýmkoľvek prístupom
+                // KRITICKÉ: Vytvor stránku PRED Document objektom
                 pdfDocument.AddNewPage(pageSize);
 
-                // Nastavenie okrajov
-                document.SetMargins(
-                    template.MarginTop,
-                    template.MarginRight,
-                    template.MarginBottom,
-                    template.MarginLeft
-                );
-
-                // Načítanie fontov
-                PdfFont titleFont = GetFont(template.TitleFontFamily);
-                PdfFont headerFont = GetFont(template.HeaderFontFamily);
-                PdfFont textFont = GetFont(template.TextFontFamily);
-
-                // Farby
-                Color titleColor = ParseColor(template.TitleColor);
-                Color textColor = ParseColor(template.TextColor);
-                Color accentColor = ParseColor(template.AccentColor);
-
-                // Rámček okolo celého dokumentu
-                if (template.ShowBorder)
+                using (Document document = new Document(pdfDocument))
                 {
-                    AddPageBorder(pdfDocument, pageSize, template);
-                }
 
-                // Horná dekorácia(vlnovka)
-                if (template.ShowTopDecoration)
-                {
-                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetPage(1));
-
-                    // Pozícia: tesne pod horným okrajom
-                    float decorY = pageSize.GetHeight() - template.MarginTop + 15;
-                    float decorStartX = template.MarginLeft;
-                    float decorEndX = pageSize.GetWidth() - template.MarginRight;
-
-                    DrawWavyLine(
-                        canvas,
-                        decorStartX,        // Začiatok X
-                        decorY,             // Y pozícia
-                        decorEndX,          // Koniec X
-                        5,                  // Amplitúda vlny (výška)
-                        20,                 // Vlnová dĺžka
-                        ParseColor(template.TopDecorationColor),
-                        template.TopDecorationThickness
+                    // Nastavenie okrajov
+                    document.SetMargins(
+                        template.MarginTop,
+                        template.MarginRight,
+                        template.MarginBottom,
+                        template.MarginLeft
                     );
-                }
 
-                // Logo na začiatku
-                if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
-                    template.LogoPosition == "TOP" &&
-                    File.Exists(template.LogoPath))
-                {
-                    AddLogo(document, template, HorizontalAlignment.CENTER);
-                }
+                    // Načítanie fontov
+                    PdfFont titleFont = GetFont(template.TitleFontFamily);
+                    PdfFont headerFont = GetFont(template.HeaderFontFamily);
+                    PdfFont textFont = GetFont(template.TextFontFamily);
 
-                // Vlastný text v záhlaví
-                if (!string.IsNullOrWhiteSpace(template.CustomHeaderText))
-                {
-                    document.Add(new Paragraph(template.CustomHeaderText)
-                        .SetFont(textFont)
-                        .SetFontSize(template.TextFontSize)
-                        .SetFontColor(textColor)
-                        .SetTextAlignment(TextAlignment.CENTER)
-                        .SetMarginBottom(15));
-                }
+                    // Farby
+                    Color titleColor = ParseColor(template.TitleColor);
+                    Color textColor = ParseColor(template.TextColor);
+                    Color accentColor = ParseColor(template.AccentColor);
 
-                // Titulok certifikátu
-                if (template.ShowTitle && !string.IsNullOrWhiteSpace(template.CertificateTitle))
-                {
-                    TextAlignment alignment = template.TitleAlignment == "LEFT" ? TextAlignment.LEFT :
-                                             template.TitleAlignment == "RIGHT" ? TextAlignment.RIGHT :
-                                             TextAlignment.CENTER;
-
-                    Paragraph title = new Paragraph(template.CertificateTitle)
-                        .SetFont(titleFont)
-                        .SetFontSize(template.TitleFontSize)
-                        .SetFontColor(titleColor)
-                        .SetTextAlignment(alignment)
-                        .SetMarginBottom(20);
-
-                    document.Add(title);
-                }
-
-                // Oddeľovacia čiara
-                if (template.ShowSeparatorLine)
-                {
-                    AddSeparator(document, template, accentColor);
-                }
-
-
-                // === POLIA PODĽA PORADIA A LAYOUTU ===
-                Debug.WriteLine($"[PDF Generator] ContentLayout={template.ContentLayout}, FieldOrder={template.FieldOrder}");
-
-                var fieldOrder = template.GetFieldOrderList();
-                var fieldData = new System.Collections.Generic.List<FieldData>();
-
-                // Zozbieraj všetky viditeľné polia podľa poradia
-                foreach (var fieldId in fieldOrder)
-                {
-                    string label = "";
-                    string value = "";
-                    bool isVisible = false;
-
-                    switch (fieldId)
+                    // Rámček okolo celého dokumentu
+                    if (template.ShowBorder)
                     {
-                        case "Organizer":
-                            if (template.ShowOrganizer && !string.IsNullOrWhiteSpace(organizerName))
-                            {
-                                label = template.LabelOrganizer;
-                                value = organizerName;
-                                isVisible = true;
-                            }
-                            break;
-
-                        case "EventTopic":
-                            if (template.ShowEventTopic && !string.IsNullOrWhiteSpace(eventTopic))
-                            {
-                                label = template.LabelEventTopic;
-                                value = eventTopic;
-                                isVisible = true;
-                            }
-                            break;
-
-                        case "EventDate":
-                            if (template.ShowEventDate && eventDate.HasValue)
-                            {
-                                label = template.LabelEventDate;
-                                value = eventDate.Value.ToString("dd.MM.yyyy");
-                                isVisible = true;
-                            }
-                            break;
-
-                        case "Name":
-                            if (template.ShowName && !string.IsNullOrWhiteSpace(participantName))
-                            {
-                                label = template.LabelParticipant;
-                                value = participantName;
-                                isVisible = true;
-                            }
-                            break;
-
-                        case "BirthDate":
-                            if (template.ShowBirthDate && birthDate.HasValue)
-                            {
-                                label = template.LabelBirthDate;
-                                value = birthDate.Value.ToString("dd.MM.yyyy");
-                                isVisible = true;
-                            }
-                            break;
-
-                        case "RegistrationNumber":
-                            if (template.ShowRegistrationNumber && !string.IsNullOrWhiteSpace(registrationNumber))
-                            {
-                                label = template.LabelRegistrationNumber;
-                                value = registrationNumber;
-                                isVisible = true;
-                            }
-                            break;
-
-                        case "Notes":
-                            if (template.ShowNotes && !string.IsNullOrWhiteSpace(notes))
-                            {
-                                label = template.LabelNotes;
-                                value = notes;
-                                isVisible = true;
-                            }
-                            break;
+                        AddPageBorder(pdfDocument, pageSize, template);
                     }
 
-                    if (isVisible)
+                    // Horná dekorácia(vlnovka)
+                    if (template.ShowTopDecoration)
                     {
-                        fieldData.Add(new FieldData { Id = fieldId, Label = label, Value = value });
+                        PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+
+                        // Pozícia: tesne pod horným okrajom
+                        float decorY = pageSize.GetHeight() - template.MarginTop + 15;
+                        float decorStartX = template.MarginLeft;
+                        float decorEndX = pageSize.GetWidth() - template.MarginRight;
+
+                        DrawWavyLine(
+                            canvas,
+                            decorStartX,        // Začiatok X
+                            decorY,             // Y pozícia
+                            decorEndX,          // Koniec X
+                            5,                  // Amplitúda vlny (výška)
+                            270,                 // Vlnová dĺžka
+                            ParseColor(template.TopDecorationColor),
+                            template.TopDecorationThickness
+                        );
                     }
-                }
 
-                Debug.WriteLine($"[PDF Generator] Viditeľných polí: {fieldData.Count}");
-
-                // Generuj polia podľa zvoleného layoutu
-                if (template.ContentLayout == "TWO_COLUMN" || template.ContentLayout == "THREE_COLUMN")
-                {
-                    // VIACSTĹPCOVÝ LAYOUT
-                    int columnCount = template.ContentLayout == "TWO_COLUMN" ? 2 : 3;
-                    Debug.WriteLine($"[PDF Generator] Generujem {columnCount}-stĺpcový layout");
-
-                    // Vytvor iText Table
-                    Table fieldsTable = new Table(columnCount);
-                    fieldsTable.SetWidth(UnitValue.CreatePercentValue(100));
-                    fieldsTable.SetMarginBottom(20);
-
-                    // Rozdeľ polia do stĺpcov
-                    int fieldsPerColumn = (int)Math.Ceiling((double)fieldData.Count / columnCount);
-
-                    for (int col = 0; col < columnCount; col++)
+                    // Logo na začiatku
+                    if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
+                        template.LogoPosition == "TOP" &&
+                        File.Exists(template.LogoPath))
                     {
-                        // Vytvor stĺpec ako vnorený StackPanel (Div)
-                        Div columnDiv = new Div();
+                        AddLogo(document, template, HorizontalAlignment.CENTER);
+                    }
 
-                        int startIdx = col * fieldsPerColumn;
-                        int endIdx = Math.Min(startIdx + fieldsPerColumn, fieldData.Count);
+                    // Vlastný text v záhlaví
+                    if (!string.IsNullOrWhiteSpace(template.CustomHeaderText))
+                    {
+                        document.Add(new Paragraph(template.CustomHeaderText)
+                            .SetFont(textFont)
+                            .SetFontSize(template.TextFontSize)
+                            .SetFontColor(textColor)
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetMarginBottom(15));
+                    }
 
-                        Debug.WriteLine($"[PDF Generator] Stĺpec {col}: polia {startIdx}-{endIdx}");
+                    // Titulok certifikátu
+                    if (template.ShowTitle && !string.IsNullOrWhiteSpace(template.CertificateTitle))
+                    {
+                        TextAlignment alignment = template.TitleAlignment == "LEFT" ? TextAlignment.LEFT :
+                                                 template.TitleAlignment == "RIGHT" ? TextAlignment.RIGHT :
+                                                 TextAlignment.CENTER;
 
-                        for (int i = startIdx; i < endIdx; i++)
+                        // Titulok bez SetUnderline() (nefunguje spoľahlivo v PDF)
+                        Paragraph title = new Paragraph(template.CertificateTitle)
+                            .SetFont(titleFont)
+                            .SetFontSize(template.TitleFontSize)
+                            .SetFontColor(titleColor)
+                            .SetTextAlignment(alignment)
+                            .SetMarginBottom(template.TitleUnderlined ? 5 : 20);
+
+                        document.Add(title);
+
+                        // Ak je požadované podčiarknutie, pridaj vizuálnu ozdobnú čiaru
+                        if (template.TitleUnderlined)
                         {
-                            var field = fieldData[i];
+                            PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+                            float pageWidth = pageSize.GetWidth();
 
-                            // Špeciálne spracovanie pre Notes (dlhší text)
-                            if (field.Id == "Notes")
-                            {
-                                columnDiv.Add(new Paragraph(field.Label)
-                                    .SetFont(headerFont)
-                                    .SetFontSize(template.TextFontSize + 1)
-                                    .SetFontColor(textColor)
-                                    .SetMarginTop(15)
-                                    .SetMarginBottom(5));
+                            // Vypočítaj Y pozíciu čiary
+                            float logoHeight = (template.LogoPosition == "TOP" && !string.IsNullOrWhiteSpace(template.LogoPath) && File.Exists(template.LogoPath)) ?
+                                template.LogoHeight + 20 : 0;
+                            float headerTextHeight = !string.IsNullOrWhiteSpace(template.CustomHeaderText) ? 30 : 0;
 
-                                columnDiv.Add(new Paragraph(field.Value)
-                                    .SetFont(textFont)
-                                    .SetFontSize(template.TextFontSize)
-                                    .SetFontColor(textColor)
-                                    .SetMarginBottom(20));
-                            }
-                            else
+                            float currentY = pageSize.GetHeight() - template.MarginTop - logoHeight - headerTextHeight - template.TitleFontSize - 8;
+
+                            // Vypočítaj šírku textu pre centrovanie čiary
+                            float textWidth = titleFont.GetWidth(template.CertificateTitle, template.TitleFontSize);
+                            float lineStartX = template.MarginLeft;
+                            float lineEndX = pageWidth - template.MarginRight;
+
+                            if (alignment == TextAlignment.CENTER)
                             {
-                                // Štandardné pole
-                                columnDiv.Add(new Paragraph($"{field.Label} {field.Value}")
-                                    .SetFont(GetFieldFont(field.Id, textFont, headerFont))
-                                    .SetFontSize(GetFieldFontSize(field.Id, template))
-                                    .SetFontColor(GetFieldColor(field.Id, textColor, titleColor, accentColor))
-                                    .SetMarginBottom(GetFieldMarginBottom(field.Id)));
+                                lineStartX = (pageWidth - textWidth) / 2;
+                                lineEndX = lineStartX + textWidth;
                             }
+                            else if (alignment == TextAlignment.RIGHT)
+                            {
+                                lineStartX = pageWidth - template.MarginRight - textWidth;
+                                lineEndX = pageWidth - template.MarginRight;
+                            }
+                            else // LEFT
+                            {
+                                lineEndX = template.MarginLeft + textWidth;
+                            }
+
+                            // Vlnovková čiara pod titulkom
+                            DrawWavyLine(
+                                canvas,
+                                lineStartX,
+                                currentY,
+                                lineEndX,
+                                2,  // Amplitúda
+                                12, // Frekvencia
+                                titleColor,
+                                0.8f   // Hrúbka
+                            );
+
+                            document.Add(new Paragraph().SetMarginBottom(15));
+                        }
+                    }
+
+                    // Oddeľovacia čiara
+                    if (template.ShowSeparatorLine)
+                    {
+                        AddSeparator(document, template, accentColor);
+                    }
+
+
+                    // === POLIA PODĽA PORADIA A LAYOUTU ===
+                    Debug.WriteLine($"[PDF Generator] ContentLayout={template.ContentLayout}, FieldOrder={template.FieldOrder}");
+
+                    var fieldOrder = template.GetFieldOrderList();
+                    var fieldData = new System.Collections.Generic.List<FieldData>();
+
+                    // Zozbieraj všetky viditeľné polia podľa poradia
+                    foreach (var fieldId in fieldOrder)
+                    {
+                        string label = "";
+                        string value = "";
+                        bool isVisible = false;
+
+                        switch (fieldId)
+                        {
+                            case "Organizer":
+                                if (template.ShowOrganizer && !string.IsNullOrWhiteSpace(organizerName))
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelOrganizer) ? "Organizátor:" : template.LabelOrganizer;
+                                    value = organizerName;
+                                    isVisible = true;
+                                }
+                                break;
+
+                            case "EventTopic":
+                                if (template.ShowEventTopic && !string.IsNullOrWhiteSpace(eventTopic))
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelEventTopic) ? "Názov podujatia:" : template.LabelEventTopic;
+                                    value = eventTopic;
+                                    isVisible = true;
+                                }
+                                break;
+
+                            case "EventDate":
+                                if (template.ShowEventDate && eventDate.HasValue)
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelEventDate) ? "Dátum:" : template.LabelEventDate;
+                                    value = eventDate.Value.ToString("d. M. yyyy");
+                                    isVisible = true;
+                                }
+                                break;
+
+                            case "Name":
+                                if (template.ShowName && !string.IsNullOrWhiteSpace(participantName))
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelParticipant) ? "Meno účastníka:" : template.LabelParticipant;
+                                    value = participantName;
+                                    isVisible = true;
+                                }
+                                break;
+
+                            case "BirthDate":
+                                if (template.ShowBirthDate && birthDate.HasValue)
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelBirthDate) ? "Dátum narodenia:" : template.LabelBirthDate;
+                                    value = birthDate.Value.ToString("d. M. yyyy");
+                                    isVisible = true;
+                                }
+                                break;
+
+                            case "RegistrationNumber":
+                                if (template.ShowRegistrationNumber && !string.IsNullOrWhiteSpace(registrationNumber))
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelRegistrationNumber) ? "Registračné číslo:" : template.LabelRegistrationNumber;
+                                    value = registrationNumber;
+                                    isVisible = true;
+                                }
+                                break;
+
+                            case "Notes":
+                                if (template.ShowNotes && !string.IsNullOrWhiteSpace(notes))
+                                {
+                                    label = string.IsNullOrWhiteSpace(template.LabelNotes) ? "Poznámky:" : template.LabelNotes;
+                                    value = notes;
+                                    isVisible = true;
+                                }
+                                break;
                         }
 
-                        // Pridaj stĺpec do tabuľky
-                        Cell cell = new Cell().Add(columnDiv);
-                        cell.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
-                        cell.SetPaddingRight(template.ColumnSpacing / 2);
-                        cell.SetPaddingLeft(template.ColumnSpacing / 2);
-                        fieldsTable.AddCell(cell);
+                        if (isVisible)
+                        {
+                            fieldData.Add(new FieldData { Label = label, Value = value });
+                        }
                     }
 
-                    document.Add(fieldsTable);
-                }
-                else
-                {
-                    // VERTIKÁLNY LAYOUT (klasický)
-                    Debug.WriteLine($"[PDF Generator] Generujem vertikálny layout");
-
-                    foreach (var field in fieldData)
+                    // === VYKRESLENIE PODĽA LAYOUTU ===
+                    if (template.ContentLayout == "TWO_COLUMN")
                     {
-                        if (field.Id == "Notes")
+                        // Dvojstĺpcový layout
+                        Table table = new Table(2).UseAllAvailableWidth();
+
+                        foreach (var field in fieldData)
                         {
-                            // Notes má špeciálne formátovanie
+                            Cell labelCell = new Cell()
+                                .Add(new Paragraph(field.Label)
+                                    .SetFont(headerFont)
+                                    .SetFontSize(template.HeaderFontSize)
+                                    .SetFontColor(textColor)
+                                    .SetBold())
+                                .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+                                .SetTextAlignment(TextAlignment.LEFT)
+                                .SetPaddingBottom(8);
+
+                            Cell valueCell = new Cell()
+                                .Add(new Paragraph(field.Value)
+                                    .SetFont(textFont)
+                                    .SetFontSize(template.TextFontSize)
+                                    .SetFontColor(textColor))
+                                .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+                                .SetTextAlignment(TextAlignment.LEFT)
+                                .SetPaddingBottom(8);
+
+                            table.AddCell(labelCell);
+                            table.AddCell(valueCell);
+                        }
+
+                        document.Add(table);
+                    }
+                    else
+                    {
+                        // Vertikálny layout (pôvodný)
+                        foreach (var field in fieldData)
+                        {
                             document.Add(new Paragraph(field.Label)
                                 .SetFont(headerFont)
-                                .SetFontSize(template.TextFontSize + 1)
+                                .SetFontSize(template.HeaderFontSize)
                                 .SetFontColor(textColor)
-                                .SetMarginTop(15)
                                 .SetMarginBottom(5));
 
                             document.Add(new Paragraph(field.Value)
                                 .SetFont(textFont)
                                 .SetFontSize(template.TextFontSize)
                                 .SetFontColor(textColor)
-                                .SetMarginBottom(20));
-                        }
-                        else
-                        {
-                            document.Add(new Paragraph($"{field.Label} {field.Value}")
-                                .SetFont(GetFieldFont(field.Id, textFont, headerFont))
-                                .SetFontSize(GetFieldFontSize(field.Id, template))
-                                .SetFontColor(GetFieldColor(field.Id, textColor, titleColor, accentColor))
-                                .SetMarginBottom(GetFieldMarginBottom(field.Id)));
+                                .SetMarginBottom(15));
                         }
                     }
-                }
 
-                // Logo na konci
-                if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
-                    template.LogoPosition == "BOTTOM" &&
-                    File.Exists(template.LogoPath))
-                {
-                    AddLogo(document, template, HorizontalAlignment.CENTER);
-                }
+                    // Vlastný text v pätičke
+                    if (!string.IsNullOrWhiteSpace(template.CustomFooterText))
+                    {
+                        TextAlignment footerAlignment = template.CustomFooterAlignment == "LEFT" ? TextAlignment.LEFT :
+                                                       template.CustomFooterAlignment == "RIGHT" ? TextAlignment.RIGHT :
+                                                       TextAlignment.CENTER;
 
-                Paragraph footer = new Paragraph($"Tento certifikát slúži ako potvrdenie o udelení jedného kreditu  za účasť na seminári na oddelení FBLR Rastislavova 45, Košice.")
-                    .SetFont(textFont)
-                    .SetFontSize(template.TextFontSize - 1)
-                    .SetFontColor(ParseColor("#888888"))
-                    .SetTextAlignment(TextAlignment.CENTER)
-                    .SetMarginTop(30);
+                        Paragraph footer = new Paragraph(template.CustomFooterText)
+                            .SetFont(textFont)
+                            .SetFontSize(template.TextFontSize - 1)
+                            .SetFontColor(textColor)
+                            .SetTextAlignment(footerAlignment)
+                            .SetMarginTop(30);
 
-                document.Add(footer);
+                        if (template.CustomFooterBold)
+                        {
+                            footer.SetBold();
+                        }
 
-                // Dolná dekorácia - na konci dokumentu (pred footer, riadok ~200)
-                if (template.ShowBottomDecoration)
-                {
-                    PdfCanvas canvas = new PdfCanvas(pdfDocument.GetPage(1));
+                        if (template.CustomFooterItalic)
+                        {
+                            footer.SetItalic();
+                        }
 
-                    float decorY = template.MarginBottom - 15;
-                    float decorStartX = template.MarginLeft;
-                    float decorEndX = pageSize.GetWidth() - template.MarginRight;
+                        document.Add(footer);
+                    }
 
-                    DrawWavyLine(
-                        canvas,
-                        decorStartX,
-                        decorY,
-                        decorEndX,
-                        5,
-                        20,
-                        ParseColor(template.BottomDecorationColor),
-                        template.BottomDecorationThickness
-                    );
+                    // Dolná dekorácia (vlnovka)
+                    if (template.ShowBottomDecoration)
+                    {
+                        PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+
+                        // Pozícia: tesne nad spodným okrajom
+                        float decorY = template.MarginBottom - 15;
+                        float decorStartX = template.MarginLeft;
+                        float decorEndX = pageSize.GetWidth() - template.MarginRight;
+
+                        DrawWavyLine(
+                            canvas,
+                            decorStartX,
+                            decorY,
+                            decorEndX,
+                            5,
+                            270,
+                            ParseColor(template.BottomDecorationColor),
+                            template.BottomDecorationThickness
+                        );
+                    }
+
+                    // Logo na konci
+                    if (!string.IsNullOrWhiteSpace(template.LogoPath) &&
+                        template.LogoPosition == "BOTTOM" &&
+                        File.Exists(template.LogoPath))
+                    {
+                        AddLogo(document, template, HorizontalAlignment.CENTER);
+                    }
                 }
             }
         }
 
-        private static void AddPageBorder(PdfDocument pdfDocument, PageSize pageSize, CertificateTemplateModel template)
+        /// <summary>
+        /// Vytvorí generickú šablónu pre náhľad
+        /// </summary>
+        public static void GeneratePreviewPdf(string filePath, CertificateTemplateModel template, PageSize pageSize)
         {
-            PdfPage page = pdfDocument.GetPage(1);
-            PdfCanvas canvas = new PdfCanvas(page);
-
-            Color borderColor = ParseColor(template.BorderColor);
-            canvas.SetStrokeColor(borderColor);
-            canvas.SetLineWidth(template.BorderWidth);
-
-            float margin = 15;
-            canvas.Rectangle(
-                margin,
-                margin,
-                pageSize.GetWidth() - (2 * margin),
-                pageSize.GetHeight() - (2 * margin)
+            // Dummy data pre náhľad
+            GeneratePdf(
+                filePath,
+                template,
+                organizerName: "Vzdelávacia inštitúcia s.r.o.",
+                eventTopic: "Programovanie v C# a .NET",
+                eventDate: DateTime.Now,
+                participantName: "Ján Novák",
+                birthDate: new DateTime(1990, 5, 15),
+                registrationNumber: "CER-2024-001",
+                notes: "Absolvoval všetky moduly s výborným hodnotením",
+                pageSize: pageSize
             );
-            canvas.Stroke();
         }
 
+        /// <summary>
+        /// Vytvorí nápovedu k šablóne (zobrazenie názvu polí)
+        /// </summary>
+        public static void GenerateTemplateLegend(string filePath)
+        {
+            using (PdfWriter writer = new PdfWriter(filePath))
+            using (PdfDocument pdfDocument = new PdfDocument(writer))
+            using (Document document = new Document(pdfDocument, PageSize.A4))
+            {
+                document.Add(new Paragraph("Popis polí certifikátu")
+                    .SetFontSize(18)
+                    .SetBold()
+                    .SetMarginBottom(20));
+
+                document.Add(new Paragraph("Organizátor: Názov organizácie, ktorá udeľuje certifikát")
+                    .SetMarginBottom(10));
+                document.Add(new Paragraph("Názov podujatia: Téma seminára alebo kurzu")
+                    .SetMarginBottom(10));
+                document.Add(new Paragraph("Dátum: Dátum konania podujatia")
+                    .SetMarginBottom(10));
+                document.Add(new Paragraph("Meno účastníka: Celé meno osoby, ktorej sa certifikát udeľuje")
+                    .SetMarginBottom(10));
+                document.Add(new Paragraph("Dátum narodenia: Dátum narodenia účastníka")
+                    .SetMarginBottom(10));
+                document.Add(new Paragraph("Registračné číslo: Unikátny identifikátor certifikátu")
+                    .SetMarginBottom(10));
+                document.Add(new Paragraph("Poznámky: Ďalšie informácie alebo komentáre")
+                    .SetMarginBottom(10));
+            }
+        }
+
+
+        /// <summary>
+        /// Pridá logo do dokumentu
+        /// </summary>
         private static void AddLogo(Document document, CertificateTemplateModel template, HorizontalAlignment alignment)
         {
             try
             {
                 ImageData imageData = ImageDataFactory.Create(template.LogoPath);
                 Image logo = new Image(imageData);
-
                 logo.SetWidth(template.LogoWidth);
                 logo.SetHeight(template.LogoHeight);
                 logo.SetHorizontalAlignment(alignment);
-                logo.SetMarginBottom(15);
+                logo.SetMarginBottom(20);
 
                 document.Add(logo);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Chyba pri načítaní loga: {ex.Message}");
+                Debug.WriteLine($"Chyba pri načítaní loga: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Pridá oddeľovaciu čiaru
+        /// </summary>
         private static void AddSeparator(Document document, CertificateTemplateModel template, Color color)
         {
-            if (template.SeparatorStyle == "UNDERLINE")
+            if (template.SeparatorStyle == "DOUBLE_LINE")
             {
-                document.Add(new Paragraph("_____________________________________")
-                    .SetTextAlignment(TextAlignment.CENTER)
-                    .SetFontColor(color)
-                    .SetMarginBottom(20));
+                // Dvojitá čiara
+                LineSeparator line1 = new LineSeparator(new SolidLine(1));
+                line1.SetStrokeColor(color);
+                line1.SetMarginBottom(2);
+                document.Add(line1);
+
+                LineSeparator line2 = new LineSeparator(new SolidLine(1));
+                line2.SetStrokeColor(color);
+                line2.SetMarginBottom(20);
+                document.Add(line2);
             }
-            else if (template.SeparatorStyle == "LINE")
+            else if (template.SeparatorStyle == "DASHED")
             {
-                LineSeparator separator = new LineSeparator(new SolidLine(1f));
-                separator.SetMarginBottom(20);
-                document.Add(separator);
+                // Prerušovaná čiara
+                LineSeparator line = new LineSeparator(new DashedLine());
+                line.SetStrokeColor(color);
+                line.SetMarginBottom(20);
+                document.Add(line);
+            }
+            else
+            {
+                // Štandardná plná čiara
+                LineSeparator line = new LineSeparator(new SolidLine(1));
+                line.SetStrokeColor(color);
+                line.SetMarginBottom(20);
+                document.Add(line);
             }
         }
 
-        private static PdfFont GetFont(string fontFamily)
+        /// <summary>
+        /// Pridá rámček okolo celej stránky
+        /// </summary>
+        private static void AddPageBorder(PdfDocument pdfDocument, PageSize pageSize, CertificateTemplateModel template)
         {
-            try
-            {
-                string fontPath = null;
+            PdfCanvas canvas = new PdfCanvas(pdfDocument.GetFirstPage());
+            Color borderColor = ParseColor(template.BorderColor);
 
-                // === WINDOWS SYSTÉMOVÉ FONTY ===
-                // Arial
-                if (fontFamily != null && fontFamily.Contains("Arial-BoldItalic"))
-                    fontPath = @"C:\Windows\Fonts\arialbi.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Arial-Bold"))
-                    fontPath = @"C:\Windows\Fonts\arialbd.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Arial-Italic"))
-                    fontPath = @"C:\Windows\Fonts\ariali.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Arial"))
-                    fontPath = @"C:\Windows\Fonts\arial.ttf";
+            canvas.SetStrokeColor(borderColor);
+            canvas.SetLineWidth(template.BorderWidth);
 
-                // Calibri
-                else if (fontFamily != null && fontFamily.Contains("Calibri-BoldItalic"))
-                    fontPath = @"C:\Windows\Fonts\calibriz.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Calibri-Bold"))
-                    fontPath = @"C:\Windows\Fonts\calibrib.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Calibri-Italic"))
-                    fontPath = @"C:\Windows\Fonts\calibrii.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Calibri"))
-                    fontPath = @"C:\Windows\Fonts\calibri.ttf";
-
-                // Segoe UI
-                else if (fontFamily != null && fontFamily.Contains("SegoeUI-BoldItalic"))
-                    fontPath = @"C:\Windows\Fonts\segoeuiz.ttf";
-                else if (fontFamily != null && fontFamily.Contains("SegoeUI-Bold"))
-                    fontPath = @"C:\Windows\Fonts\segoeuib.ttf";
-                else if (fontFamily != null && fontFamily.Contains("SegoeUI-Italic"))
-                    fontPath = @"C:\Windows\Fonts\segoeuii.ttf";
-                else if (fontFamily != null && fontFamily.Contains("SegoeUI"))
-                    fontPath = @"C:\Windows\Fonts\segoeui.ttf";
-
-                // Verdana
-                else if (fontFamily != null && fontFamily.Contains("Verdana-BoldItalic"))
-                    fontPath = @"C:\Windows\Fonts\verdanaz.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Verdana-Bold"))
-                    fontPath = @"C:\Windows\Fonts\verdanab.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Verdana-Italic"))
-                    fontPath = @"C:\Windows\Fonts\verdanai.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Verdana"))
-                    fontPath = @"C:\Windows\Fonts\verdana.ttf";
-
-                // Tahoma
-                else if (fontFamily != null && fontFamily.Contains("Tahoma-Bold"))
-                    fontPath = @"C:\Windows\Fonts\tahomabd.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Tahoma"))
-                    fontPath = @"C:\Windows\Fonts\tahoma.ttf";
-
-                // Georgia
-                else if (fontFamily != null && fontFamily.Contains("Georgia-BoldItalic"))
-                    fontPath = @"C:\Windows\Fonts\georgiaz.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Georgia-Bold"))
-                    fontPath = @"C:\Windows\Fonts\georgiab.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Georgia-Italic"))
-                    fontPath = @"C:\Windows\Fonts\georgiai.ttf";
-                else if (fontFamily != null && fontFamily.Contains("Georgia"))
-                    fontPath = @"C:\Windows\Fonts\georgia.ttf";
-
-                // === OPEN-SOURCE FONTY (ak sú nainštalované) ===
-                // DejaVu Sans
-                else if (fontFamily != null && fontFamily.Contains("DejaVuSans-BoldOblique"))
-                    fontPath = @"C:\Windows\Fonts\DejaVuSans-BoldOblique.ttf";
-                else if (fontFamily != null && fontFamily.Contains("DejaVuSans-Bold"))
-                    fontPath = @"C:\Windows\Fonts\DejaVuSans-Bold.ttf";
-                else if (fontFamily != null && fontFamily.Contains("DejaVuSans-Oblique"))
-                    fontPath = @"C:\Windows\Fonts\DejaVuSans-Oblique.ttf";
-                else if (fontFamily != null && fontFamily.Contains("DejaVuSans"))
-                    fontPath = @"C:\Windows\Fonts\DejaVuSans.ttf";
-
-                // Liberation Sans
-                else if (fontFamily != null && fontFamily.Contains("LiberationSans-BoldItalic"))
-                    fontPath = @"C:\Windows\Fonts\LiberationSans-BoldItalic.ttf";
-                else if (fontFamily != null && fontFamily.Contains("LiberationSans-Bold"))
-                    fontPath = @"C:\Windows\Fonts\LiberationSans-Bold.ttf";
-                else if (fontFamily != null && fontFamily.Contains("LiberationSans-Italic"))
-                    fontPath = @"C:\Windows\Fonts\LiberationSans-Italic.ttf";
-                else if (fontFamily != null && fontFamily.Contains("LiberationSans"))
-                    fontPath = @"C:\Windows\Fonts\LiberationSans-Regular.ttf";
-
-                // Ak máme cestu k systémovému fontu, načítame ho
-                if (fontPath != null && File.Exists(fontPath))
-                {
-                    return PdfFontFactory.CreateFont(fontPath, "Identity-H", PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
-                }
-
-                // === FALLBACK NA ŠTANDARDNÉ PDF FONTY ===
-                string encoding = "Cp1250";
-
-                if (fontFamily == null || fontFamily.Contains("Helvetica-Bold"))
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                else if (fontFamily.Contains("Helvetica-Oblique") || fontFamily.Contains("Italic"))
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA_OBLIQUE, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                else if (fontFamily.Contains("Times-Bold"))
-                    return PdfFontFactory.CreateFont(StandardFonts.TIMES_BOLD, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                else if (fontFamily.Contains("Times"))
-                    return PdfFontFactory.CreateFont(StandardFonts.TIMES_ROMAN, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                else if (fontFamily.Contains("Courier"))
-                    return PdfFontFactory.CreateFont(StandardFonts.COURIER, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                else
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA, encoding, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-            }
-            catch
-            {
-                try
-                {
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
-                }
-                catch
-                {
-                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
-                }
-            }
+            // Vonkajší rámček
+            canvas.Rectangle(
+                template.MarginLeft / 2,
+                template.MarginBottom / 2,
+                pageSize.GetWidth() - template.MarginLeft / 2 - template.MarginRight / 2,
+                pageSize.GetHeight() - template.MarginTop / 2 - template.MarginBottom / 2
+            );
+            canvas.Stroke();
         }
 
+        /// <summary>
+        /// Vykreslí vlnovkovú čiaru na canvas
+        /// </summary>
+        private static void DrawWavyLine(
+            PdfCanvas canvas,
+            float startX,
+            float y,
+            float endX,
+            float amplitude,
+            float frequency,
+            Color color,
+            float thickness)
+        {
+            canvas.SaveState();
+            canvas.SetStrokeColor(color);
+            canvas.SetLineWidth(thickness);
+
+            canvas.MoveTo(startX, y);
+
+            float length = endX - startX;
+            int steps = (int)(length / frequency) * 10;
+            float stepSize = length / steps;
+
+            for (int i = 0; i <= steps; i++)
+            {
+                float x = startX + i * stepSize;
+                float waveY = y + amplitude * (float)Math.Sin((i * Math.PI * 2) / (steps / (length / frequency)));
+                canvas.LineTo(x, waveY);
+            }
+
+            canvas.Stroke();
+            canvas.RestoreState();
+        }
+
+        /// <summary>
+        /// Parsuje hex farbu na iText Color objekt
+        /// </summary>
         private static Color ParseColor(string hexColor)
         {
+            if (string.IsNullOrWhiteSpace(hexColor) || !hexColor.StartsWith("#"))
+            {
+                return ColorConstants.BLACK;
+            }
+
             try
             {
-                if (string.IsNullOrWhiteSpace(hexColor))
-                    return ColorConstants.BLACK;
+                string hex = hexColor.TrimStart('#');
+                if (hex.Length != 6) return ColorConstants.BLACK;
 
-                hexColor = hexColor.TrimStart('#');
-
-                if (hexColor.Length != 6)
-                    return ColorConstants.BLACK;
-
-                int r = Convert.ToInt32(hexColor.Substring(0, 2), 16);
-                int g = Convert.ToInt32(hexColor.Substring(2, 2), 16);
-                int b = Convert.ToInt32(hexColor.Substring(4, 2), 16);
+                int r = Convert.ToInt32(hex.Substring(0, 2), 16);
+                int g = Convert.ToInt32(hex.Substring(2, 2), 16);
+                int b = Convert.ToInt32(hex.Substring(4, 2), 16);
 
                 return new DeviceRgb(r, g, b);
             }
@@ -556,209 +571,99 @@ namespace CertificateGenerator.Helpers
             }
         }
 
-        private static void DrawWavyLine(PdfCanvas canvas, float startX, float startY, float endX,
-    float amplitude, float wavelength, Color color, float thickness)
-        {
-            canvas.SaveState();
-            canvas.SetStrokeColor(color);
-            canvas.SetLineWidth(thickness);
-
-            float currentX = startX;
-            bool isUp = true;
-
-            while (currentX < endX)
-            {
-                float nextX = Math.Min(currentX + wavelength, endX);
-                float controlY = isUp ? startY + amplitude : startY - amplitude;
-
-                canvas.CurveTo(
-                    currentX + wavelength / 3, controlY,
-                    currentX + 2 * wavelength / 3, controlY,
-                    nextX, startY
-                );
-
-                currentX = nextX;
-                isUp = !isUp;
-            }
-
-            canvas.Stroke();
-            canvas.RestoreState();
-        }
-
-        private void DrawDiagonalLines(PdfCanvas canvas, float x, float y, float width,
-            float height, Color color, float thickness, int lineCount)
-        {
-            canvas.SaveState();
-            canvas.SetStrokeColor(color);
-            canvas.SetLineWidth(thickness);
-
-            float spacing = width / lineCount;
-
-            for (int i = 0; i < lineCount; i++)
-            {
-                float startX = x + i * spacing;
-                canvas.MoveTo(startX, y);
-                canvas.LineTo(startX + height, y + height);
-            }
-
-            canvas.Stroke();
-            canvas.RestoreState();
-        }
-
-        private void DrawCornerOrnament(PdfCanvas canvas, float x, float y,
-            float size, Color color, string corner)
-        {
-            canvas.SaveState();
-            canvas.SetStrokeColor(color);
-            canvas.SetLineWidth(2);
-
-            // Kreslí ozdobný rohový prvok
-            switch (corner)
-            {
-                case "TOP_LEFT":
-                    // Ornament v ľavom hornom rohu
-                    canvas.MoveTo(x, y - size);
-                    canvas.LineTo(x, y);
-                    canvas.LineTo(x + size, y);
-
-                    // Pridať detaily
-                    canvas.MoveTo(x + 5, y - 5);
-                    canvas.LineTo(x + size / 2, y - 5);
-                    canvas.MoveTo(x + 5, y - 5);
-                    canvas.LineTo(x + 5, y - size / 2);
-                    break;
-                    // Podobne pre ostatné rohy...
-            }
-
-            canvas.Stroke();
-            canvas.RestoreState();
-        }
-
-
         /// <summary>
-        /// Helper class pre uloženie údajov o poli
+        /// Získa font podľa názvu s podporou slovenských diakritických znakov
         /// </summary>
-        private class FieldData
+        private static PdfFont GetFont(string fontFamily)
         {
-            public string Id { get; set; }
-            public string Label { get; set; }
-            public string Value { get; set; }
-        }
-
-        /// <summary>
-        /// Získa font pre pole podľa jeho typu
-        /// </summary>
-        private static PdfFont GetFieldFont(string fieldId, PdfFont defaultFont, PdfFont headerFont)
-        {
-            switch (fieldId)
+            try
             {
-                case "EventTopic":
-                case "Name":
-                    return headerFont;
-                default:
-                    return defaultFont;
+                string fontPath = null;
+
+                switch (fontFamily?.ToUpper())
+                {
+                    case "TIMES-ROMAN":
+                    case "TIMES":
+                        // Prioritne hľadáme fonty s dobrou podporou diakritiky
+                        fontPath = FindBestFont(new[] {
+                            "C:\\Windows\\Fonts\\times.ttf",
+                            "C:\\Windows\\Fonts\\calibri.ttf",
+                            "C:\\Windows\\Fonts\\arial.ttf"
+                        });
+                        break;
+
+                    case "TIMES-BOLD":
+                        fontPath = FindBestFont(new[] {
+                            "C:\\Windows\\Fonts\\timesbd.ttf",
+                            "C:\\Windows\\Fonts\\calibrib.ttf",
+                            "C:\\Windows\\Fonts\\arialbd.ttf"
+                        });
+                        break;
+
+                    case "TIMES-ITALIC":
+                        fontPath = FindBestFont(new[] {
+                            "C:\\Windows\\Fonts\\timesi.ttf",
+                            "C:\\Windows\\Fonts\\calibrii.ttf",
+                            "C:\\Windows\\Fonts\\ariali.ttf"
+                        });
+                        break;
+
+                    case "HELVETICA":
+                    case "HELVETICA-BOLD":
+                    case "COURIER":
+                    default:
+                        fontPath = FindBestFont(new[] {
+                            "C:\\Windows\\Fonts\\calibri.ttf",
+                            "C:\\Windows\\Fonts\\arial.ttf"
+                        });
+                        break;
+                }
+
+                if (!string.IsNullOrEmpty(fontPath) && File.Exists(fontPath))
+                {
+                    // KRITICKÉ: Použitie PdfEncodings.IDENTITY_H pre správnu podporu Unicode (slovenčina)
+                    return PdfFontFactory.CreateFont(fontPath, PdfEncodings.IDENTITY_H, PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
+                }
+
+                // Fallback na embedded font s Unicode podporou
+                return PdfFontFactory.CreateFont(StandardFonts.HELVETICA, PdfEncodings.WINANSI, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Font error: {ex.Message}");
+                try
+                {
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA, PdfEncodings.WINANSI, PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+                }
+                catch
+                {
+                    return PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+                }
             }
         }
 
         /// <summary>
-        /// Získa veľkosť fontu pre pole
+        /// Nájde prvý existujúci font z daného zoznamu
         /// </summary>
-        private static int GetFieldFontSize(string fieldId, CertificateTemplateModel template)
+        private static string FindBestFont(string[] fontPaths)
         {
-            switch (fieldId)
+            foreach (var fontPath in fontPaths)
             {
-                case "Organizer":
-                    return template.TextFontSize + 1;
-                case "EventTopic":
-                    return template.HeaderFontSize;
-                case "Name":
-                    return template.HeaderFontSize + 2;
-                default:
-                    return template.TextFontSize;
+                if (File.Exists(fontPath))
+                {
+                    return fontPath;
+                }
             }
+            return null;
         }
+    }
 
-        /// <summary>
-        /// Získa farbu pre pole
-        /// </summary>
-        private static Color GetFieldColor(string fieldId, Color defaultColor, Color titleColor, Color accentColor)
-        {
-            switch (fieldId)
-            {
-                case "EventTopic":
-                    return accentColor;
-                case "Name":
-                    return titleColor;
-                default:
-                    return defaultColor;
-            }
-        }
-
-        /// <summary>
-        /// Získa dolný okraj pre pole
-        /// </summary>
-        private static float GetFieldMarginBottom(string fieldId)
-        {
-            switch (fieldId)
-            {
-                case "Organizer":
-                case "Name":
-                    return 15;
-                case "EventTopic":
-                    return 10;
-                default:
-                    return 8;
-            }
-        }
-
-
-        //  zatiaľ vynechať gradient funkciu a sústrediť sa na vlnovky a čiary, ktoré fungujú s PdfCanvas metódami
-        //private void DrawGradientBackground(PdfCanvas canvas, PdfDocument pdfDoc,
-        //    float x, float y, float width, float height,
-        //    Color startColor, Color endColor, string direction)
-        //{
-        //    // iText gradient implementation
-        //    PdfShading.Axial shading;
-
-        //    switch (direction)
-        //    {
-        //        case "HORIZONTAL":
-        //            shading = new PdfShading.Axial(
-        //                pdfDoc.GetDefaultColorSpace(),
-        //                x, y + height / 2,
-        //                x + width, y + height / 2,
-        //                startColor.GetColorValue(),
-        //                endColor.GetColorValue()
-        //            );
-        //            break;
-        //        case "DIAGONAL":
-        //            shading = new PdfShading.Axial(
-        //                pdfDoc.GetDefaultColorSpace(),
-        //                x, y,
-        //                x + width, y + height,
-        //                startColor.GetColorValue(),
-        //                endColor.GetColorValue()
-        //            );
-        //            break;
-        //        default: // VERTICAL
-        //            shading = new PdfShading.Axial(
-        //                pdfDoc.GetDefaultColorSpace(),
-        //                x + width / 2, y,
-        //                x + width / 2, y + height,
-        //                startColor.GetColorValue(),
-        //                endColor.GetColorValue()
-        //            );
-        //            break;
-        //    }
-
-        //    PdfPattern.Shading pattern = new PdfPattern.Shading(shading);
-        //    PdfPatternColor patternColor = new PdfPatternColor(pattern);
-
-        //    canvas.SaveState();
-        //    canvas.SetFillColor(patternColor);
-        //    canvas.Rectangle(x, y, width, height);
-        //    canvas.Fill();
-        //    canvas.RestoreState();
-        //}
+    /// <summary>
+    /// Helper trieda pre uloženie údajov poľa
+    /// </summary>
+    internal class FieldData
+    {
+        public string Label { get; set; }
+        public string Value { get; set; }
     }
 }

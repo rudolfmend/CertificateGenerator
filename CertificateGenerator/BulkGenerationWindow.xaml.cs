@@ -1,4 +1,5 @@
 ﻿using CertificateGenerator.Data;
+using CertificateGenerator.Helpers;
 using iText.Kernel.Geom;
 using System;
 using System.Collections.Generic;
@@ -86,9 +87,12 @@ namespace CertificateGenerator
         {
             try
             {
-                var manageWindow = new ManageOrganizerWindow(App.DatabaseManager, selectionMode: false);
+                var manageWindow = new ManageOrganizerWindow(App.DatabaseManager, selectionMode: true);
                 manageWindow.Owner = this;
-                manageWindow.ShowDialog();
+                if (manageWindow.ShowDialog() == true && manageWindow.SelectedOrganizer != null)
+                {
+                    TxtBulkOrganizer.Text = manageWindow.SelectedOrganizer.Name;
+                }
             }
             catch (Exception ex)
             {
@@ -520,7 +524,7 @@ namespace CertificateGenerator
         private void CreatePdfDocument(string filePath, Participant participant, EventTopic topic)
         {
             PageSize pageSize = GetSelectedPageSize();
-            var template = _templateRepo.GetDefault();
+            var template = ModernTemplatePresets.GetOrnamentalLuxuryPreset().Template;
 
             CertificateGenerator.Helpers.CertificatePdfGenerator.GeneratePdf(
                 filePath,

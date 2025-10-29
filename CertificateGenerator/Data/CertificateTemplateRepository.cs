@@ -180,21 +180,21 @@ namespace CertificateGenerator.Data
                         "ALTER TABLE CertificateTemplates ADD COLUMN BottomDecorationThickness INTEGER DEFAULT 2");
                 }
 
-				if (!columns.Contains("ContentLayout"))
-				{
-					ExecuteNonQuery(connection,
-						"ALTER TABLE CertificateTemplates ADD COLUMN ContentLayout TEXT DEFAULT 'VERTICAL'");
-				}
+                if (!columns.Contains("ContentLayout"))
+                {
+                    ExecuteNonQuery(connection,
+                        "ALTER TABLE CertificateTemplates ADD COLUMN ContentLayout TEXT DEFAULT 'VERTICAL'");
+                }
 
-				if (!columns.Contains("ColumnSpacing"))
-				{
-					ExecuteNonQuery(connection,
-						"ALTER TABLE CertificateTemplates ADD COLUMN ColumnSpacing INTEGER DEFAULT 20");
-				}
+                if (!columns.Contains("ColumnSpacing"))
+                {
+                    ExecuteNonQuery(connection,
+                        "ALTER TABLE CertificateTemplates ADD COLUMN ColumnSpacing INTEGER DEFAULT 20");
+                }
 
-				System.Diagnostics.Debug.WriteLine("[Repository Migration] ContentLayout a ColumnSpacing stĺpce skontrolované/pridané");
-			}
-		}
+                System.Diagnostics.Debug.WriteLine("[Repository Migration] ContentLayout a ColumnSpacing stĺpce skontrolované/pridané");
+            }
+        }
 
         private void ExecuteNonQuery(SQLiteConnection connection, string sql)
         {
@@ -226,7 +226,7 @@ namespace CertificateGenerator.Data
                     }
                 }
 
-				string sql = @"INSERT INTO CertificateTemplates 
+                string sql = @"INSERT INTO CertificateTemplates 
                     (Name, IsDefault, TitleColor, TextColor, AccentColor, BackgroundColor,
                      TitleFontFamily, TitleFontSize, HeaderFontFamily, HeaderFontSize,
                      TextFontFamily, TextFontSize, MarginTop, MarginRight, MarginBottom, MarginLeft,
@@ -257,7 +257,7 @@ namespace CertificateGenerator.Data
                      @ContentLayout, @ColumnSpacing,
                      @CreatedAt, @UpdatedAt)";
 
-				using (var command = new SQLiteCommand(sql, connection))
+                using (var command = new SQLiteCommand(sql, connection))
                 {
                     AddParameters(command, template);
                     command.ExecuteNonQuery();
@@ -316,7 +316,7 @@ namespace CertificateGenerator.Data
                     UpdatedAt = @UpdatedAt
                     WHERE Id = @Id";
 
-				using (var command = new SQLiteCommand(sql, connection))
+                using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.Parameters.AddWithValue("@Id", template.Id);
                     AddParameters(command, template);
@@ -461,17 +461,17 @@ namespace CertificateGenerator.Data
             command.Parameters.AddWithValue("@BottomDecorationColor", template.BottomDecorationColor ?? "#2563EB");
             command.Parameters.AddWithValue("@BottomDecorationThickness", template.BottomDecorationThickness);
 
-			// Layout obsahu
-			command.Parameters.AddWithValue("@ContentLayout", template.ContentLayout ?? "VERTICAL");
-			command.Parameters.AddWithValue("@ColumnSpacing", template.ColumnSpacing);
+            // Layout obsahu
+            command.Parameters.AddWithValue("@ContentLayout", template.ContentLayout ?? "VERTICAL");
+            command.Parameters.AddWithValue("@ColumnSpacing", template.ColumnSpacing);
 
-			command.Parameters.AddWithValue("@CreatedAt", template.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.Parameters.AddWithValue("@CreatedAt", template.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
             command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-			System.Diagnostics.Debug.WriteLine($"[Repository.AddParameters] ContentLayout={template.ContentLayout}, ColumnSpacing={template.ColumnSpacing}");
+            System.Diagnostics.Debug.WriteLine($"[Repository.AddParameters] ContentLayout={template.ContentLayout}, ColumnSpacing={template.ColumnSpacing}");
         }
 
-		private CertificateTemplateModel MapFromReader(SQLiteDataReader reader)
+        private CertificateTemplateModel MapFromReader(SQLiteDataReader reader)
         {
             return new CertificateTemplateModel
             {
@@ -539,15 +539,15 @@ namespace CertificateGenerator.Data
                 BottomDecorationColor = GetStringOrDefault(reader, "BottomDecorationColor", "#2563EB"),
                 BottomDecorationThickness = GetIntOrDefault(reader, "BottomDecorationThickness", 2),
 
-				ContentLayout = GetStringOrDefault(reader, "ContentLayout", "VERTICAL"),
-				ColumnSpacing = GetIntOrDefault(reader, "ColumnSpacing", 20),
+                ContentLayout = GetStringOrDefault(reader, "ContentLayout", "VERTICAL"),
+                ColumnSpacing = GetIntOrDefault(reader, "ColumnSpacing", 20),
 
-				CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
+                CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
                 UpdatedAt = reader["UpdatedAt"] != DBNull.Value ? DateTime.Parse(reader["UpdatedAt"].ToString()) : (DateTime?)null
             };
-		}
+        }
 
-		private string GetStringOrDefault(SQLiteDataReader reader, string columnName, string defaultValue)
+        private string GetStringOrDefault(SQLiteDataReader reader, string columnName, string defaultValue)
         {
             try
             {
@@ -583,6 +583,51 @@ namespace CertificateGenerator.Data
             catch
             {
                 return defaultValue;
+            }
+        }
+
+        /// <summary>
+        /// Aktualizuje existujúce preset šablóny v DB podľa ModernTemplatePresets
+        /// Volajte túto metódu po zmene preset šablón v kóde
+        /// </summary>
+        public void ReloadPresetsToDatabase()
+        {
+            var presets = Helpers.ModernTemplatePresets.GetAllPresets();
+
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                connection.Open();
+
+                foreach (var preset in presets)
+                {
+                    // Skontroluj či šablóna s týmto názvom existuje
+                    string checkSql = "SELECT Id FROM CertificateTemplates WHERE Name = @Name";
+                    int? existingId = null;
+
+                    using (var checkCmd = new SQLiteCommand(checkSql, connection))
+                    {
+                        checkCmd.Parameters.AddWithValue("@Name", preset.Template.Name);
+                        var result = checkCmd.ExecuteScalar();
+                        if (result != null)
+                        {
+                            existingId = Convert.ToInt32(result);
+                        }
+                    }
+
+                    if (existingId.HasValue)
+                    {
+                        // Aktualizuj existujúcu šablónu
+                        preset.Template.Id = existingId.Value;
+                        Update(preset.Template);
+                        System.Diagnostics.Debug.WriteLine($"[ReloadPresets] Aktualizovaná: {preset.Name}");
+                    }
+                    else
+                    {
+                        // Pridaj novú šablónu
+                        Add(preset.Template);
+                        System.Diagnostics.Debug.WriteLine($"[ReloadPresets] Pridaná nová: {preset.Name}");
+                    }
+                }
             }
         }
     }
