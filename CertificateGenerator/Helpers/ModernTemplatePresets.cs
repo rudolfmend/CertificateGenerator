@@ -83,12 +83,12 @@ namespace CertificateGenerator.Helpers
                     ShowEventDate = true,
                     ShowName = true,
                     ShowBirthDate = false,
-                    ShowRegistrationNumber = false,
+                    ShowRegistrationNumber = true,
                     ShowNotes = false,
 
                     // Layout
-                    ContentLayout = "VERTICAL",
-                    FieldOrder = "Name,EventTopic,EventDate,Organizer",
+                    ContentLayout = "MODERN",
+                    FieldOrder = "EventTopic,Name,BirthDate,RegistrationNumber,EventDate,Organizer",
 
                     // Logo
                     LogoPosition = "TOP",
@@ -169,7 +169,7 @@ namespace CertificateGenerator.Helpers
                     ShowNotes = false,
 
                     // Layout
-                    ContentLayout = "VERTICAL",
+                    ContentLayout = "MODERN",
                     FieldOrder = "Name,EventTopic,EventDate,RegistrationNumber,Organizer",
 
                     // Logo
@@ -234,13 +234,13 @@ namespace CertificateGenerator.Helpers
                     ShowEventTopic = true,
                     ShowEventDate = true,
                     ShowName = true,
-                    ShowBirthDate = false,
-                    ShowRegistrationNumber = false,
+                    ShowBirthDate = true,
+                    ShowRegistrationNumber = true,
                     ShowNotes = false,
 
                     // Layout
-                    ContentLayout = "VERTICAL",
-                    FieldOrder = "Name,EventTopic,EventDate,Organizer",
+                    ContentLayout = "MODERN",
+                    FieldOrder = "EventTopic,Name,BirthDate,RegistrationNumber,EventDate,Organizer",
 
                     // Logo
                     LogoPosition = "TOP_RIGHT",
@@ -390,11 +390,11 @@ namespace CertificateGenerator.Helpers
                     ShowEventDate = true,
                     ShowName = true,
                     ShowBirthDate = false,
-                    ShowRegistrationNumber = false,
+                    ShowRegistrationNumber = true,
                     ShowNotes = true,
 
                     // Layout
-                    ContentLayout = "VERTICAL",
+                    ContentLayout = "MODERN",
                     FieldOrder = "Name,EventTopic,EventDate,Organizer,Notes",
 
                     // Logo
@@ -471,7 +471,7 @@ namespace CertificateGenerator.Helpers
                     ShowNotes = false,
 
                     // Layout
-                    ContentLayout = "VERTICAL",
+                    ContentLayout = "MODERN",
                     FieldOrder = "Name,BirthDate,EventTopic,EventDate,RegistrationNumber,Organizer",
 
                     // Logo

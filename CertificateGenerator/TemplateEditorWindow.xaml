@@ -678,7 +678,9 @@
                                   Margin="0,0,0,10">
                             <ComboBoxItem Content="Vertikálny (klasický)"
                                   Tag="VERTICAL"
-                                  IsSelected="True"/>       
+                                  IsSelected="True"/>
+                            <ComboBoxItem Content="Moderný"
+                                    Tag="MODERN"/>
                             <ComboBoxItem Content="Dva stĺpce"
                                     Tag="TWO_COLUMN"/>
                             <ComboBoxItem Content="Tri stĺpce"
@@ -698,8 +700,8 @@
                     </StackPanel>
                 </Border>
 
-                <!-- 11. PORADIE A VIDITEĽNOSŤ POLÍ --> 
-                <!-- Poradie polí s drag & drop --> 
+                <!-- 11. PORADIE A VIDITEĽNOSŤ POLÍ -->
+                <!-- Poradie polí s drag & drop -->
                 <Border Style="{StaticResource Card}"  Margin="0,0,0,15">
                     <StackPanel>
                         <Label Content="🔢 Poradie a úprava polí"

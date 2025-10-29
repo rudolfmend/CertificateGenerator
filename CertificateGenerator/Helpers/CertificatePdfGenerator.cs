@@ -268,10 +268,132 @@ namespace CertificateGenerator.Helpers
                     }
 
                     // === VYKRESLENIE PODĽA LAYOUTU ===
-                    if (template.ContentLayout == "TWO_COLUMN")
+                    if (template.ContentLayout == "MODERN")
+                    {
+                        // MODERNÝ LAYOUT - individuálne umiestnenie polí
+
+                        // 1. TÉMA SEMINÁRA - hore, centrované
+                        if (template.ShowEventTopic && !string.IsNullOrWhiteSpace(eventTopic))
+                        {
+                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelEventTopic) ? "Téma seminára" : template.LabelEventTopic)
+                                .SetFont(headerFont)
+                                .SetFontSize(template.HeaderFontSize)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetMarginBottom(5));
+
+                            document.Add(new Paragraph(eventTopic)
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize + 2)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetMarginBottom(25));
+                        }
+
+                        // 2. MENO ÚČASTNÍKA - veľké, centrované
+                        if (template.ShowName && !string.IsNullOrWhiteSpace(participantName))
+                        {
+                            document.Add(new Paragraph(participantName)
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize + 6)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.CENTER)
+                                .SetMarginBottom(10));
+                        }
+
+                        // 3. DÁTUM NARODENIA a REGISTRAČNÉ ČÍSLO - vedľa siebie, centrované
+                        Table infoTable = new Table(new float[] { 1, 1 }).UseAllAvailableWidth()
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+                            .SetMarginBottom(30);
+
+                        string birthInfo = "";
+                        string regInfo = "";
+
+                        if (template.ShowBirthDate && birthDate.HasValue)
+                        {
+                            birthInfo = birthDate.Value.ToString("d. M. yyyy");
+                        }
+
+                        if (template.ShowRegistrationNumber && !string.IsNullOrWhiteSpace(registrationNumber))
+                        {
+                            regInfo = "Reg.č. " + registrationNumber;
+                        }
+
+                        Cell birthCell = new Cell()
+                            .Add(new Paragraph(birthInfo)
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.CENTER))
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+                        Cell regCell = new Cell()
+                            .Add(new Paragraph(regInfo)
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.CENTER))
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+
+                        infoTable.AddCell(birthCell);
+                        infoTable.AddCell(regCell);
+                        document.Add(infoTable);
+
+                        // 4. DÁTUM KONANIA - vpravo dole
+                        if (template.ShowEventDate && eventDate.HasValue)
+                        {
+                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelEventDate) ? "Dátum konania podujatia" : template.LabelEventDate)
+                                .SetFont(headerFont)
+                                .SetFontSize(template.HeaderFontSize - 1)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.RIGHT)
+                                .SetMarginTop(20)
+                                .SetMarginBottom(3));
+
+                            document.Add(new Paragraph(eventDate.Value.ToString("d. M. yyyy"))
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize + 2)
+                                .SetFontColor(textColor)
+                                .SetTextAlignment(TextAlignment.RIGHT));
+                        }
+
+                        // 5. ORGANIZÁTOR - ak je viditeľný
+                        if (template.ShowOrganizer && !string.IsNullOrWhiteSpace(organizerName))
+                        {
+                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelOrganizer) ? "Organizátor:" : template.LabelOrganizer)
+                                .SetFont(headerFont)
+                                .SetFontSize(template.HeaderFontSize)
+                                .SetFontColor(textColor)
+                                .SetMarginTop(15)
+                                .SetMarginBottom(5));
+
+                            document.Add(new Paragraph(organizerName)
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize)
+                                .SetFontColor(textColor)
+                                .SetMarginBottom(15));
+                        }
+
+                        // 6. POZNÁMKY - ak sú viditeľné
+                        if (template.ShowNotes && !string.IsNullOrWhiteSpace(notes))
+                        {
+                            document.Add(new Paragraph(string.IsNullOrWhiteSpace(template.LabelNotes) ? "Poznámky:" : template.LabelNotes)
+                                .SetFont(headerFont)
+                                .SetFontSize(template.HeaderFontSize)
+                                .SetFontColor(textColor)
+                                .SetMarginBottom(5));
+
+                            document.Add(new Paragraph(notes)
+                                .SetFont(textFont)
+                                .SetFontSize(template.TextFontSize)
+                                .SetFontColor(textColor));
+                        }
+                    }
+                    else if (template.ContentLayout == "TWO_COLUMN")
                     {
                         // Dvojstĺpcový layout
-                        Table table = new Table(2).UseAllAvailableWidth();
+                        Table table = new Table(2).UseAllAvailableWidth()
+                            .SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
                         foreach (var field in fieldData)
                         {
@@ -280,18 +402,17 @@ namespace CertificateGenerator.Helpers
                                     .SetFont(headerFont)
                                     .SetFontSize(template.HeaderFontSize)
                                     .SetFontColor(textColor)
-                                    .SetBold())
+                                    .SetTextAlignment(TextAlignment.LEFT))
                                 .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
-                                .SetTextAlignment(TextAlignment.LEFT)
                                 .SetPaddingBottom(8);
 
                             Cell valueCell = new Cell()
                                 .Add(new Paragraph(field.Value)
                                     .SetFont(textFont)
                                     .SetFontSize(template.TextFontSize)
-                                    .SetFontColor(textColor))
+                                    .SetFontColor(textColor)
+                                    .SetTextAlignment(TextAlignment.LEFT))
                                 .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
-                                .SetTextAlignment(TextAlignment.LEFT)
                                 .SetPaddingBottom(8);
 
                             table.AddCell(labelCell);
@@ -332,16 +453,6 @@ namespace CertificateGenerator.Helpers
                             .SetFontColor(textColor)
                             .SetTextAlignment(footerAlignment)
                             .SetMarginTop(30);
-
-                        if (template.CustomFooterBold)
-                        {
-                            footer.SetBold();
-                        }
-
-                        if (template.CustomFooterItalic)
-                        {
-                            footer.SetItalic();
-                        }
 
                         document.Add(footer);
                     }
@@ -410,7 +521,6 @@ namespace CertificateGenerator.Helpers
             {
                 document.Add(new Paragraph("Popis polí certifikátu")
                     .SetFontSize(18)
-                    .SetBold()
                     .SetMarginBottom(20));
 
                 document.Add(new Paragraph("Organizátor: Názov organizácie, ktorá udeľuje certifikát")
