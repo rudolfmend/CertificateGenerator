@@ -666,13 +666,13 @@ namespace CertificateGenerator
             };
 
             CaduceusCertificateGenerator.GenerateCaduceusCertificate(
-        "Test_Caduceus.pdf",
-        "MUDr. Peter Kovács",
-        "Moderné trendy",
-        DateTime.Now,
-        "Test Účastník",
-        "Košice"
-    );
+                "Test_Caduceus.pdf",
+                "MUDr. Peter Kovács",
+                "Moderné trendy",
+                DateTime.Now,
+                "Test Účastník",
+                "Košice"
+            );
             System.Diagnostics.Process.Start("Test_Caduceus.pdf");
 
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

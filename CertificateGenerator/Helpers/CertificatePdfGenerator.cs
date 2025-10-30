@@ -35,6 +35,23 @@ namespace CertificateGenerator.Helpers
             string notes,
             PageSize pageSize)
         {
+            if (template.UseCaduceusStyle)
+            {
+                Debug.WriteLine("✅ POUŽÍVA SA CADUCEUS GENERÁTOR");
+                CaduceusCertificateGenerator.GenerateCaduceusCertificate(
+                    filePath,
+                    organizerName,
+                    eventTopic,
+                    eventDate,
+                    participantName,
+                    "Košice", // eventLocation (default value)
+                    pageSize,
+                    template
+                );
+                return;
+            }
+            Debug.WriteLine("❌ POUŽÍVA SA ŠTANDARDNÝ GENERÁTOR");
+
             using (PdfWriter writer = new PdfWriter(filePath))
             using (PdfDocument pdfDocument = new PdfDocument(writer))
             {

@@ -606,7 +606,7 @@
                                 Style="{StaticResource ModernLabel}"/>
                         <TextBox x:Name="TxtCertificateTitle"
                                  Style="{StaticResource ModernTextBox}"
-                                 Text="CERTIFIKÁT O ABSOLVOVANÍ"
+                                 Text="CERTIFIKÁT O ABSOLVOVANÍ TextBox x:Name=TxtCertificateTitle"
                                  Margin="0,0,0,10"
                                  TextChanged="TitleSettingsChanged"/>
 

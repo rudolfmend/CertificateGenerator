@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CertificateGenerator.Data;
+using System.Diagnostics;
 
 namespace CertificateGenerator.Helpers
 {
@@ -413,6 +414,7 @@ namespace CertificateGenerator.Helpers
         /// </summary>
         public static TemplatePreset GetClassicBorderedPreset()
         {
+            Debug.WriteLine("⚠️ Generating Classic Bordered Certificate Preset");
             return new TemplatePreset
             {
                 Name = "Klasická rámovaná",
@@ -445,7 +447,7 @@ namespace CertificateGenerator.Helpers
 
                     // Titulok
                     TitleAlignment = "CENTER",
-                    CertificateTitle = "CERTIFIKÁT O ABSOLVOVANÍ",
+                    CertificateTitle = "CERTIFIKÁT O ABSOLVOVANÍ public static TemplatePreset GetClassicBorderedPreset()",
                     ShowTitle = true,
 
                     // Oddeľovacia čiara
@@ -480,6 +482,10 @@ namespace CertificateGenerator.Helpers
                     LogoHeight = 100
                 }
             };
+
+            //System.Diagnostics.Process.Start("cmd.exe", "/C echo Generating Caduceus Certificate: " + filePath);
+            //System.Diagnostics.Debug.WriteLine($"⚠️ Chyba pri načítaní PNG loga: {ex.Message}");
+            //System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Caduceus Logo PNG: " + logoPath);
         }
 
         /// <summary>
@@ -487,6 +493,7 @@ namespace CertificateGenerator.Helpers
         /// </summary>
         public static TemplatePreset GetOrnamentalLuxuryPreset()
         {
+            Debug.WriteLine("⚠️ Generating Ornamental Luxury Certificate Preset");
             return new TemplatePreset
             {
                 Name = "Ozdobná luxusná",
@@ -589,6 +596,55 @@ namespace CertificateGenerator.Helpers
                     LabelNotes = "Ďalšie poznámky a údaje\n"
 
                     //LabelParticipant = "Meno a priezvisko účastníka\n",
+                }
+            };
+        }
+
+        public static TemplatePreset GetCaduceusGreenPreset()
+        {
+            Debug.WriteLine("⚠️ Generating Caduceus Green Certificate Preset");
+            return new TemplatePreset
+            {
+                Name = "Caduceus zelený",
+                Description = "Zelená medicínska šablóna s Caduceus logom",
+                PreviewImagePath = "pack://application:,,,/Resources/Templates/caduceus_green.png",
+                Category = "Profesionálny",
+                Template = new CertificateTemplateModel
+                {
+                    Name = "Caduceus zelený",
+                    UseCaduceusStyle = true, // ← MUSÍ BYŤ TRUE
+
+                    // Zelené farby
+                    TitleColor = "#065F46",
+                    TextColor = "#1F2937",
+                    AccentColor = "#10B981",
+                    BorderColor = "#10B981",
+                    BackgroundColor = "#FFFFFF",
+
+                    // Fonty
+                    TitleFontFamily = "Arial-Bold",
+                    TitleFontSize = 28,
+                    HeaderFontFamily = "Arial-Bold",
+                    HeaderFontSize = 22,
+                    TextFontFamily = "Arial",
+                    TextFontSize = 14,
+
+                    // Okraje
+                    MarginTop = 40,
+                    MarginRight = 40,
+                    MarginBottom = 40,
+                    MarginLeft = 40,
+
+                    // Border
+                    ShowBorder = true,
+                    BorderWidth = 2,
+
+                    // Logo
+                    ShowLogo = true,
+                    LogoPosition = "TOP",
+
+                    // Miesto konania
+                    EventLocation = "Košice" // alebo iné mesto
                 }
             };
         }

@@ -47,7 +47,7 @@ namespace CertificateGenerator.Data
         public int LogoHeight { get; set; } = 100;
 
         // Záhlavie certifikátu
-        public string CertificateTitle { get; set; } = "CERTIFIKÁT O ABSOLVOVANÍ";
+        public string CertificateTitle { get; set; } = "CERTIFIKÁT O ABSOLVOVANÍ public string CertificateTitle { get; set; }";
         public bool ShowTitle { get; set; } = true;
 
         // Viditeľnosť polí
@@ -120,6 +120,8 @@ namespace CertificateGenerator.Data
         public string BackgroundGradientStart { get; set; } = "#FFFFFF";
         public string BackgroundGradientEnd { get; set; } = "#F3F4F6";
         public string GradientDirection { get; set; } = "VERTICAL"; // VERTICAL, HORIZONTAL, DIAGONAL
+        public string EventLocation { get; internal set; }
+        public bool UseCaduceusStyle { get; internal set; }
 
         // Helper metódy pre poradie polí
         public List<string> GetFieldOrderList()
