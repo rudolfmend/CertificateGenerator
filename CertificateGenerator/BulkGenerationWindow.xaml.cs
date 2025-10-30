@@ -617,6 +617,78 @@ namespace CertificateGenerator
         {
             this.Close();
         }
+
+        //        CaduceusCertificateGenerator.GenerateCaduceusCertificate(
+        //    outputPath,
+        //    organizerName,
+        //    eventTopic,
+        //    eventDate,
+        //    participantName,
+        //    eventLocation
+        //);
+
+        private void GenerateGenerateCaduceusCertificate_Click(object sender, RoutedEventArgs e)
+        {
+            if (Participants.Count == 0)
+            {
+                MessageBox.Show("Prosím pridajte aspoň jedného účastníka.",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(TxtBulkOrganizer.Text))
+            {
+                MessageBox.Show("Prosím vyplňte organizátora.",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var topics = ParseTopics();
+            if (topics.Count == 0)
+            {
+                MessageBox.Show("Prosím zadajte aspoň jednu tému podujatia.",
+                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var eventTopics = topics.Select(t => new EventTopic { Topic = t }).ToList();
+            var datesDialog = new EventDatesDialog(eventTopics);
+
+            if (datesDialog.ShowDialog() != true)
+                return;
+
+            eventTopics = datesDialog.EventTopics;
+
+            var folderDialog = new System.Windows.Forms.FolderBrowserDialog
+            {
+                Description = "Vyberte priečinok pre uloženie certifikátov",
+                ShowNewFolderButton = true
+            };
+
+            CaduceusCertificateGenerator.GenerateCaduceusCertificate(
+        "Test_Caduceus.pdf",
+        "MUDr. Peter Kovács",
+        "Moderné trendy",
+        DateTime.Now,
+        "Test Účastník",
+        "Košice"
+    );
+            System.Diagnostics.Process.Start("Test_Caduceus.pdf");
+
+            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                try
+                {
+                    GenerateAllPdfs(folderDialog.SelectedPath, eventTopics);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"GenerateCaduceusCertificate - Chyba pri generovaní PDF:\n{ex.Message}",
+                        "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
     }
 
     public class Participant

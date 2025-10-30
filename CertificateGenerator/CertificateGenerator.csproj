@@ -165,12 +165,14 @@
     <Compile Include="CertificateHistoryWindow.xaml.cs">
       <DependentUpon>CertificateHistoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CertificateWithCaduceus.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Data\CertificateRepository.cs" />
     <Compile Include="Data\CertificateTemplateModel.cs" />
     <Compile Include="Data\CertificateTemplateModelExtensions.cs" />
     <Compile Include="Data\CertificateTemplateRepository.cs" />
     <Compile Include="Data\DatabaseHelper.cs" />
+    <Compile Include="Helpers\CaduceusCertificateGenerator.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
     <Compile Include="Helpers\ModernTemplatePresets.cs" />
     <Compile Include="ManageEventTopicWindow.xaml.cs">
@@ -322,6 +324,20 @@
   <ItemGroup>
     <Resource Include="Images\teacher_symbol-trsp.png" />
   </ItemGroup>
+  <ItemGroup>
+  <Content Include="Images\caduceus_logo.svg">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+  <Content Include="Images\waves_bottom.svg">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+  <Content Include="Images\waves_top.svg">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+  <Content Include="Images\caduceus_without_background.png">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+</ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.118.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

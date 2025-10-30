@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="100" viewBox="0 0 800 100">
+	<defs>
+		<!-- Gradient pre svetlé dolné vlnovky -->
+		<linearGradient id="bottomGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+			<stop offset="50%" style="stop-color:#6BA3E8;stop-opacity:1" />
+			<stop offset="100%" style="stop-color:#87CEEB;stop-opacity:1" />
+		</linearGradient>
+
+		<linearGradient id="bottomGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#87CEEB;stop-opacity:0.7" />
+			<stop offset="100%" style="stop-color:#A8D8F0;stop-opacity:0.5" />
+		</linearGradient>
+	</defs>
+
+	<!-- Prvá vrstva vlnoviek (tmavšia z dolných) -->
+	<path d="M0,50 Q100,25 200,50 T400,50 T600,50 T800,50 L800,0 L0,0 Z"
+		  fill="url(#bottomGradient1)"
+		  opacity="0.85"/>
+
+	<!-- Druhá vrstva vlnoviek (najsvetlejšia) -->
+	<path d="M0,65 Q100,40 200,65 T400,65 T600,65 T800,65 L800,0 L0,0 Z"
+		  fill="url(#bottomGradient2)"
+		  opacity="0.55"/>
+
+	<!-- Tretia jemná vrstva pre jemný prechod -->
+	<path d="M0,80 Q120,55 240,80 T480,80 T720,80 T800,80 L800,0 L0,0 Z"
+		  fill="#ADD8E6"
+		  opacity="0.3"/>
+</svg>

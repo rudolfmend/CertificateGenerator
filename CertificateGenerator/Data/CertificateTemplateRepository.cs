@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.Windows.Diagnostics;
+using System.Diagnostics;
 
 namespace CertificateGenerator.Data
 {
