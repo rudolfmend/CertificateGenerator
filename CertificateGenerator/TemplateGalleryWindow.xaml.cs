@@ -5,11 +5,22 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using CertificateGenerator.Data;
 using CertificateGenerator.Helpers;
 
 namespace CertificateGenerator
 {
+    /// <summary>
+    /// Typ správy pre zobrazenie v okne
+    /// </summary>
+    public enum MessageType
+    {
+        Info,
+        Error,
+        Success
+    }
+
     /// <summary>
     /// Galéria moderných šablón certifikátov
     /// </summary>
@@ -33,6 +44,44 @@ namespace CertificateGenerator
         }
 
         /// <summary>
+        /// Zobrazí správu v okne
+        /// </summary>
+        private void ShowMessage(string message, MessageType type = MessageType.Info)
+        {
+            MessageText.Text = message;
+
+            // Nastavenie farby a ikony podľa typu správy
+            switch (type)
+            {
+                case MessageType.Info:
+                    MessageBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DBEAFE"));
+                    MessageText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E40AF"));
+                    MessageIcon.Text = "ℹ️";
+                    break;
+                case MessageType.Error:
+                    MessageBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FEE2E2"));
+                    MessageText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#991B1B"));
+                    MessageIcon.Text = "⚠️";
+                    break;
+                case MessageType.Success:
+                    MessageBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D1FAE5"));
+                    MessageText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#065F46"));
+                    MessageIcon.Text = "✓";
+                    break;
+            }
+
+            MessageBorder.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Skryje správu
+        /// </summary>
+        private void HideMessage()
+        {
+            MessageBorder.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
         /// Načíta všetky dostupné šablóny
         /// </summary>
         private void LoadTemplates()
@@ -48,6 +97,8 @@ namespace CertificateGenerator
         /// </summary>
         private void Template_Click(object sender, MouseButtonEventArgs e)
         {
+            HideMessage(); // Skry predchádzajúce správy
+
             if (sender is Border border && border.Tag is TemplatePresetViewModel template)
             {
                 SelectTemplate(template);
@@ -77,6 +128,8 @@ namespace CertificateGenerator
         /// </summary>
         private void CategoryFilter_Changed(object sender, RoutedEventArgs e)
         {
+            HideMessage(); // Skry predchádzajúce správy
+
             if (sender is RadioButton rb && _allTemplates != null)
             {
                 string category = rb.Content?.ToString();
@@ -100,11 +153,7 @@ namespace CertificateGenerator
         {
             if (_selectedTemplate == null)
             {
-                MessageBox.Show(
-                    "Prosím, vyberte šablónu.",
-                    "Žiadna šablóna",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                ShowMessage("Prosím, vyberte šablónu.", MessageType.Info);
                 return;
             }
 
@@ -119,11 +168,7 @@ namespace CertificateGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Chyba pri použití šablóny:\n{ex.Message}",
-                    "Chyba",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                ShowMessage($"Chyba pri použití šablóny: {ex.Message}", MessageType.Error);
             }
         }
 
@@ -155,11 +200,7 @@ namespace CertificateGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Chyba pri otváraní editora šablón:\n{ex.Message}",
-                    "Chyba",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                ShowMessage($"Chyba pri otváraní editora šablón: {ex.Message}", MessageType.Error);
             }
         }
 

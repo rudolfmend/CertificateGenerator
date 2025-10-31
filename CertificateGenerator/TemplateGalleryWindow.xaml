@@ -260,23 +260,51 @@
                 BorderThickness="0,1,0,0"
                 Padding="0,20,0,0"
                 Margin="0,20,0,0">
-            <StackPanel Orientation="Horizontal"
-                       HorizontalAlignment="Right">
-                <Button Content="➕ Vytvoriť vlastnú šablónu"
-                        Style="{StaticResource SecondaryButton}"
-                        Padding="20,12"
-                        FontSize="14"
-                        Margin="0,0,10,0"
-                        Click="CreateCustomTemplate_Click"/>
-                <Button Content="✓ Použiť vybranú šablónu"
-                        Style="{StaticResource SuccessButton}"
-                        Padding="20,12"
-                        FontSize="14"
-                        FontWeight="SemiBold"
-                        Click="UseSelectedTemplate_Click"
-                        x:Name="BtnUseTemplate"
-                        IsEnabled="False"/>
+            <StackPanel>
+                <!-- Informačný/Chybový TextBlock -->
+                <Border x:Name="MessageBorder"
+                        CornerRadius="8"
+                        Padding="15,12"
+                        Margin="0,0,0,15"
+                        Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
+                        <TextBlock x:Name="MessageIcon"
+                                   Grid.Column="0"
+                                   FontSize="16"
+                                   Margin="0,0,10,0"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBlock x:Name="MessageText"
+                                   Grid.Column="1"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <StackPanel Orientation="Horizontal"
+                           HorizontalAlignment="Right">
+                    <Button Content="➕ Vytvoriť vlastnú šablónu"
+                            Style="{StaticResource SecondaryButton}"
+                            Padding="20,12"
+                            FontSize="14"
+                            Margin="0,0,10,0"
+                            Click="CreateCustomTemplate_Click"/>
+                    <Button Content="✓ Použiť vybranú šablónu"
+                            Style="{StaticResource SuccessButton}"
+                            Padding="20,12"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Click="UseSelectedTemplate_Click"
+                            x:Name="BtnUseTemplate"
+                            IsEnabled="False"/>
+
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>
