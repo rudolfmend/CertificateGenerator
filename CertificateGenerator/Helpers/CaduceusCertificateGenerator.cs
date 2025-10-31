@@ -41,7 +41,7 @@ namespace CertificateGenerator.Helpers
             string eventTopic,
             DateTime? eventDate,
             string participantName,
-            string eventLocation = "Košice",
+            string eventLocation = "Rastislavova 45, Košice 040 01",
             PageSize pageSize = null,
             CertificateTemplateModel template = null)
         {
@@ -335,9 +335,9 @@ namespace CertificateGenerator.Helpers
                 .SetPaddingRight(15);
 
             // Téma školenia
-            leftColumn.Add(new Paragraph("Téma školenia:")
+            leftColumn.Add(new Paragraph("Téma školenia")
                 .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 1)
+                .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
                 .SetMarginBottom(3));
 
@@ -349,9 +349,9 @@ namespace CertificateGenerator.Helpers
 
             // Dátum konania
             string dateString = eventDate.HasValue ? eventDate.Value.ToString("dd.MM.yyyy") : "___________";
-            leftColumn.Add(new Paragraph("Dátum konania:")
+            leftColumn.Add(new Paragraph("Dátum konania")
                 .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 1)
+                .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
                 .SetMarginBottom(3));
 
@@ -452,9 +452,9 @@ namespace CertificateGenerator.Helpers
                 .SetPaddingRight(10);
 
             // Téma školenia
-            leftColumn.Add(new Paragraph("Téma školenia:")
+            leftColumn.Add(new Paragraph("Téma školenia")
                 .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 1)
+                .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
                 .SetMarginBottom(3));
 
@@ -471,9 +471,9 @@ namespace CertificateGenerator.Helpers
 
             // Dátum konania
             string dateString = eventDate.HasValue ? eventDate.Value.ToString("dd.MM.yyyy") : "___________";
-            middleColumn.Add(new Paragraph("Dátum konania:")
+            middleColumn.Add(new Paragraph("Dátum konania")
                 .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 1)
+                .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
                 .SetMarginBottom(3));
 
@@ -484,9 +484,9 @@ namespace CertificateGenerator.Helpers
                 .SetMarginBottom(10));
 
             // Miesto konania
-            middleColumn.Add(new Paragraph("Miesto konania:")
+            middleColumn.Add(new Paragraph("Miesto konania")
                 .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 1)
+                .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
                 .SetMarginBottom(3));
 
@@ -501,9 +501,9 @@ namespace CertificateGenerator.Helpers
                 .SetPaddingLeft(10);
 
             // Organizátor
-            rightColumn.Add(new Paragraph("Organizátor:")
+            rightColumn.Add(new Paragraph("Organizátor")
                 .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 1)
+                .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
                 .SetMarginBottom(3));
 
