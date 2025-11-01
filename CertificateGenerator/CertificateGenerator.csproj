@@ -181,6 +181,7 @@
     <Compile Include="Helpers\CaduceusCertificateGenerator.cs" />
     <Compile Include="Helpers\CertificatePdfGenerator.cs" />
     <Compile Include="Helpers\ModernTemplatePresets.cs" />
+    <Compile Include="Helpers\ToastHelper.cs" />
     <Compile Include="ManageEventTopicWindow.xaml.cs">
       <DependentUpon>ManageEventTopicWindow.xaml</DependentUpon>
     </Compile>

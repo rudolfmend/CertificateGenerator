@@ -2,11 +2,14 @@
 using CertificateGenerator.Helpers;
 using iText.Kernel.Geom;
 using Microsoft.Win32;
+using NUnit.Framework.Interfaces;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace CertificateGenerator
 {
@@ -193,8 +196,7 @@ namespace CertificateGenerator
         {
             if (string.IsNullOrWhiteSpace(TxtParticipantName.Text))
             {
-                MessageBox.Show("Meno účastníka je povinné!",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ShowToast("Meno účastníka je povinné!", "warning");
                 return;
             }
 
@@ -357,6 +359,46 @@ namespace CertificateGenerator
             {
                 MessageBox.Show($"Chyba pri otváraní editora šablón:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    
+
+        /// <summary>
+        /// Zobrazí modernú toast notifikáciu na 5 sekúnd
+        /// </summary>
+        private async void ShowToast(string message, string type = "warning")
+        {
+            if (ToastNotification == null) return;
+
+            // Nastavenie ikon a farieb podľa typu
+            switch (type.ToLower())
+            {
+                case "error":
+                    ToastIcon.Text = "❌";
+                    ToastNotification.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EF4444"));
+                    break;
+                case "success":
+                    ToastIcon.Text = "✅";
+                    ToastNotification.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#10B981"));
+                    break;
+                case "info":
+                    ToastIcon.Text = "ℹ️";
+                    ToastNotification.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3B82F6"));
+                    break;
+                default: // warning
+                    ToastIcon.Text = "⚠️";
+                    ToastNotification.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F59E0B"));
+                    break;
+            }
+
+            ToastMessage.Text = message;
+            ToastNotification.Visibility = Visibility.Visible;
+
+            // Automatické skrytie po 5 sekundách
+            await System.Threading.Tasks.Task.Delay(5000);
+            if (ToastNotification != null)
+            {
+                ToastNotification.Visibility = Visibility.Collapsed;
             }
         }
     }

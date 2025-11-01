@@ -233,5 +233,35 @@
                         Click="OpenTemplateEditor_Click" />
             </StackPanel>
         </Border>
+
+        <!-- Toast notifikácia -->
+        <Border x:Name="ToastNotification"
+                Grid.Row="0" Grid.RowSpan="3"
+                Background="#F59E0B"
+                CornerRadius="12"
+                Padding="20,15"
+                Margin="20"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Visibility="Collapsed"
+                MaxWidth="500">
+            <Border.Effect>
+                <DropShadowEffect Color="Black" Direction="270" ShadowDepth="3" Opacity="0.3" BlurRadius="10"/>
+            </Border.Effect>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="ToastIcon"
+                           Text="⚠️"
+                           FontSize="24"
+                           Margin="0,0,12,0"
+                           VerticalAlignment="Center"/>
+                <TextBlock x:Name="ToastMessage"
+                           Text="Správa"
+                           FontSize="15"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

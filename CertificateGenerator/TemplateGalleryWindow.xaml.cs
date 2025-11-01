@@ -78,7 +78,10 @@ namespace CertificateGenerator
         /// </summary>
         private void HideMessage()
         {
-            MessageBorder.Visibility = Visibility.Collapsed;
+            if (MessageBorder != null)
+            {
+                MessageBorder.Visibility = Visibility.Collapsed;
+            }
         }
 
         /// <summary>

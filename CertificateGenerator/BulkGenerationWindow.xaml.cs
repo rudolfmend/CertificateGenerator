@@ -96,8 +96,11 @@ namespace CertificateGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri otváraní správy organizátorov:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Chyba pri otváraní správy organizátorov:\n{ex.Message}",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Chyba pri otváraní správy organizátorov:\n{ex.Message} \n + " +
+                    ex.ToString());
+                ToastHelper.Show(this, "Chyba pri otváraní správy organizátorov.", "error", 5000);
             }
         }
 
@@ -171,8 +174,11 @@ namespace CertificateGenerator
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Chyba pri importovaní CSV:\n{ex.Message}",
-                        "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show($"Chyba pri importovaní CSV:\n{ex.Message}",
+                    //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Debug.WriteLine($"Chyba pri importovaní CSV:\n{ex.Message} \n + " +
+                        ex.ToString());
+                    ToastHelper.Show(this, "Chyba pri importovaní CSV.", "error", 5000);
                 }
             }
         }
@@ -245,9 +251,10 @@ namespace CertificateGenerator
                     }
                 }
             }
-
-            MessageBox.Show($"Import dokončený!\n\nImportované: {imported}\nPreskočené: {skipped}",
-                "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information);
+            Debug.WriteLine($"Import dokončený! Importované: {imported}, Preskočené: {skipped}");
+            //MessageBox.Show($"Import dokončený!\n\nImportované: {imported}\nPreskočené: {skipped}",
+            //    "Import CSV", MessageBoxButton.OK, MessageBoxImage.Information);
+            ToastHelper.Show(this, $"Import dokončený! Importované: {imported}, Preskočené: {skipped}", "success", 5000);
         }
 
         private void SelectTopicsFromDB_Click(object sender, RoutedEventArgs e)
@@ -259,8 +266,10 @@ namespace CertificateGenerator
 
                 if (allTopics.Count == 0)
                 {
-                    MessageBox.Show("Nemáte žiadne uložené témy v databáze.",
-                        "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show("Nemáte žiadne uložené témy v databáze.",
+                    //    "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Debug.WriteLine("Nemáte žiadne uložené témy v databáze.");
+                    ToastHelper.Show(this, "Nemáte žiadne uložené témy v databáze.", "info", 5000);
                     return;
                 }
 
@@ -275,14 +284,19 @@ namespace CertificateGenerator
                     else
                         TxtBulkTopics.Text += "\n" + selectedTopics;
 
-                    MessageBox.Show($"Pridaných {selectDialog.SelectedTopics.Count} tém.",
-                        "Úspech", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show($"Pridaných {selectDialog.SelectedTopics.Count} tém.",
+                    //    "Úspech", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Debug.WriteLine($"Pridaných {selectDialog.SelectedTopics.Count} tém.");
+                    ToastHelper.Show(this, $"Pridaných {selectDialog.SelectedTopics.Count} tém.", "success", 5000);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri načítaní tém:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Chyba pri načítaní tém:\n{ex.Message}",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Chyba pri načítaní tém:\n{ex.Message} \n + " +
+                    ex.ToString());
+                ToastHelper.Show(this, "Chyba pri načítaní tém.", "error", 5000);
             }
         }
 
@@ -290,23 +304,30 @@ namespace CertificateGenerator
         {
             if (Participants.Count == 0)
             {
-                MessageBox.Show("Prosím pridajte aspoň jedného účastníka.",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Prosím pridajte aspoň jedného účastníka.",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine("Prosím pridajte aspoň jedného účastníka.");
+                ToastHelper.Show(this, "Prosím pridajte aspoň jedného účastníka.", "warning", 5000);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(TxtBulkOrganizer.Text))
             {
-                MessageBox.Show("Prosím vyplňte organizátora.",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Prosím vyplňte organizátora.",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine("Prosím vyplňte organizátora.");
+
+                ToastHelper.Show(this, "Prosím vyplňte organizátora.", "warning", 5000);
                 return;
             }
 
             var topics = ParseTopics();
             if (topics.Count == 0)
             {
-                MessageBox.Show("Prosím zadajte aspoň jednu tému podujatia.",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Prosím zadajte aspoň jednu tému podujatia.",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine("Prosím zadajte aspoň jednu tému podujatia.");
+                ToastHelper.Show(this, "Prosím zadajte aspoň jednu tému podujatia.", "warning", 5000);
                 return;
             }
 
@@ -332,8 +353,11 @@ namespace CertificateGenerator
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Chyba pri generovaní PDF:\n{ex.Message}",
-                        "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    //MessageBox.Show($"Chyba pri generovaní PDF:\n{ex.Message}",
+                    //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Debug.WriteLine($"Chyba pri generovaní PDF:\n{ex.Message} \n + " +
+                        ex.ToString());
+                    ToastHelper.Show(this, "Chyba pri generovaní PDF.", "error", 5000);
                 }
             }
         }
@@ -492,9 +516,12 @@ namespace CertificateGenerator
                     message += $"\n... a ďalších {errors.Count - 3} chýb";
             }
 
-            MessageBox.Show(message, "Výsledok generovania",
-                MessageBoxButton.OK,
-                errorCount == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            //MessageBox.Show(message, "Výsledok generovania",
+            //    MessageBoxButton.OK,
+            //    errorCount == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
+            Debug.WriteLine("Bulk PDF generation completed.");  
+
+            ToastHelper.Show(this, message, errorCount == 0 ? "success" : "warning", 10000);
 
             if (successCount > 0)
             {
@@ -576,8 +603,9 @@ namespace CertificateGenerator
                 if (allParticipants.Count == 0)
                 {
                     Debug.WriteLine("Nemáte žiadnych uložených účastníkov v databáze.");
-                    MessageBox.Show("Nemáte žiadnych uložených účastníkov v databáze.",
-                        "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    //MessageBox.Show("Nemáte žiadnych uložených účastníkov v databáze.",
+                    //    "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ToastHelper.Show(this, "Nemáte žiadnych uložených účastníkov v databáze.", "info", 5000);
                     return;
                 }
 
@@ -608,8 +636,9 @@ namespace CertificateGenerator
             {
                 Debug.WriteLine($"Chyba pri načítaní účastníkov:\n{ex.Message} \n + " +
                     ex.ToString());
-                MessageBox.Show($"Chyba pri načítaní účastníkov:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Chyba pri načítaní účastníkov:\n{ex.Message}",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                ToastHelper.Show(this, "Chyba pri načítaní účastníkov.", "error", 5000);
             }
         }
 
@@ -627,29 +656,78 @@ namespace CertificateGenerator
         //    eventLocation
         //);
 
-        private void GenerateGenerateCaduceusCertificate_Click(object sender, RoutedEventArgs e)
+        private string GetAvailableFilePath(string originalPath)
+        {
+            if (!File.Exists(originalPath))
+                return originalPath;
+
+            try
+            {
+                using (var stream = File.Open(originalPath, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    return originalPath;
+                }
+            }
+            catch (IOException)
+            {
+                // Súbor je locked, vytvor nový názov s timestampom
+                string directory = IOPath.GetDirectoryName(originalPath);
+                string fileNameWithoutExt = IOPath.GetFileNameWithoutExtension(originalPath);
+                string extension = IOPath.GetExtension(originalPath);
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+                return IOPath.Combine(directory, $"{fileNameWithoutExt}_{timestamp}{extension}");
+            }
+        }
+
+        private void GenerateCaduceusCertificate_Click(object sender, RoutedEventArgs e)
         {
             if (Participants.Count == 0)
             {
-                MessageBox.Show("Prosím pridajte aspoň jedného účastníka.",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine("Prosím pridajte aspoň jedného účastníka.");
+                ToastHelper.Show(this, "Prosím pridajte aspoň jedného účastníka.", "warning", 5000);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(TxtBulkOrganizer.Text))
             {
-                MessageBox.Show("Prosím vyplňte organizátora.",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine("Prosím vyplňte organizátora.");
+                ToastHelper.Show(this, "Prosím vyplňte organizátora.", "warning", 5000);
                 return;
             }
 
             var topics = ParseTopics();
             if (topics.Count == 0)
             {
-                MessageBox.Show("Prosím zadajte aspoň jednu tému podujatia.",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Debug.WriteLine("Prosím zadajte aspoň jednu tému podujatia.");
+                ToastHelper.Show(this, "Prosím zadajte aspoň jednu tému podujatia.", "warning", 5000);
                 return;
             }
+
+            // Definuj filePath
+            string filePath = "Test_Caduceus.pdf";
+            string originalFilePath = filePath;
+            string actualFilePath = GetAvailableFilePath(filePath);
+
+            if (actualFilePath != originalFilePath)
+            {
+                ToastHelper.Show(this,
+                    $"Súbor '{IOPath.GetFileName(originalFilePath)}' je momentálne otvorený v inom programe. Bol vytvorený nový súbor '{IOPath.GetFileName(actualFilePath)}'",
+                    "warning",
+                    5000
+                );
+            }
+
+            CaduceusCertificateGenerator.GenerateCaduceusCertificate(
+                actualFilePath,  // Použiť actualFilePath namiesto hardcoded názvu
+                "MUDr. Peter Kovács",
+                "Moderné trendy",
+                DateTime.Now,
+                "Test Účastník",
+                "Košice"
+            );
+
+            System.Diagnostics.Process.Start(actualFilePath);
 
             var eventTopics = topics.Select(t => new EventTopic { Topic = t }).ToList();
             var datesDialog = new EventDatesDialog(eventTopics);
@@ -665,16 +743,6 @@ namespace CertificateGenerator
                 ShowNewFolderButton = true
             };
 
-            CaduceusCertificateGenerator.GenerateCaduceusCertificate(
-                "Test_Caduceus.pdf",
-                "MUDr. Peter Kovács",
-                "Moderné trendy",
-                DateTime.Now,
-                "Test Účastník",
-                "Košice"
-            );
-            System.Diagnostics.Process.Start("Test_Caduceus.pdf");
-
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 try
@@ -683,12 +751,12 @@ namespace CertificateGenerator
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"GenerateCaduceusCertificate - Chyba pri generovaní PDF:\n{ex.Message}",
-                        "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Debug.WriteLine($"GenerateCaduceusCertificate - Chyba pri generovaní PDF:\n{ex.Message} \n + " +
+                        ex.ToString());
+                    ToastHelper.Show(this, "GenerateCaduceusCertificate - Chyba pri generovaní PDF.", "error", 5000);
                 }
             }
         }
-
     }
 
     public class Participant

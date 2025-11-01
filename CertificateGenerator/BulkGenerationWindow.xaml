@@ -15,7 +15,7 @@
         HorizontalScrollBarVisibility="Auto"
         VerticalScrollBarVisibility="Auto">
 
-        <Grid Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid x:Name="BulkWindowMainGrid" Margin="20,10,20,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -219,7 +219,7 @@
                              
                             Padding="12,8"
                             Margin="0,20,10,10"
-                            Click="GenerateGenerateCaduceusCertificate_Click">
+                            Click="GenerateCaduceusCertificate_Click">
 
                             <TextBlock TextAlignment="Center">
                                 <Run Text="Vytvoriť certifikát"/>
@@ -322,6 +322,41 @@
                     FontSize="15"
                     Click="Close_Click"/>
             </StackPanel>
+
+            <!-- Toast notifikácia - vložiť pred </Grid> v každom Window -->
+            <!-- Grid musí mať x:Name alebo prístup cez Grid.Row -->
+
+            <!-- Toast notifikácia -->
+            <Border x:Name="ToastNotification"
+                Grid.Row="0" Grid.RowSpan="4"
+                Background="#F59E0B"
+                CornerRadius="12"
+                Padding="20,15"
+                Margin="20"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                Visibility="Collapsed"
+                MaxWidth="500"
+                Panel.ZIndex="9999">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Direction="270" ShadowDepth="3" Opacity="0.3" BlurRadius="10"/>
+                </Border.Effect>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="ToastIcon"
+                           Text="⚠️"
+                           FontSize="24"
+                           Margin="0,0,12,0"
+                           VerticalAlignment="Center"/>
+                    <TextBlock x:Name="ToastMessage"
+                           Text="Správa"
+                           FontSize="15"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
         </Grid>
 
     </ScrollViewer>
