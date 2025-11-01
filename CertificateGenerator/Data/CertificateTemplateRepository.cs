@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.Diagnostics;
 
 namespace CertificateGenerator.Data
 {
@@ -192,6 +191,12 @@ namespace CertificateGenerator.Data
                         "ALTER TABLE CertificateTemplates ADD COLUMN ColumnSpacing INTEGER DEFAULT 20");
                 }
 
+                if (!columns.Contains("UseCaduceusStyle"))
+                {
+                    ExecuteNonQuery(connection,
+                        "ALTER TABLE CertificateTemplates ADD COLUMN UseCaduceusStyle INTEGER DEFAULT 0");
+                }
+
                 System.Diagnostics.Debug.WriteLine("[Repository Migration] ContentLayout a ColumnSpacing stĺpce skontrolované/pridané");
             }
         }
@@ -239,7 +244,7 @@ namespace CertificateGenerator.Data
                      LabelBirthDate, LabelRegistrationNumber, LabelNotes,
                      FieldOrder, CustomHeaderAlignment, CustomHeaderBold, CustomHeaderItalic,
                      CustomFooterAlignment, CustomFooterBold, CustomFooterItalic,
-                     ContentLayout, ColumnSpacing,
+                     ContentLayout, ColumnSpacing, UseCaduceusStyle,
                      CreatedAt, UpdatedAt)
                     VALUES 
                     (@Name, @IsDefault, @TitleColor, @TextColor, @AccentColor, @BackgroundColor,
@@ -254,13 +259,15 @@ namespace CertificateGenerator.Data
                      @LabelBirthDate, @LabelRegistrationNumber, @LabelNotes,
                      @FieldOrder, @CustomHeaderAlignment, @CustomHeaderBold, @CustomHeaderItalic,
                      @CustomFooterAlignment, @CustomFooterBold, @CustomFooterItalic,
-                     @ContentLayout, @ColumnSpacing,
+                     @ContentLayout, @ColumnSpacing, @UseCaduceusStyle,
                      @CreatedAt, @UpdatedAt)";
 
                 using (var command = new SQLiteCommand(sql, connection))
                 {
                     AddParameters(command, template);
                     command.ExecuteNonQuery();
+                    System.Diagnostics.Debug.WriteLine($"[Repository.AddParameters] ContentLayout={template.ContentLayout}, ColumnSpacing={template.ColumnSpacing}, UseCaduceusStyle={template.UseCaduceusStyle}");
+
                     return (int)connection.LastInsertRowId;
                 }
             }
@@ -312,7 +319,7 @@ namespace CertificateGenerator.Data
                     TopDecorationThickness = @TopDecorationThickness,
                     ShowBottomDecoration = @ShowBottomDecoration, BottomDecorationColor = @BottomDecorationColor,
                     BottomDecorationThickness = @BottomDecorationThickness,
-                    ContentLayout = @ContentLayout, ColumnSpacing = @ColumnSpacing,
+                    ContentLayout = @ContentLayout, ColumnSpacing = @ColumnSpacing, UseCaduceusStyle = @UseCaduceusStyle,
                     UpdatedAt = @UpdatedAt
                     WHERE Id = @Id";
 
@@ -464,6 +471,7 @@ namespace CertificateGenerator.Data
             // Layout obsahu
             command.Parameters.AddWithValue("@ContentLayout", template.ContentLayout ?? "VERTICAL");
             command.Parameters.AddWithValue("@ColumnSpacing", template.ColumnSpacing);
+            command.Parameters.AddWithValue("@UseCaduceusStyle", template.UseCaduceusStyle ? 1 : 0);
 
             command.Parameters.AddWithValue("@CreatedAt", template.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
             command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -529,7 +537,6 @@ namespace CertificateGenerator.Data
                 CustomFooterBold = GetBoolOrDefault(reader, "CustomFooterBold", false),
                 CustomFooterItalic = GetBoolOrDefault(reader, "CustomFooterItalic", false),
 
-
                 // Dekorácie
                 ShowTopDecoration = GetBoolOrDefault(reader, "ShowTopDecoration", false),
                 TopDecorationColor = GetStringOrDefault(reader, "TopDecorationColor", "#2563EB"),
@@ -541,6 +548,7 @@ namespace CertificateGenerator.Data
 
                 ContentLayout = GetStringOrDefault(reader, "ContentLayout", "VERTICAL"),
                 ColumnSpacing = GetIntOrDefault(reader, "ColumnSpacing", 20),
+                UseCaduceusStyle = GetBoolOrDefault(reader, "UseCaduceusStyle", false),
 
                 CreatedAt = DateTime.Parse(reader["CreatedAt"].ToString()),
                 UpdatedAt = reader["UpdatedAt"] != DBNull.Value ? DateTime.Parse(reader["UpdatedAt"].ToString()) : (DateTime?)null

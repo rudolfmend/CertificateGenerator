@@ -16,6 +16,7 @@ namespace CertificateGenerator.Helpers
         {
             return new List<TemplatePreset>
             {
+                GetCaduceusGreenPreset(),
                 GetMinimalistBluePreset(),
                 GetElegantGoldPreset(),
                 GetModernGradientPreset(),

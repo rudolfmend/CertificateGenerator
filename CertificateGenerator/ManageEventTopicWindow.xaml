@@ -112,7 +112,7 @@
                             Style="{StaticResource SuccessButton}"
                             FontSize="14"
                             FontWeight="Bold"
-                            Margin="0,0,15,0"
+                            Margin="10,0,15,0"
                             IsDefault="True"
                             Click="Select_Click"/>
                     <Button Content="✖️ Zrušiť" 
