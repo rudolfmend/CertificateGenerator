@@ -1,7 +1,10 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="CertificateGenerator.BulkGenerationWindow"
+        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
+        mc:Ignorable="av" 
+        x:Class="CertificateGenerator.BulkGenerationWindow"
         Title="Hromadné generovanie certifikátov" 
         MinHeight="800" 
         Width="1100"
@@ -214,17 +217,17 @@
                             </TextBlock>
                         </Button>
 
-                        <Button 
+                        <Button x:Name="SelectTemplateButton"
                             Style="{StaticResource SuccessButton}"
                              
-                            Padding="12,8"
+                            Padding="19,8"
                             Margin="0,20,10,10"
-                            Click="GenerateCaduceusCertificate_Click">
+                            Click="ChangeTemplate_Click">
 
                             <TextBlock TextAlignment="Center">
-                                <Run Text="Vytvoriť certifikát"/>
+                                <Run Text="Vybrať šablónu"/>
                                 <LineBreak/>
-                                <Run Text="s logom"/>
+                                <Run Text="pre certifikát"/>
                             </TextBlock>
                         </Button>
 

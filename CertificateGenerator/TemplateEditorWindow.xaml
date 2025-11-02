@@ -87,7 +87,7 @@
                                     FontSize="13"
                                     Margin="0,0,8,0"
                                     Click="SaveTemplate_Click"/>
-                            <Button Content="➕ Nová"
+                            <Button Content="➕ N"
                                     Style="{StaticResource ModernButton}"
                                     Width="130"
                                     FontSize="13"
@@ -183,7 +183,7 @@
                                         MouseLeftButtonDown="GradientStartPreview_Click"/>
                             </Grid>
 
-                            <Label Content="Koncová farba:"
+                            <Label Content="Konc farba:"
                                    Style="{StaticResource ModernLabel}"/>
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>

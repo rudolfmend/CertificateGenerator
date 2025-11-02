@@ -17,7 +17,7 @@ namespace CertificateGenerator.Data
 
             return new CertificateTemplateModel
             {
-                // Základné info (ID sa nekopíruje - nová šablóna dostane nové ID)
+                // Základné info (ID sa nekopíruje - n šablóna dostane nové ID)
                 Name = source.Name,
                 IsDefault = false, // Kópia nie je predvolená
 

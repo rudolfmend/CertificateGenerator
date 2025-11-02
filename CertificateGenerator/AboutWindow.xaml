@@ -113,7 +113,7 @@
                                    Foreground="{StaticResource TextSecondaryColor}"
                                    LineHeight="22"
                                    Margin="0,0,0,15">
-                            CertificateGenerator rešpektuje vaše súkromie. Táto aplikácia nezhromažďuje, neuchováva ani neprenáša žiadne osobné údaje mimo vášho zariadenia.
+                            CertificateGenerator rešpektuje vaše súkromie. Táto aplikácia nezhromažďuje, neuchva ani neprenáša žiadne osobné údaje mimo vášho zariadenia.
                         </TextBlock>
 
                         <Button Content="Zásady ochrany údajov" 

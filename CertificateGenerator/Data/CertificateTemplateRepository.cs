@@ -633,7 +633,7 @@ namespace CertificateGenerator.Data
                     {
                         // Pridaj novú šablónu
                         Add(preset.Template);
-                        System.Diagnostics.Debug.WriteLine($"[ReloadPresets] Pridaná nová: {preset.Name}");
+                        System.Diagnostics.Debug.WriteLine($"[ReloadPresets] Pridaná n: {preset.Name}");
                     }
                 }
             }

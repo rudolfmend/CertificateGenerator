@@ -166,7 +166,7 @@ namespace CertificateGenerator.Data
             _connectionString = $"Data Source={_currentDatabasePath};Version=3;";
 
             InitializeDatabase();
-            Debug.WriteLine($"Vytvorená nová databáza: {fileName}");
+            Debug.WriteLine($"Vytvorená n databáza: {fileName}");
         }
 
         /// <summary>

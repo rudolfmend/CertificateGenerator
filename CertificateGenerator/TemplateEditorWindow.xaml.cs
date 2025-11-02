@@ -824,11 +824,11 @@ namespace CertificateGenerator
                 case "Organizer": return "Vzdelávacia akadémia, s.r.o.";
                 case "EventTopic": return "Moderné metódy vzdelávania";
                 case "EventDate": return DateTime.Now.ToString("dd.MM.yyyy");
-                case "Name": return "Ing. Ján Novák";
+                case "Name": return "Ing. Ján Nk";
                 case "BirthDate": return "01.01.1990";
                 case "RegistrationNumber": return "12345";
                 case "Notes": return "Účastník absolvoval seminár ";
-                default: return "[Ukážková hodnota]";
+                default: return "[Ukážk hodnota]";
             }
         }
 
@@ -1481,7 +1481,7 @@ namespace CertificateGenerator
                         "Slovenská komora medicínsko-technických pracovníkov",
                         "Moderné trendy v zdravotníctve",
                         DateTime.Now,
-                        "Ing. Ján Novák",
+                        "Ing. Ján Nk",
                         new DateTime(1990, 1, 1),
                         "12345",
                         "Toto je ukážkový text poznámky ku certifikátu. Môže obsahovať dodatočné informácie o absolvovanom podujatí.",

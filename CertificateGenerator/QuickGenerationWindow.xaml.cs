@@ -4,6 +4,7 @@ using iText.Kernel.Geom;
 using Microsoft.Win32;
 using NUnit.Framework.Interfaces;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +26,7 @@ namespace CertificateGenerator
         private int _currentParticipantId = 0;
         private int _currentTopicId = 0;
 
-        // NOVÁ FUNKČNOSŤ - Aktuálne vybraná šablóna
+        // Aktuálne vybraná šablóna
         private CertificateTemplateModel _currentTemplate;
 
         public QuickGenerationWindow()
@@ -54,7 +55,7 @@ namespace CertificateGenerator
         }
 
         /// <summary>
-        /// NOVÁ FUNKČNOSŤ - Načíta predvolenú šablónu alebo vytvorí základnú
+        /// N Načíta predvolenú šablónu alebo vytvorí základnú
         /// </summary>
         private void LoadDefaultTemplate()
         {
@@ -89,7 +90,7 @@ namespace CertificateGenerator
         }
 
         /// <summary>
-        /// NOVÁ FUNKČNOSŤ - Otvorí galériu šablón
+        /// Otvorí galériu šablón
         /// </summary>
         private void ChangeTemplate_Click(object sender, RoutedEventArgs e)
         {
@@ -101,20 +102,19 @@ namespace CertificateGenerator
                     _currentTemplate = galleryWindow.SelectedTemplate;
                     TxtSelectedTemplateName.Text = _currentTemplate.Name;
 
-                    MessageBox.Show(
-                        $"Šablóna '{_currentTemplate.Name}' bola úspešne vybraná.",
-                        "Šablóna zmenená",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    Debug.WriteLine($"Šablóna '{_currentTemplate.Name}' bola úspešne vybraná.");
+                    ToastHelper.Show(this, $"Šablóna '{_currentTemplate.Name}' bola úspešne vybraná.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Chyba pri otváraní galérie šablón:\n{ex.Message}",
-                    "Chyba",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                //MessageBox.Show(
+                //    $"Chyba pri otváraní galérie šablón:\n{ex.Message}",
+                //    "Chyba",
+                //    MessageBoxButton.OK,
+                //    MessageBoxImage.Error);
+                Debug.WriteLine($"Chyba pri otváraní galérie šablón:\n{ex.Message}");
+                ToastHelper.Show(this, $"Chyba pri otváraní galérie šablón:\n{ex.Message}");
             }
         }
 
@@ -249,6 +249,8 @@ namespace CertificateGenerator
                         "Úspech",
                         MessageBoxButton.YesNo,
                         MessageBoxImage.Information);
+                    Debug.WriteLine($"Certifikát bol úspešne vytvorený! Otvoriť súbor?");
+                    ToastHelper.Show(this, $"Certifikát bol úspešne vytvorený! Otvoriť súbor?");
 
                     if (result == MessageBoxResult.Yes)
                     {
@@ -258,8 +260,10 @@ namespace CertificateGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri generovaní PDF:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Chyba pri generovaní PDF:\n{ex.Message}",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Chyba pri generovaní PDF:\n{ex.Message}");
+                ToastHelper.Show(this, $"Chyba pri generovaní PDF:\n{ex.Message}");
             }
         }
 
@@ -267,7 +271,7 @@ namespace CertificateGenerator
         {
             bool landscape = ChkLandscape.IsChecked == true;
             PageSize size;
-
+            Debug.WriteLine($"private PageSize GetSelectedPageSize()");
             switch (CmbPaperFormat.SelectedIndex)
             {
                 case 0: // A3
@@ -307,7 +311,7 @@ namespace CertificateGenerator
                     PaperFormat = CmbPaperFormat.Text,
                     CreatedAt = DateTime.Now
                 };
-
+                Debug.WriteLine($"private void SaveToHistory()");
                 _certificateRepo.Add(certificate);
             }
             catch (Exception ex)
@@ -340,8 +344,10 @@ namespace CertificateGenerator
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Chyba pri otváraní okna hromadného generovania:\n{ex.Message}",
-                    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show($"Chyba pri otváraní okna hromadného generovania:\n{ex.Message}",
+                //    "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Chyba pri otváraní okna hromadného generovania:\n{ex.Message}");
+                ToastHelper.Show(this, $"Chyba pri otváraní okna hromadného generovania:\n{ex.Message}");
             }
         }
 

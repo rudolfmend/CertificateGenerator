@@ -71,7 +71,7 @@
                                    Foreground="{StaticResource TextPrimaryColor}"
                                    LineHeight="24"
                                    Margin="0,0,0,15">
-                            <Run FontWeight="SemiBold">CertificateGenerator nezhromažďuje, neuchováva ani nezdieľa žiadne osobné údaje svojich používateľov.</Run>
+                            <Run FontWeight="SemiBold">CertificateGenerator nezhromažďuje, neuchva ani nezdieľa žiadne osobné údaje svojich používateľov.</Run>
                         </TextBlock>
 
                         <TextBlock TextWrapping="Wrap" 
@@ -105,7 +105,7 @@
                             <TextBlock TextWrapping="Wrap" 
                                        Foreground="{StaticResource TextSecondaryColor}"
                                        Margin="0,0,0,6">
-                                • Neuchováva údaje mimo lokálneho zariadenia používateľa
+                                • Neuchva údaje mimo lokálneho zariadenia používateľa
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" 
                                        Foreground="{StaticResource TextSecondaryColor}">

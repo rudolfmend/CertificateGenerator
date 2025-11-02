@@ -16,7 +16,7 @@ namespace CertificateGenerator.Helpers
         {
             return new List<TemplatePreset>
             {
-                GetCaduceusGreenPreset(),
+                GetCaduceusBluePreset(),
                 GetMinimalistBluePreset(),
                 GetElegantGoldPreset(),
                 GetModernGradientPreset(),
@@ -122,7 +122,7 @@ namespace CertificateGenerator.Helpers
                     TitleColor = "#92400E",  // Tmavé zlato/hnedá
                     TextColor = "#1C1917",   // Takmer čierna
                     AccentColor = "#D97706", // Zlatá
-                    BackgroundColor = "#FFFBEB", // Krémová
+                    BackgroundColor = "#FFFBEB", // Krém
 
                     // Fonty
                     TitleFontFamily = "Times-Bold",
@@ -183,7 +183,7 @@ namespace CertificateGenerator.Helpers
         }
 
         /// <summary>
-        /// Moderná gradientová šablóna - súčasný trend
+        /// Moderná gradient šablóna - súčasný trend
         /// </summary>
         public static TemplatePreset GetModernGradientPreset()
         {
@@ -198,9 +198,9 @@ namespace CertificateGenerator.Helpers
                     Name = "Moderný gradient",
 
                     // Farby
-                    TitleColor = "#7C3AED", // Fialová
+                    TitleColor = "#7C3AED", // Fial
                     TextColor = "#374151", // Sivá
-                    AccentColor = "#8B5CF6", // Svetlá fialová
+                    AccentColor = "#8B5CF6", // Svetlá fial
                     BackgroundColor = "#FFFFFF",
 
                     // Fonty
@@ -352,7 +352,7 @@ namespace CertificateGenerator.Helpers
                     // Farby
                     TitleColor = "#DC2626", // Červená
                     TextColor = "#1F2937", // Tmavá
-                    AccentColor = "#F59E0B", // Oranžová
+                    AccentColor = "#F59E0B", // Oranž
                     BackgroundColor = "#FFFFFF",
 
                     // Fonty
@@ -415,7 +415,7 @@ namespace CertificateGenerator.Helpers
         /// </summary>
         public static TemplatePreset GetClassicBorderedPreset()
         {
-            Debug.WriteLine("⚠️ Generating Classic Bordered Certificate Preset");
+            //Debug.WriteLine("⚠️ Generating Classic Bordered Certificate Preset");
             return new TemplatePreset
             {
                 Name = "Klasická rámovaná",
@@ -494,7 +494,7 @@ namespace CertificateGenerator.Helpers
         /// </summary>
         public static TemplatePreset GetOrnamentalLuxuryPreset()
         {
-            Debug.WriteLine("⚠️ Generating Ornamental Luxury Certificate Preset");
+            //Debug.WriteLine("⚠️ Generating Ornamental Luxury Certificate Preset");
             return new TemplatePreset
             {
                 Name = "Ozdobná luxusná",
@@ -506,10 +506,10 @@ namespace CertificateGenerator.Helpers
                     Name = "Ozdobná luxusná",
 
                     // Farby - elegantná kombinécia bordovej a zlata
-                    TitleColor = "#7C2D12",  // Tmavo bordová
+                    TitleColor = "#7C2D12",  // Tmavo bord
                     TextColor = "#1C1917",   // Takmer čierna
-                    AccentColor = "#B45309", // Bronzová/zlatá
-                    BackgroundColor = "#FFF9F0", // Jemná krémová
+                    AccentColor = "#B45309", // Bronz/zlatá
+                    BackgroundColor = "#FFF9F0", // Jemná krém
 
                     // Fonty 
                     TitleFontFamily = "Times-Bold",
@@ -601,25 +601,25 @@ namespace CertificateGenerator.Helpers
             };
         }
 
-        public static TemplatePreset GetCaduceusGreenPreset()
+        public static TemplatePreset GetCaduceusBluePreset()
         {
-            Debug.WriteLine("⚠️ Generating Caduceus Green Certificate Preset");
+            //Debug.WriteLine("⚠️ Generating Cumulus - template with logo Caduceus, color blue, Certificate Preset");
             return new TemplatePreset
             {
-                Name = "Caduceus zelený",
-                Description = "Zelená medicínska šablóna s Caduceus logom",
+                Name = "Cumulus",
+                Description = "Modrá medicínska šablóna s Caduceus logom",
                 PreviewImagePath = "pack://application:,,,/Resources/Templates/caduceus_green.png",
                 Category = "Profesionálny",
                 Template = new CertificateTemplateModel
                 {
-                    Name = "Caduceus zelený",
+                    Name = "Cumulus",
                     UseCaduceusStyle = true, // ← MUSÍ BYŤ TRUE
 
                     // Zelené farby
-                    TitleColor = "#065F46",
-                    TextColor = "#1F2937",
-                    AccentColor = "#10B981",
-                    BorderColor = "#10B981",
+                    TitleColor = "#0d66ff", // svetlo modrá
+                    TextColor = "#062e73",
+                    AccentColor = "#0a37bf",
+                    BorderColor = "#0a37bf",
                     BackgroundColor = "#FFFFFF",
 
                     // Fonty

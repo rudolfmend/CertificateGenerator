@@ -44,7 +44,9 @@ namespace CertificateGenerator.Helpers
                     eventTopic,
                     eventDate,
                     participantName,
-                    "Košice", // eventLocation (default value)
+                    "Rastislavova 45, Košice 040 01", // eventLocation
+                    birthDate?.ToString("dd.MM.yyyy"), // birthDate
+                    registrationNumber, // registrationNumber
                     pageSize,
                     template
                 );
@@ -101,7 +103,7 @@ namespace CertificateGenerator.Helpers
                             decorY,             // Y pozícia
                             decorEndX,          // Koniec X
                             5,                  // Amplitúda vlny (výška)
-                            270,                 // Vlnová dĺžka
+                            270,                 // Vln dĺžka
                             ParseColor(template.TopDecorationColor),
                             template.TopDecorationThickness
                         );
@@ -176,7 +178,7 @@ namespace CertificateGenerator.Helpers
                                 lineEndX = template.MarginLeft + textWidth;
                             }
 
-                            // Vlnovková čiara pod titulkom
+                            // Vlnovk čiara pod titulkom
                             DrawWavyLine(
                                 canvas,
                                 lineStartX,
@@ -545,7 +547,7 @@ namespace CertificateGenerator.Helpers
                 organizerName: "Vzdelávacia inštitúcia s.r.o.",
                 eventTopic: "Programovanie v C# a .NET",
                 eventDate: DateTime.Now,
-                participantName: "Ján Novák",
+                participantName: "Ján Nk",
                 birthDate: new DateTime(1990, 5, 15),
                 registrationNumber: "CER-2024-001",
                 notes: "Absolvoval všetky moduly s výborným hodnotením",

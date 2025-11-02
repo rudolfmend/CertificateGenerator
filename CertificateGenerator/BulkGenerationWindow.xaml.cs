@@ -24,10 +24,12 @@ namespace CertificateGenerator
         private EventTopicRepository _topicRepo;
         private CertificateRepository _certificateRepo;
         private bool _hasUnsavedChanges = false;
+        private CertificateTemplateModel _currentTemplate;
 
         public BulkGenerationWindow()
         {
             InitializeComponent();
+            LoadTemplates();
             Participants = new ObservableCollection<Participant>();
             DgParticipants.ItemsSource = Participants;
             Participants.CollectionChanged += (s, e) => {
@@ -54,6 +56,14 @@ namespace CertificateGenerator
             _organizerRepo = new OrganizerRepository(dbManager);
             _topicRepo = new EventTopicRepository(dbManager);
             _certificateRepo = new CertificateRepository(dbManager);
+        }
+
+        private void LoadTemplates()
+        {
+            var presets = ModernTemplatePresets.GetAllPresets();
+            //CmbTemplateSelector.ItemsSource = presets;
+            //CmbTemplateSelector.DisplayMemberPath = "Name";
+            //CmbTemplateSelector.SelectedIndex = 0; // Cumulus ako prvý
         }
 
         private void UpdateStatistics()
@@ -551,30 +561,79 @@ namespace CertificateGenerator
         private void CreatePdfDocument(string filePath, Participant participant, EventTopic topic)
         {
             PageSize pageSize = GetSelectedPageSize();
-            var template = ModernTemplatePresets.GetOrnamentalLuxuryPreset().Template;
+            // -1-
+            // Použiť vybranú šablónu alebo default Cumulus
+            var template = _currentTemplate ?? ModernTemplatePresets.GetCaduceusBluePreset().Template;
 
-            CertificateGenerator.Helpers.CertificatePdfGenerator.GeneratePdf(
-                filePath,
-                template,
-                TxtBulkOrganizer.Text,
-                topic.Topic,
-                topic.EventDate,
-                participant.Name,
-                participant.BirthDate,
-                participant.RegistrationNumber,
-                participant.Notes,
+            CertificatePdfGenerator.GeneratePdf(
+                filePath, template, TxtBulkOrganizer.Text,
+                topic.Topic, topic.EventDate,
+                participant.Name, participant.BirthDate,
+                participant.RegistrationNumber, participant.Notes,
                 pageSize
             );
+
+            // -2-
+            // Zmeň na Caduceus šablónu
+            //var template = ModernTemplatePresets.GetCaduceusBluePreset().Template;
+            //CertificateGenerator.Helpers.CertificatePdfGenerator.GeneratePdf(
+            //    filePath,
+            //    template,
+            //    TxtBulkOrganizer.Text,
+            //    topic.Topic,
+            //    topic.EventDate,
+            //    participant.Name,
+            //    participant.BirthDate,
+            //    participant.RegistrationNumber,
+            //    participant.Notes,
+            //    pageSize
+            //);
+
+            // -3-
+            //var template = ModernTemplatePresets.GetOrnamentalLuxuryPreset().Template;
+            //CertificateGenerator.Helpers.CertificatePdfGenerator.GeneratePdf(
+            //    filePath,
+            //    template,
+            //    TxtBulkOrganizer.Text,
+            //    topic.Topic,
+            //    topic.EventDate,
+            //    participant.Name,
+            //    participant.BirthDate,
+            //    participant.RegistrationNumber,
+            //    participant.Notes,
+            //    pageSize
+            //);
         }
 
-        private PageSize GetSelectedPageSize()
+        /// <summary>
+        /// Otvorí galériu šablón
+        /// </summary>
+        private void ChangeTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var galleryWindow = new TemplateGalleryWindow(App.DatabaseManager);
+                if (galleryWindow.ShowDialog() == true && galleryWindow.TemplateSelected)
+                {
+                    _currentTemplate = galleryWindow.SelectedTemplate;
+                    Debug.WriteLine($"BulkGenerationWindow.xaml.cs - ChangeTemplate_Click() - Šablóna '{_currentTemplate.Name}' bola úspešne vybraná.");
+                    ToastHelper.Show(this, $"Šablóna '{_currentTemplate.Name}' bola úspešne vybraná.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Chyba pri otváraní galérie šablón:\n{ex.Message}");
+                ToastHelper.Show(this, $"Chyba pri otváraní galérie šablón:\n{ex.Message}");
+            }
+        }
+
+        internal PageSize GetSelectedPageSize()
         {
             var selectedItem = CmbBulkPaperFormat.SelectedItem as ComboBoxItem;
             if (selectedItem == null)
                 return PageSize.A5;
 
             string format = selectedItem.Content.ToString();
-
 
             PageSize size;
             if (format.StartsWith("A3"))
@@ -705,6 +764,7 @@ namespace CertificateGenerator
             }
 
             // Definuj filePath
+            // ukladá sa do C:/Users/rudol/source/repos/CertificateGenerator/CertificateGenerator/bin/Debug/Test_Caduceus.pdf
             string filePath = "Test_Caduceus.pdf";
             string originalFilePath = filePath;
             string actualFilePath = GetAvailableFilePath(filePath);
@@ -720,7 +780,7 @@ namespace CertificateGenerator
 
             CaduceusCertificateGenerator.GenerateCaduceusCertificate(
                 actualFilePath,  // Použiť actualFilePath namiesto hardcoded názvu
-                "MUDr. Peter Kovács",
+                "MUDr. Peter Kcs",
                 "Moderné trendy",
                 DateTime.Now,
                 "Test Účastník",

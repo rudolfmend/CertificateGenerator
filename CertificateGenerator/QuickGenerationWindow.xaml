@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Nová sekcia - Výber šablóny -->
+        <!-- N sekcia - Výber šablóny -->
         <Border Grid.Row="0"
                 Style="{StaticResource Card}"
                 Margin="0,0,0,15"

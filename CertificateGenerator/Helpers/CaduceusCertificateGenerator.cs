@@ -1,5 +1,4 @@
 ﻿using CertificateGenerator.Data;
-using iText.IO.Font;
 using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
@@ -35,6 +34,7 @@ namespace CertificateGenerator.Helpers
         /// <param name="eventLocation">Miesto konania (napr. "Bratislava")</param>
         /// <param name="pageSize">Veľkosť papiera (A4, Letter, atď.)</param>
         /// <param name="template">Šablóna s nastaveniami farieb a fontov (voliteľné)</param>
+        
         public static void GenerateCaduceusCertificate(
             string filePath,
             string organizerName,
@@ -42,6 +42,8 @@ namespace CertificateGenerator.Helpers
             DateTime? eventDate,
             string participantName,
             string eventLocation = "Rastislavova 45, Košice 040 01",
+            string birthDate = null,
+            string registrationNumber = null,
             PageSize pageSize = null,
             CertificateTemplateModel template = null)
         {
@@ -49,11 +51,12 @@ namespace CertificateGenerator.Helpers
             pageSize = pageSize ?? PageSize.A4;
             template = template ?? GetDefaultCaduceusTemplate();
 
-            // Cesty k resources
+            // Cesty k resources - v bin/debug/Images
             string projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string svgTopPath = System.IO.Path.Combine(projectDirectory, "Resources", "waves_top.svg");
-            string svgBottomPath = System.IO.Path.Combine(projectDirectory, "Resources", "waves_bottom.svg");
-            string logoPath = System.IO.Path.Combine(projectDirectory, "Resources", "caduceus_without_background.png");
+            string svgTopPath = System.IO.Path.Combine(projectDirectory, "Images", "waves_top.svg");
+            string svgBottomPath = System.IO.Path.Combine(projectDirectory, "Images", "waves_bottom.svg");
+            string logoPath = System.IO.Path.Combine(projectDirectory, "Images", "caduceus_without_background.png");
+
 
             System.Diagnostics.Process.Start("cmd.exe", "/C echo Generating Caduceus Certificate: " + filePath);
 
@@ -90,15 +93,15 @@ namespace CertificateGenerator.Helpers
                     }
 
                     // === 2. HORNÉ VLNOVKY ===
-                    if (File.Exists(svgTopPath))
-                    {
-                        System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Top Waves SVG: " + svgTopPath);
-                        AddTopWaves(pdf, svgTopPath, width, height);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("⚠️ SVG top waves nenájdené: " + svgTopPath);
-                    }
+                    //                     if (File.Exists(svgTopPath))
+                    //                     {
+                    //                         System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Top Waves SVG: " + svgTopPath);
+                    //                         AddTopWaves(pdf, svgTopPath, width, height);
+                    //                     }
+                    //                     else
+                    //                     {
+                    //                         Debug.WriteLine("⚠️ SVG top waves nenájdené: " + svgTopPath);
+                    //                     }
 
                     // === 3. LOGO CADUCEUS (PNG - ľavý horný roh) ===
                     if (File.Exists(logoPath))
@@ -117,15 +120,17 @@ namespace CertificateGenerator.Helpers
                         eventTopic,
                         eventDate,
                         participantName,
-                        eventLocation
+                        eventLocation,
+                        birthDate,           
+                        registrationNumber   
                     );
 
                     // === 5. DOLNÉ VLNOVKY (zrkadlené) ===
-                    if (File.Exists(svgBottomPath))
-                    {
-                        System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Bottom Waves SVG: " + svgBottomPath);
-                        AddBottomWaves(pdf, svgBottomPath, width);
-                    }
+                    //                     if (File.Exists(svgBottomPath))
+                    //                     {
+                    //                         System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Bottom Waves SVG: " + svgBottomPath);
+                    //                         AddBottomWaves(pdf, svgBottomPath, width);
+                    //                     }
                 }
                 System.Diagnostics.Process.Start("cmd.exe", "/C echo Finished Generating Caduceus Certificate: " + filePath);
             }
@@ -144,7 +149,7 @@ namespace CertificateGenerator.Helpers
         [Test]
         public static void CertificatePdfGenerator_UsesCaduceusGenerator_WhenFlagIsTrue()
         {
-            var template = ModernTemplatePresets.GetCaduceusGreenPreset().Template;
+            var template = ModernTemplatePresets.GetCaduceusBluePreset().Template;
             Assert.That(template.UseCaduceusStyle, Is.True);
 
             // Vytvor testovací PDF
@@ -304,7 +309,8 @@ namespace CertificateGenerator.Helpers
             Debug.WriteLine("private static void AddCertificateContent()");
 
             // Hlavný nadpis - ostáva na plnú šírku
-            document.Add(new Paragraph("\n\n\nCERTIFIKÁT O ABSOLVOVANÍ")
+            //document.Add(new Paragraph("\n\n\nCERTIFIKÁT O ABSOLVOVANÍ")
+            document.Add(new Paragraph("CERTIFIKÁT O ABSOLVOVANÍ")
                 .SetFont(titleFont)
                 .SetFontSize(template.TitleFontSize)
                 .SetTextAlignment(TextAlignment.CENTER)
@@ -320,7 +326,7 @@ namespace CertificateGenerator.Helpers
             // Meno účastníka (zvýraznené)
             document.Add(new Paragraph(participantName)
                 .SetFont(titleFont)
-                .SetFontSize(template.HeaderFontSize + 4)
+                .SetFontSize(template.HeaderFontSize + 1)
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontColor(ColorConstants.BLACK)
                 .SetMarginBottom(10));
@@ -414,16 +420,19 @@ namespace CertificateGenerator.Helpers
             string eventTopic,
             DateTime? eventDate,
             string participantName,
-            string eventLocation)
+            string eventLocation,
+            string birthDate,           
+            string registrationNumber)  
         {
             Color titleColor = ParseColor(template.TitleColor);
             Color textColor = ParseColor(template.TextColor);
             Debug.WriteLine("private static void AddCertificateContent()");
 
             // Hlavný nadpis - ostáva na plnú šírku
-            document.Add(new Paragraph("\n\n\nCERTIFIKÁT O ABSOLVOVANÍ")
+            //document.Add(new Paragraph("\n\n\nCERTIFIKÁT O ABSOLVOVANÍ")
+            document.Add(new Paragraph("CERTIFIKÁT O ABSOLVOVANÍ")
                 .SetFont(titleFont)
-                .SetFontSize(template.TitleFontSize)
+                .SetFontSize(14)  // Zmenšené z 28)
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontColor(titleColor));
 
@@ -437,10 +446,37 @@ namespace CertificateGenerator.Helpers
             // Meno účastníka (zvýraznené)
             document.Add(new Paragraph(participantName)
                 .SetFont(titleFont)
-                .SetFontSize(template.HeaderFontSize + 4)
+                .SetFontSize(template.HeaderFontSize + 1) // zmena veľkosti písma mena účastnika
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontColor(ColorConstants.BLACK)
                 .SetMarginBottom(10));
+
+            // Dátum narodenia a registračné číslo
+            if (!string.IsNullOrEmpty(birthDate) || !string.IsNullOrEmpty(registrationNumber))
+            {
+                string additionalInfo = "";
+                if (!string.IsNullOrEmpty(birthDate))
+                    additionalInfo += "Dátum narodenia: " + birthDate;
+                if (!string.IsNullOrEmpty(birthDate) && !string.IsNullOrEmpty(registrationNumber))
+                    additionalInfo += "  •  ";
+                if (!string.IsNullOrEmpty(registrationNumber))
+                    additionalInfo += "Registračné číslo: " + registrationNumber;
+
+                document.Add(new Paragraph(additionalInfo)
+                    .SetFont(textFont)
+                    .SetFontSize(template.TextFontSize - 2)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontColor(textColor)
+                    .SetMarginBottom(15));
+
+                document.Add(new Paragraph("úspešne absolvoval(a) školenie")
+                    .SetFont(textFont)
+                    .SetFontSize(template.TextFontSize)
+                    .SetTextAlignment(TextAlignment.CENTER)
+                    .SetFontColor(textColor)
+                    .SetMarginBottom(10));
+            }
+
 
             // === GRID S 3 STĹPCAMI ===
             Table contentTable = new Table(3).UseAllAvailableWidth();
@@ -484,16 +520,16 @@ namespace CertificateGenerator.Helpers
                 .SetMarginBottom(10));
 
             // Miesto konania
-            middleColumn.Add(new Paragraph("Miesto konania")
-                .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 4)
-                .SetFontColor(titleColor)
-                .SetMarginBottom(3));
+            //middleColumn.Add(new Paragraph("Miesto konania")
+            //    .SetFont(titleFont)
+            //    .SetFontSize(template.TextFontSize - 4)
+            //    .SetFontColor(titleColor)
+            //    .SetMarginBottom(3));
 
-            middleColumn.Add(new Paragraph(eventLocation)
-                .SetFont(textFont)
-                .SetFontSize(template.TextFontSize)
-                .SetFontColor(textColor));
+            //middleColumn.Add(new Paragraph(eventLocation)
+            //    .SetFont(textFont)
+            //    .SetFontSize(template.TextFontSize)
+            //    .SetFontColor(textColor));
 
             // PRAVÝ STĹPEC
             Cell rightColumn = new Cell()
@@ -501,16 +537,16 @@ namespace CertificateGenerator.Helpers
                 .SetPaddingLeft(10);
 
             // Organizátor
-            rightColumn.Add(new Paragraph("Organizátor")
-                .SetFont(titleFont)
-                .SetFontSize(template.TextFontSize - 4)
-                .SetFontColor(titleColor)
-                .SetMarginBottom(3));
+            //rightColumn.Add(new Paragraph("Organizátor")
+                //.SetFont(titleFont)
+                //.SetFontSize(template.TextFontSize - 4)
+                //.SetFontColor(titleColor)
+                //.SetMarginBottom(3));
 
-            rightColumn.Add(new Paragraph(organizerName)
-                .SetFont(textFont)
-                .SetFontSize(template.TextFontSize)
-                .SetFontColor(textColor));
+            //rightColumn.Add(new Paragraph(organizerName)
+            //    .SetFont(textFont)
+            //    .SetFontSize(template.TextFontSize)
+            //    .SetFontColor(textColor));
 
             // Pridaj stĺpce do tabuľky
             contentTable.AddCell(leftColumn);
@@ -530,16 +566,17 @@ namespace CertificateGenerator.Helpers
         /// </summary>
         private static void AddSignatureTable(Document document, PdfFont textFont, CertificateTemplateModel template, string organizerName)
         {
-            document.Add(new Paragraph("\n\n\n"));
+            document.Add(new Paragraph("\n\n")); // - bez posúvanie nadol 
+            //document.Add(new Paragraph("\n\n\n")); // - posúvanie nadol 
 
             Table signatureTable = new Table(2).UseAllAvailableWidth();
             signatureTable.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
             // Ľavý podpis (Garant)
             Cell leftCell = new Cell()
-                .Add(new Paragraph("______________________")
-                    .SetTextAlignment(TextAlignment.CENTER))
-                .Add(new Paragraph("garant podujatia")
+                //.Add(new Paragraph("______________________")
+                    //.SetTextAlignment(TextAlignment.CENTER))
+                .Add(new Paragraph("Cumulus, s.r.o. Rastislavova 45, Košice 040 01") // ľavý dolný roh 
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFont(textFont)
                     .SetFontSize(template.TextFontSize - 2))
@@ -548,8 +585,8 @@ namespace CertificateGenerator.Helpers
 
             // Pravý podpis (Organizátor)
             Cell rightCell = new Cell()
-                .Add(new Paragraph("______________________")
-                    .SetTextAlignment(TextAlignment.CENTER))
+                //.Add(new Paragraph("______________________")
+                //    .SetTextAlignment(TextAlignment.CENTER))
                 .Add(new Paragraph(string.IsNullOrWhiteSpace(organizerName) ? "riaditeľ" : organizerName)
                     .SetTextAlignment(TextAlignment.CENTER)
                     .SetFont(textFont)
