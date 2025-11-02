@@ -9,8 +9,9 @@
         ResizeMode="CanResize"
         Background="{StaticResource BackgroundColor}">
 
-    <Grid Margin="30">
+    <Grid Margin="25,5,25,10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -18,23 +19,13 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Border Grid.Row="0" 
-                Style="{StaticResource Card}" 
-                Margin="0,0,0,20">
-            <StackPanel>
-                <TextBlock Text="📅" 
-                           FontSize="38"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,8"/>
                 <TextBlock Text="Priraďte dátumy k témam podujatí" 
-                           FontSize="18"
-                           FontWeight="Bold"
+                           FontSize="13" Padding="20,5,1,10"
+                           FontWeight="DemiBold"
                            Foreground="{StaticResource TextPrimaryColor}"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
+                           HorizontalAlignment="Left"/>
 
-        <!-- Quick Actions -->
+                <!-- Quick Actions -->
         <Border Grid.Row="1" 
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
@@ -64,8 +55,63 @@
             </Grid>
         </Border>
 
-        <!-- DataGrid with Topics and Dates -->
+        <!-- Auto-fill Dates Section -->
         <Border Grid.Row="2" 
+                Style="{StaticResource Card}" 
+                Margin="0,0,0,20">
+            <StackPanel>
+                <Label Content="🔄 Automatické vyplnenie dátumov" 
+                       Style="{StaticResource ModernLabel}"
+                       FontSize="15"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <Label Content="Počiatočný dátum:" 
+                               Style="{StaticResource ModernLabel}"/>
+                        <DatePicker x:Name="DtpAutoStartDate" 
+                                    Style="{StaticResource ModernDatePicker}"
+                                    SelectedDateFormat="Short"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                        <Label Content="Pravidlo:" 
+                               Style="{StaticResource ModernLabel}"/>
+                        <ComboBox x:Name="CmbDateRule" 
+                                  Style="{StaticResource ModernComboBox}"
+                                  SelectedIndex="0">
+                            <ComboBoxItem Content="Prvý pondelok v mesiaci"/>
+                            <ComboBoxItem Content="Prvý utorok v mesiaci"/>
+                            <ComboBoxItem Content="Prvý štvrtok v mesiaci"/>
+                            <ComboBoxItem Content="Prvý piatok v mesiaci"/>
+                            <ComboBoxItem Content="Posledný piatok v mesiaci"/>
+                            <ComboBoxItem Content="15. deň v mesiaci"/>
+                            <ComboBoxItem Content="Prvý deň v mesiaci"/>
+                            <ComboBoxItem Content="Každý týždeň (+7 dní)"/>
+                            <ComboBoxItem Content="Každé 2 týždne (+14 dní)"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Button Grid.Column="2" 
+                            Content="🔄 Aplikovať pravidlo" 
+                            Style="{StaticResource SuccessButton}"
+                            Padding="15,10" 
+                            FontSize="14"
+                            VerticalAlignment="Bottom"
+                            Click="AutoFillDates_Click"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- DataGrid with Topics and Dates -->
+        <Border Grid.Row="3" 
                 Style="{StaticResource Card}" 
                 Margin="0,0,0,20">
             <Grid>
@@ -115,7 +161,7 @@
         </Border>
 
         <!-- Buttons -->
-        <StackPanel Grid.Row="3" 
+        <StackPanel Grid.Row="4" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Center">
             <Button Content="✓ Pokračovať" 

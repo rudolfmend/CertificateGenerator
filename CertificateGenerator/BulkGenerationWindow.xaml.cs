@@ -72,23 +72,47 @@ namespace CertificateGenerator
             UpdatePdfCount();
         }
 
+        // Náhrada za ManageParticipants_Click metódu v BulkGenerationWindow.xaml.cs
+
         private void ManageParticipants_Click(object sender, RoutedEventArgs e)
         {
             var participantWindow = new ParticipantManagerWindow(App.DatabaseManager);
-            if (participantWindow.ShowDialog() == true && participantWindow.SelectedParticipant != null)
-            {
-                var selected = participantWindow.SelectedParticipant;
 
-                // Check if already in list
-                if (!Participants.Any(p => p.Name == selected.Name))
+            if (participantWindow.ShowDialog() == true)
+            {
+                // Ak boli vybraní viacerí účastníci
+                if (participantWindow.SelectedParticipants != null && participantWindow.SelectedParticipants.Count > 0)
                 {
-                    Participants.Add(new Participant
+                    foreach (var selected in participantWindow.SelectedParticipants)
                     {
-                        Name = selected.Name,
-                        BirthDate = selected.BirthDate,
-                        RegistrationNumber = selected.RegistrationNumber,
-                        Notes = selected.Notes
-                    });
+                        // Skontroluj či už nie je v zozname
+                        if (!Participants.Any(p => p.Name == selected.Name))
+                        {
+                            Participants.Add(new Participant
+                            {
+                                Name = selected.Name,
+                                BirthDate = selected.BirthDate,
+                                RegistrationNumber = selected.RegistrationNumber,
+                                Notes = selected.Notes
+                            });
+                        }
+                    }
+                }
+                // Ak bol vybraný jeden účastník
+                else if (participantWindow.SelectedParticipant != null)
+                {
+                    var selected = participantWindow.SelectedParticipant;
+
+                    if (!Participants.Any(p => p.Name == selected.Name))
+                    {
+                        Participants.Add(new Participant
+                        {
+                            Name = selected.Name,
+                            BirthDate = selected.BirthDate,
+                            RegistrationNumber = selected.RegistrationNumber,
+                            Notes = selected.Notes
+                        });
+                    }
                 }
             }
         }

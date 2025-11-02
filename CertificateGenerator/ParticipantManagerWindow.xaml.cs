@@ -12,6 +12,7 @@ namespace CertificateGenerator
         private readonly ParticipantRepository _repository;
         private List<ParticipantModel> _allParticipants;
         public ParticipantModel SelectedParticipant { get; private set; }
+        public List<ParticipantModel> SelectedParticipants { get; private set; }
         private int _currentEditingId = 0;
 
         public ParticipantManagerWindow(DatabaseManager dbManager)
@@ -139,6 +140,38 @@ namespace CertificateGenerator
             {
                 MessageBox.Show("Vyberte účastníka zo zoznamu.", "Informácia",
                     MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void SelectAllAndClose_Click(object sender, RoutedEventArgs e)
+        {
+            var currentList = DgParticipants.ItemsSource as List<ParticipantModel>;
+
+            if (currentList == null || currentList.Count == 0)
+            {
+                MessageBox.Show("Zoznam účastníkov je prázdny.", "Informácia",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Vybrať všetkých {currentList.Count} účastníkov?",
+                "Potvrdenie",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                SelectedParticipants = currentList.ToList();
+
+                // Zvýš počet použití pre všetkých
+                foreach (var participant in SelectedParticipants)
+                {
+                    _repository.IncrementUsage(participant.Id);
+                }
+
+                DialogResult = true;
+                Close();
             }
         }
 

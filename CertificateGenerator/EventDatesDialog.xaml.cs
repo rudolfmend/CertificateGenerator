@@ -45,6 +45,95 @@ namespace CertificateGenerator
             DgEventTopics.Items.Refresh();
         }
 
+        private void AutoFillDates_Click(object sender, RoutedEventArgs e)
+        {
+            if (!DtpAutoStartDate.SelectedDate.HasValue)
+            {
+                MessageBox.Show("Prosím vyberte počiatočný dátum.", "Informácia",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            DateTime startDate = DtpAutoStartDate.SelectedDate.Value;
+            int ruleIndex = CmbDateRule.SelectedIndex;
+
+            ApplyDateRule(startDate, ruleIndex);
+            DgEventTopics.Items.Refresh();
+        }
+
+        private void ApplyDateRule(DateTime startDate, int ruleIndex)
+        {
+            DateTime currentDate = startDate;
+
+            foreach (var topic in EventTopics)
+            {
+                topic.EventDate = currentDate;
+                currentDate = GetNextDate(currentDate, ruleIndex);
+            }
+        }
+
+        private DateTime GetNextDate(DateTime currentDate, int ruleIndex)
+        {
+            switch (ruleIndex)
+            {
+                case 0: // Prvý pondelok v mesiaci
+                    return GetFirstDayOfWeekInMonth(currentDate.AddMonths(1), DayOfWeek.Monday);
+
+                case 1: // Prvý utorok v mesiaci
+                    return GetFirstDayOfWeekInMonth(currentDate.AddMonths(1), DayOfWeek.Tuesday);
+
+                case 2: // Prvý štvrtok v mesiaci
+                    return GetFirstDayOfWeekInMonth(currentDate.AddMonths(1), DayOfWeek.Thursday);
+
+                case 3: // Prvý piatok v mesiaci
+                    return GetFirstDayOfWeekInMonth(currentDate.AddMonths(1), DayOfWeek.Friday);
+
+                case 4: // Posledný piatok v mesiaci
+                    return GetLastDayOfWeekInMonth(currentDate.AddMonths(1), DayOfWeek.Friday);
+
+                case 5: // 15. deň v mesiaci
+                    var nextMonth = currentDate.AddMonths(1);
+                    return new DateTime(nextMonth.Year, nextMonth.Month, 15);
+
+                case 6: // Prvý deň v mesiaci
+                    var nextMonth2 = currentDate.AddMonths(1);
+                    return new DateTime(nextMonth2.Year, nextMonth2.Month, 1);
+
+                case 7: // Každý týždeň (+7 dní)
+                    return currentDate.AddDays(7);
+
+                case 8: // Každé 2 týždne (+14 dní)
+                    return currentDate.AddDays(14);
+
+                default:
+                    return currentDate.AddMonths(1);
+            }
+        }
+
+        private DateTime GetFirstDayOfWeekInMonth(DateTime date, DayOfWeek dayOfWeek)
+        {
+            DateTime firstDay = new DateTime(date.Year, date.Month, 1);
+
+            while (firstDay.DayOfWeek != dayOfWeek)
+            {
+                firstDay = firstDay.AddDays(1);
+            }
+
+            return firstDay;
+        }
+
+        private DateTime GetLastDayOfWeekInMonth(DateTime date, DayOfWeek dayOfWeek)
+        {
+            DateTime lastDay = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
+
+            while (lastDay.DayOfWeek != dayOfWeek)
+            {
+                lastDay = lastDay.AddDays(-1);
+            }
+
+            return lastDay;
+        }
+
         private void Continue_Click(object sender, RoutedEventArgs e)
         {
             // Check if all topics have dates
