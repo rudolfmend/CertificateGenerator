@@ -57,8 +57,7 @@ namespace CertificateGenerator.Helpers
             string svgBottomPath = System.IO.Path.Combine(projectDirectory, "Images", "waves_bottom.svg");
             string logoPath = System.IO.Path.Combine(projectDirectory, "Images", "caduceus_without_background.png");
 
-
-            System.Diagnostics.Process.Start("cmd.exe", "/C echo Generating Caduceus Certificate: " + filePath);
+            Debug.WriteLine("Generating Caduceus Certificate: " + filePath);
 
             using (var writer = new PdfWriter(filePath))
             using (var pdf = new PdfDocument(writer))
@@ -71,7 +70,8 @@ namespace CertificateGenerator.Helpers
                     float width = pageSize.GetWidth();
                     float height = pageSize.GetHeight();
 
-                    System.Diagnostics.Process.Start("cmd.exe", "/C echo Page Size: " + width + " x " + height);
+
+                    Debug.WriteLine("Page Size: " + width + " x " + height);
 
                     // Nastavenie okrajov
                     document.SetMargins(
@@ -88,7 +88,7 @@ namespace CertificateGenerator.Helpers
                     // === 1. OZDOBNÝ RÁM S OBLÝMI ROHMI ===
                     if (template.ShowBorder)
                     {
-                        System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Rounded Border");
+                        Debug.WriteLine("Adding Border");
                         AddRoundedBorder(pdf, width, height, template);
                     }
 
@@ -106,7 +106,7 @@ namespace CertificateGenerator.Helpers
                     // === 3. LOGO CADUCEUS (PNG - ľavý horný roh) ===
                     if (File.Exists(logoPath))
                     {
-                        System.Diagnostics.Process.Start("cmd.exe", "/C echo Adding Caduceus Logo PNG: " + logoPath);
+                        Debug.WriteLine("Adding Logo Caduceus Logo PNG: " + logoPath);
                         AddCaduceusLogoPng(document, logoPath, width, height);
                     }
 
@@ -132,7 +132,8 @@ namespace CertificateGenerator.Helpers
                     //                         AddBottomWaves(pdf, svgBottomPath, width);
                     //                     }
                 }
-                System.Diagnostics.Process.Start("cmd.exe", "/C echo Finished Generating Caduceus Certificate: " + filePath);
+                
+                Debug.WriteLine("Finished Generating Caduceus Certificate: " + filePath);
             }
         }
 
