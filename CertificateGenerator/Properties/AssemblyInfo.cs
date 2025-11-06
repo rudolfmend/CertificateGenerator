@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CertificateGenerator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A tool for generating PDF certificates of completion of professional seminars and trainings. The application allows for easy creation of individual certificates as well as mass generation for groups of participants.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CertificateGenerator")]
@@ -50,3 +50,4 @@ using System.Windows;
 //
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguage("sk-SK")]

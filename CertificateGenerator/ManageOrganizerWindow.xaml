@@ -4,10 +4,10 @@
         Title="Správa organizátorov" 
         Height="750" 
         MinHeight="380" 
-        Width="600"
-        MinWidth="700"
+        Width="800"
         FontSize="14"
         WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         ResizeMode="CanResize"
         Background="{StaticResource BackgroundColor}">
 
@@ -110,7 +110,7 @@
                             Style="{StaticResource SuccessButton}"
                             FontSize="14"
                             FontWeight="Bold"
-                            Margin="0,0,15,0"
+                            Margin="10,0,10,0"
                             IsDefault="True"
                             Click="Select_Click"/>
                     <Button Content="✖️ Zrušiť" 

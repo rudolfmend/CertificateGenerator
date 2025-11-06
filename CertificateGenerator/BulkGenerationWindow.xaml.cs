@@ -155,25 +155,19 @@ namespace CertificateGenerator
             TxtPdfCount.Text = totalPdfs.ToString();
             TxtTotalPdfCount.Text = totalPdfs.ToString();
         }
-
         private List<string> ParseTopics()
         {
             if (string.IsNullOrWhiteSpace(TxtBulkTopics.Text))
                 return new List<string>();
 
-            var text = TxtBulkTopics.Text;
             var topics = new List<string>();
-            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = TxtBulkTopics.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var line in lines)
             {
-                var parts = line.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var part in parts)
-                {
-                    var trimmed = part.Trim();
-                    if (!string.IsNullOrWhiteSpace(trimmed))
-                        topics.Add(trimmed);
-                }
+                var trimmed = line.Trim();
+                if (!string.IsNullOrWhiteSpace(trimmed))
+                    topics.Add(trimmed);
             }
 
             return topics;

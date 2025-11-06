@@ -141,61 +141,41 @@
 
             <!-- Participants List Section -->
             <Border Grid.Row="2" 
-                Style="{StaticResource Card}" 
-                Margin="0,0,0,20">
+    Style="{StaticResource Card}" 
+    Margin="0,0,0,20">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49*"/>
-                        <ColumnDefinition Width="284*"/>
-                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0"
-                       Content="👥 Zoznam účastníkov"
-                       Style="{StaticResource ModernLabel}"
-                       FontSize="16"
-                       FontWeight="Bold"
-                       Margin="0,0,0,15" Grid.ColumnSpan="2"/>
-
                     <!-- Toolbar -->
-                    <WrapPanel Orientation="Horizontal" Margin="0,36,0,180" Grid.ColumnSpan="2" Grid.RowSpan="2">
-                        
+                    <WrapPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+
                         <Button Content="Pridať účastníkov" 
                             Style="{StaticResource SuccessButton}"
-                             
                             Padding="12,8"
                             Margin="0,0,8,8"
                             Click="ManageParticipants_Click"/>
-                        
+
                         <Button Content="📄 Import CSV" 
-                            Style="{StaticResource ModernButton}"
-                             
-                            Padding="20,8"
+                            Style="{StaticResource  SecondaryButton}"
+                            Padding="12,8"
                             Margin="0,0,8,8"
                             Click="ImportCsv_Click"/>
-                        
-                        <Button Content="🗑️ Vyčistiť všetko" 
-                            Style="{StaticResource DangerButton}"  
-                            Padding="10,12"
+
+                        <Button Content="🗑️ Vymazať všetko" 
+                            Style="{StaticResource DangerButton}"
+                            Padding="12,8"
                             Margin="0,0,8,8"
                             Click="ClearList_Click"/>
-                        
-                    </WrapPanel>
-                    <WrapPanel
-                           Orientation="Horizontal" 
-                           Margin="0,70,0,250" Grid.ColumnSpan="2" Grid.RowSpan="2" >
 
                         <Button 
                             Style="{StaticResource SuccessButton}"
-                             
                             Padding="19,8"
-                            Margin="0,20,8,10"
+                            Margin="0,0,8,8"
                             Click="SelectTopicsFromDB_Click">
-
+                            
                             <TextBlock TextAlignment="Center">
                                 <Run Text="Vybrať uložené"/>
                                 <LineBreak/>
@@ -204,30 +184,26 @@
                         </Button>
 
                         <Button 
-                            Style="{StaticResource SuccessButton}"
-                             
-                            Padding="12,8"
-                            Click="ManageOrganizers_Click"
-                            Margin="0,20,8,10">
-
+                Style="{StaticResource SuccessButton}"
+                Padding="12,8"
+                Click="ManageOrganizers_Click"
+                Margin="0,0,8,8">
                             <TextBlock TextAlignment="Center">
-                                <Run Text="Vybrať uloženého"/>
-                                <LineBreak/>
-                                <Run Text="organizátora"/>
+                    <Run Text="Vybrať uloženého"/>
+                    <LineBreak/>
+                    <Run Text="organizátora"/>
                             </TextBlock>
                         </Button>
 
                         <Button x:Name="SelectTemplateButton"
-                            Style="{StaticResource SuccessButton}"
-                             
-                            Padding="19,8"
-                            Margin="0,20,10,10"
-                            Click="ChangeTemplate_Click">
-
+                Style="{StaticResource SuccessButton}"
+                Padding="19,8"
+                Margin="0,0,8,8"
+                Click="ChangeTemplate_Click">
                             <TextBlock TextAlignment="Center">
-                                <Run Text="Vybrať šablónu"/>
-                                <LineBreak/>
-                                <Run Text="pre certifikát"/>
+                    <Run Text="Vybrať šablónu"/>
+                    <LineBreak/>
+                    <Run Text="pre certifikát"/>
                             </TextBlock>
                         </Button>
 
@@ -235,29 +211,29 @@
 
                     <!-- DataGrid -->
                     <Border Grid.Row="1"
-                        BorderThickness="1"
-                        BorderBrush="{StaticResource BorderColor}"
-                        CornerRadius="6"
-                        Background="{StaticResource SurfaceColor}" Grid.ColumnSpan="2" Margin="0,57,0,165">
+            BorderThickness="1"
+            BorderBrush="{StaticResource BorderColor}"
+            CornerRadius="6"
+            Background="{StaticResource SurfaceColor}">
                         <DataGrid x:Name="DgParticipants"
-                              Style="{StaticResource ModernDataGrid}"
-                              BorderThickness="0">
+                  Style="{StaticResource ModernDataGrid}"
+                  BorderThickness="0">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Meno a priezvisko" 
-                                                Binding="{Binding Name}" 
-                                                MinWidth="380"
-                                                Width="*"/>
+                                    Binding="{Binding Name}" 
+                                    MinWidth="380"
+                                    Width="*"/>
                                 <DataGridTextColumn Header="Dátum narodenia" 
-                                                Binding="{Binding BirthDate, StringFormat=dd.MM.yyyy}" 
-                                                MinWidth="140"
-                                                Width="*"/>
+                                    Binding="{Binding BirthDate, StringFormat=dd.MM.yyyy}" 
+                                    MinWidth="140"
+                                    Width="*"/>
                                 <DataGridTextColumn Header="Reg. číslo v komore" 
-                                                Binding="{Binding RegistrationNumber}" 
-                                                MinWidth="160"
-                                                Width="*"/>
+                                    Binding="{Binding RegistrationNumber}" 
+                                    MinWidth="160"
+                                    Width="*"/>
                                 <DataGridTextColumn Header="Poznámky" 
-                                                Binding="{Binding Notes}" MinWidth="220"
-                                                Width="*"/>
+                                    Binding="{Binding Notes}" MinWidth="220"
+                                    Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>

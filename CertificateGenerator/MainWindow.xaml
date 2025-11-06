@@ -187,7 +187,7 @@
 
                             <StackPanel Orientation="Vertical" VerticalAlignment="Stretch"   Width="120" Height="120">
                                 <Image x:Name="picture_papers_in_package" 
-                                    Source="..\Images\papers_in_package.png"/>
+                                    Source="Images\papers_in_package.png"/>
                             </StackPanel>
                         </Border>
 
@@ -219,8 +219,8 @@
                             MouseLeftButtonDown="ManageParticipants_Click">
                         <StackPanel>
 
-                            <Image Source="..\Images\users_symbol_trsp.png"
-                                    Width="60"  Cursor="Hand"/>
+                            <Image Source="Images/users_symbol_trsp.png" Width="60" Cursor="Hand"/>
+                      
                             <TextBlock Text="Správa účastníkov" 
                                        FontSize="16"
                                        FontWeight="Bold"
@@ -244,7 +244,7 @@
                             MouseLeftButtonDown="ManageOrganizers_Click">
                         <StackPanel>
                             
-                            <Image Source="..\Images\teacher_symbol-trsp.png"
+                            <Image Source="Images\teacher_symbol-trsp.png"
                                    Width="60"  />
                             <TextBlock Text="Správa organizátorov" 
                                        FontSize="16"
@@ -321,9 +321,9 @@
                             MouseLeftButtonDown="CertificateHistory_Click">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Image Source="..\Images\three_certificates-trsp.png"
+                                <Image Source="Images\three_certificates-trsp.png"
                                     Width="60"  Cursor="Hand"/>
-                                <Image Source="..\Images\three_certificates-trsp.png"
+                                <Image Source="Images\three_certificates-trsp.png"
                                     Width="60"  Cursor="Hand"/>
                             </StackPanel>
                             <TextBlock Text="História certifikátov" 
