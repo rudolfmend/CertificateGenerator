@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyDescription("A tool for generating PDF certificates of completion of professional seminars and trainings. The application allows for easy creation of individual certificates as well as mass generation for groups of participants.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CertificateGenerator")]
+[assembly: AssemblyProduct("Tvorba certifikátov")]
 [assembly: AssemblyCopyright("Copyright © Rudolf Mendzezof 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
