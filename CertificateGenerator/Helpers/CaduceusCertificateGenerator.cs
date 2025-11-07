@@ -433,12 +433,12 @@ namespace CertificateGenerator.Helpers
             //document.Add(new Paragraph("\n\n\nCERTIFIKÁT O ABSOLVOVANÍ")
             document.Add(new Paragraph("CERTIFIKÁT O ABSOLVOVANÍ")
                 .SetFont(titleFont)
-                .SetFontSize(14)  // Zmenšené z 28)
+                .SetFontSize(16)  
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontColor(titleColor));
 
             // Úvodný text
-            document.Add(new Paragraph("\nTento certifikát potvrdzuje, že")
+            document.Add(new Paragraph("Tento certifikát potvrdzuje, že")
                 .SetFont(textFont)
                 .SetFontSize(template.TextFontSize)
                 .SetTextAlignment(TextAlignment.CENTER)
@@ -447,7 +447,8 @@ namespace CertificateGenerator.Helpers
             // Meno účastníka (zvýraznené)
             document.Add(new Paragraph(participantName)
                 .SetFont(titleFont)
-                .SetFontSize(template.HeaderFontSize + 1) // zmena veľkosti písma mena účastnika
+                .SetFontSize(template.HeaderFontSize)
+              //.SetFontSize(template.HeaderFontSize + 1) // zmena veľkosti písma mena účastnika
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontColor(ColorConstants.BLACK)
                 .SetMarginBottom(10));
@@ -470,7 +471,7 @@ namespace CertificateGenerator.Helpers
                     .SetFontColor(textColor)
                     .SetMarginBottom(15));
 
-                document.Add(new Paragraph("úspešne absolvoval(a) školenie")
+                document.Add(new Paragraph("úspešne absolvoval(a) seminár")
                     .SetFont(textFont)
                     .SetFontSize(template.TextFontSize)
                     .SetTextAlignment(TextAlignment.CENTER)
@@ -488,8 +489,8 @@ namespace CertificateGenerator.Helpers
                 .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
                 .SetPaddingRight(10);
 
-            // Téma školenia
-            leftColumn.Add(new Paragraph("Téma školenia")
+            // Téma seminára
+            leftColumn.Add(new Paragraph("Téma seminára")
                 .SetFont(titleFont)
                 .SetFontSize(template.TextFontSize - 4)
                 .SetFontColor(titleColor)
@@ -573,16 +574,19 @@ namespace CertificateGenerator.Helpers
             Table signatureTable = new Table(2).UseAllAvailableWidth();
             signatureTable.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
 
-            // Ľavý podpis (Garant)
+            // Ľavý podpis (môže byť aj Garant?)
             Cell leftCell = new Cell()
-                //.Add(new Paragraph("______________________")
-                    //.SetTextAlignment(TextAlignment.CENTER))
-                .Add(new Paragraph("Cumulus, s.r.o. Rastislavova 45, Košice 040 01") // ľavý dolný roh 
-                    .SetTextAlignment(TextAlignment.CENTER)
-                    .SetFont(textFont)
-                    .SetFontSize(template.TextFontSize - 2))
-                .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
-                .SetPaddingRight(20);
+            //.Add(new Paragraph("______________________")
+            //.SetTextAlignment(TextAlignment.CENTER))
+            //.Add(new Paragraph("Tento certifikát potvrdzuje úspešné absolvovanie vzdelávacieho podujatia a udeľuje sa zaň jeden kredit.\nCumulus, s.r.o. Rastislavova 45, Košice 040 01") // ľavý dolný roh 
+            .Add(new Paragraph("Absolvovaním tohto vzdelávacieho podujatia sa udeľuje jeden kredit.\n" +
+                               "Cumulus, s.r.o. Rastislavova 45, Košice 040 01") // ľavý dolný roh 
+
+            .SetTextAlignment(TextAlignment.CENTER)
+            .SetFont(textFont)
+            .SetFontSize(template.TextFontSize - 2))
+            .SetBorder(iText.Layout.Borders.Border.NO_BORDER)
+            .SetPaddingRight(20);
 
             // Pravý podpis (Organizátor)
             Cell rightCell = new Cell()
