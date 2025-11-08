@@ -154,7 +154,7 @@ namespace CertificateGenerator
             _editingId = 0;
             TxtTopicName.Clear();
             TxtDescription.Clear();
-            TxtFormTitle.Text = "N téma";
+            TxtFormTitle.Text = "Nová téma";
             BtnSave.Content = "💾 Uložiť tému";
             TxtEditMode.Visibility = Visibility.Collapsed;
             DgTopics.SelectedItem = null;

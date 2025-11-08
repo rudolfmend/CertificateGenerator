@@ -137,7 +137,7 @@
                 <!-- Form Header -->
                 <TextBlock Grid.Row="0"
                            x:Name="TxtFormTitle"
-                           Text="N téma" 
+                           Text="Nová téma" 
                            FontSize="16"
                            FontWeight="Bold"
                            Foreground="{StaticResource TextPrimaryColor}"
