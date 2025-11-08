@@ -384,6 +384,9 @@
     <Resource Include="Images\three_certificates-trsp.png" />
     <Resource Include="Images\users_symbol_trsp.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\document_history.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
