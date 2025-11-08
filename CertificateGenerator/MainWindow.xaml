@@ -321,8 +321,8 @@
                             MouseLeftButtonDown="CertificateHistory_Click">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Image Source="Images\three_certificates-trsp.png"
-                                    Width="60"  Cursor="Hand"/>
+                                <!--<Image Source="Images\three_certificates-trsp.png"
+                                    Width="60"  Cursor="Hand"/>-->
                                 <Image Source="Images\document_history.png"
                                     Width="60"  Cursor="Hand"/>
                             </StackPanel>

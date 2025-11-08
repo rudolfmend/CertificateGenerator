@@ -57,12 +57,15 @@ namespace CertificateGenerator
         {
             try
             {
-                var bulkWindow = new BulkGenerationWindow
-                    ("", 2);
+                var bulkWindow = new BulkGenerationWindow("", 2);
+                bulkWindow.Owner = this;
+                this.Hide();
+                bulkWindow.Closed += (s, args) => this.Show();
                 bulkWindow.ShowDialog();
             }
             catch (Exception ex)
             {
+                this.Show();
                 MessageBox.Show($"Chyba pri otváraní generátora:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -141,10 +144,14 @@ namespace CertificateGenerator
             {
                 var manageWindow = new ManageOrganizerWindow(App.DatabaseManager, selectionMode: false);
                 manageWindow.Owner = this;
-                manageWindow.ShowDialog();
+
+                this.Hide();
+                manageWindow.Closed += (s, args) => this.Show();
+                manageWindow.ShowDialog(); 
             }
             catch (Exception ex)
             {
+                this.Show(); // Zobraz hlavné okno pri chybe
                 MessageBox.Show($"Chyba pri otváraní správy organizátorov:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -159,10 +166,13 @@ namespace CertificateGenerator
             {
                 var manageWindow = new ManageEventTopicWindow(App.DatabaseManager, selectionMode: false);
                 manageWindow.Owner = this;
+                this.Hide();
+                manageWindow.Closed += (s, args) => this.Show();
                 manageWindow.ShowDialog();
             }
             catch (Exception ex)
             {
+                this.Show();
                 MessageBox.Show($"Chyba pri otváraní správy tém:\n{ex.Message}",
                     "Chyba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -174,6 +184,8 @@ namespace CertificateGenerator
             {
                 var historyWindow = new CertificateHistoryWindow();
                 historyWindow.Owner = this;
+                this.Hide();
+                historyWindow.Closed += (s, args) => this.Show();
                 historyWindow.ShowDialog();
             }
             catch (Exception ex)
