@@ -232,6 +232,64 @@ namespace CertificateGenerator
             }
         }
 
+        private void PrintFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog
+            {
+                Description = "Vyberte priečinok s PDF certifikátmi na tlač"
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var pdfFiles = Directory.GetFiles(dialog.SelectedPath, "*.pdf");
+
+                if (pdfFiles.Length == 0)
+                {
+                    MessageBox.Show("V priečinku nie sú žiadne PDF súbory.",
+                        "Informácia", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var result = MessageBox.Show(
+                    $"Nájdených {pdfFiles.Length} PDF súborov.\n\n" +
+                    $"Vytlačiť všetky?\n\n" +
+                    $"Poznámka: Použijú sa predvolené nastavenia tlačiarne.",
+                    "Potvrdenie tlače",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    int sent = 0;
+                    foreach (var pdf in pdfFiles)
+                    {
+                        try
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = pdf,
+                                Verb = "print",
+                                CreateNoWindow = true,
+                                WindowStyle = ProcessWindowStyle.Hidden
+                            });
+                            sent++;
+                            System.Threading.Thread.Sleep(500); // Pauza medzi súbormi
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Chyba pri tlači {Path.GetFileName(pdf)}: {ex.Message}");
+                        }
+                    }
+
+                    MessageBox.Show(
+                        $"Odoslaných na tlač: {sent} z {pdfFiles.Length} certifikátov.",
+                        "Tlač dokončená",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+        }
+
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

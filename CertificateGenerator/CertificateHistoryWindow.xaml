@@ -176,6 +176,11 @@
                         Style="{StaticResource ModernButton}"
                         Margin="0,0,8,0"
                         Click="OpenFolder_Click"/>
+                
+                <Button Content="🖨️ Tlačiť PDF" 
+                        Style="{StaticResource ModernButton}"
+                        Margin="0,0,8,0"
+                        Click="PrintFolder_Click"/>
                 <Button Content="🗑️ Odstrániť záznam" 
                         Style="{StaticResource DangerButton}"
                         Margin="0,0,8,0"
