@@ -250,43 +250,53 @@ namespace CertificateGenerator
                     return;
                 }
 
-                var result = MessageBox.Show(
+                var orientationResult = MessageBox.Show(
                     $"Nájdených {pdfFiles.Length} PDF súborov.\n\n" +
-                    $"Vytlačiť všetky?\n\n" +
-                    $"Poznámka: Použijú sa predvolené nastavenia tlačiarne.",
-                    "Potvrdenie tlače",
-                    MessageBoxButton.YesNo,
+                    $"Zvoľte orientáciu:\n\n" +
+                    $"ÁNO = Šírka (Landscape)\n" +
+                    $"NIE = Výška (Portrait)",
+                    "Nastavenie tlače",
+                    MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Question);
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    int sent = 0;
-                    foreach (var pdf in pdfFiles)
-                    {
-                        try
-                        {
-                            Process.Start(new ProcessStartInfo
-                            {
-                                FileName = pdf,
-                                Verb = "print",
-                                CreateNoWindow = true,
-                                WindowStyle = ProcessWindowStyle.Hidden
-                            });
-                            sent++;
-                            System.Threading.Thread.Sleep(500); // Pauza medzi súbormi
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Chyba pri tlači {Path.GetFileName(pdf)}: {ex.Message}");
-                        }
-                    }
+                if (orientationResult == MessageBoxResult.Cancel)
+                    return;
 
-                    MessageBox.Show(
-                        $"Odoslaných na tlač: {sent} z {pdfFiles.Length} certifikátov.",
-                        "Tlač dokončená",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                bool isLandscape = (orientationResult == MessageBoxResult.Yes);
+
+                int sent = 0;
+                foreach (var pdf in pdfFiles)
+                {
+                    try
+                    {
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = pdf,
+                            Verb = "print",
+                            CreateNoWindow = true,
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        };
+
+                        Process.Start(psi);
+                        sent++;
+                        System.Threading.Thread.Sleep(2000);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Chyba: {ex.Message}");
+                    }
                 }
+
+                MessageBox.Show(
+                    $"Odoslaných na tlač: {sent} z {pdfFiles.Length} certifikátov.\n\n" +
+                    $"Orientácia: {(isLandscape ? "Šírka" : "Výška")}\n\n" +
+                    $"DÔLEŽITÉ: Ak orientácia nie je správna:\n" +
+                    $"1. Ovládací panel → Zariadenia a tlačiarne\n" +
+                    $"2. HP LaserJet M12a → Vlastnosti → Predvoľby\n" +
+                    $"3. Nastavte orientáciu a uložte ako predvolenú",
+                    "Tlač dokončená",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
