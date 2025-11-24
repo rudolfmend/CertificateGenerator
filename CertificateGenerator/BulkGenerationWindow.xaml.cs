@@ -489,7 +489,8 @@ namespace CertificateGenerator
                 {
                     try
                     {
-                        string fileName = $"Certificate_{SanitizeFileName(participant.Name)}_{SanitizeFileName(topic.Topic)}.pdf";
+                        string fileName = $"{SanitizeFileName(participant.Name)}_{topic.EventDate?.ToString("yyyy-MM-dd") ?? "bez_datumu"}_{SanitizeFileName(topic.Topic)}.pdf";
+                 
                         string fullPath = IOPath.Combine(folderPath, fileName);
 
                         CreatePdfDocument(fullPath, participant, topic);

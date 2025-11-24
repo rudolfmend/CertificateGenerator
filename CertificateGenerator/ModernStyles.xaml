@@ -16,7 +16,11 @@
     <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/>
     <SolidColorBrush x:Key="TextPrimaryColor" Color="#1E293B"/>
     <SolidColorBrush x:Key="TextSecondaryColor" Color="#64748B"/>
-    <SolidColorBrush x:Key="InputBackground" Color="#F1F5F9"/>
+    <!--<SolidColorBrush x:Key="InputBackground" Color="#6f7275"/>-->
+    <LinearGradientBrush x:Key="InputBackground" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#90b3d1" Offset="0"/>
+        <GradientStop Color="#ffff" Offset="1"/>
+    </LinearGradientBrush>
 
     <!-- Modern Button Style -->
     <Style x:Key="ModernButton" TargetType="Button">
