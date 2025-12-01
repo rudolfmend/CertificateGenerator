@@ -14,12 +14,12 @@
     <SolidColorBrush x:Key="BackgroundColor" Color="#F8FAFC"/>
     <SolidColorBrush x:Key="SurfaceColor" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/>
-    <SolidColorBrush x:Key="TextPrimaryColor" Color="#1E293B"/>
-    <SolidColorBrush x:Key="TextSecondaryColor" Color="#64748B"/>
+    <SolidColorBrush x:Key="TextPrimaryColor" Color="Black"/>
+    <SolidColorBrush x:Key="TextSecondaryColor" Color="#13161c"/>
     <!--<SolidColorBrush x:Key="InputBackground" Color="#6f7275"/>-->
     <LinearGradientBrush x:Key="InputBackground" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#90b3d1" Offset="0"/>
-        <GradientStop Color="#ffff" Offset="1"/>
+        <GradientStop Color="#e8f1fa" Offset="0"/>
+        <GradientStop Color="#ffff" Offset="2"/>
     </LinearGradientBrush>
 
     <!-- Modern Button Style -->
@@ -167,6 +167,8 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryColor}"/>
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource BorderColor}"/>
+
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="true">
                             <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryColor}"/>
@@ -378,7 +380,8 @@
                         <DropShadowEffect BlurRadius="15" 
                                         ShadowDepth="3" 
                                         Opacity="0.3" 
-                                        Color="#000000"/>
+                                        Color="#000000"
+                                         />
                     </Setter.Value>
                 </Setter>
             </Trigger>
