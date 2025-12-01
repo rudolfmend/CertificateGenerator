@@ -332,18 +332,40 @@
         <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="Padding" Value="20"/>
         <Setter Property="Effect" Value="{StaticResource DropShadow}"/>
-
-        
+        <Setter Property="Opacity" Value="0.8"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="1"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                     To="1.03" Duration="0:0:0.15"/>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                     To="1.03" Duration="0:0:0.15"/>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     To="1" Duration="0:0:0.15"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                     To="1" Duration="0:0:0.15"/>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                     To="1" Duration="0:0:0.15"/>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     To="0.8" Duration="0:0:0.15"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
     </Style>
-<!--<Border.Style>
-            <Style TargetType="Border" BasedOn="{StaticResource Card}">
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource InputBackground}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style>-->
 
 
     <!-- Interactive Card Style (s hover efektom) -->
